@@ -1,0 +1,51 @@
+# Expo
+.expo/
+dist/
+web-build/
+
+# dependencies
+node_modules/
+
+# Native
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+.bundle
+.env
+
+# macOS
+.DS_Store
+
+# Temporary files
+*.log*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# @generated expo-cli
+.expo-shared
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# Testing
+coverage/
+
+# Build
+build/
+android/
+ios/
+*.apk
+*.aab
+
+/.history/
