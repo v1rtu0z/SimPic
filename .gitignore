@@ -1,5 +1,6 @@
-# Expo
+# Expo (legacy)
 .expo/
+.expo-shared
 dist/
 web-build/
 
@@ -25,9 +26,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# @generated expo-cli
-.expo-shared
-
 # IDE
 .vscode/
 .idea/
@@ -37,6 +35,9 @@ yarn-error.log*
 .project
 .classpath
 .settings/
+*.iml
+*.ipr
+*.iws
 
 # Testing
 coverage/
@@ -47,5 +48,37 @@ android/
 ios/
 *.apk
 *.aab
+*.lock
 
+# History
 /.history/
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+.metadata
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+# Miscellaneous
+*.class
+*.pyc
+.atom/
+.buildlog/
+.svn/
+migrate_working_dir/

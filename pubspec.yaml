@@ -1,0 +1,35 @@
+name: simpic
+description: SimPic - AI Photo Coach. A Flutter app for real-time photography coaching.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  camera: ^0.11.0+2
+  permission_handler: ^11.3.1
+  path_provider: ^2.1.4
+  path: ^1.9.0
+  open_file: ^3.5.2
+  gallery_saver_plus: ^3.2.9
+  url_launcher: ^6.3.1
+  android_intent_plus: ^5.0.2
+  photo_manager: ^3.5.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  
+  # Assets are in the parent directory
+  # Uncomment and adjust paths if needed:
+  # assets:
+  #   - ../assets/icon.png
+  #   - ../assets/adaptive-icon.png
+  #   - ../assets/splash.png
