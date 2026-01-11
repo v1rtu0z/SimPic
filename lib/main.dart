@@ -28,7 +28,7 @@ class SimPicApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.black,
         useMaterial3: true,
       ),
-      home: const CameraScreen(),
+      home: CameraScreen(),
     );
   }
 }

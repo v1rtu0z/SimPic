@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -12,9 +13,10 @@ import 'package:android_intent_plus/android_intent.dart';
 import 'package:android_intent_plus/flag.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:open_file/open_file.dart';
+import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 
 class CameraScreen extends StatefulWidget {
-  const CameraScreen({super.key});
+  CameraScreen({super.key});
 
   @override
   State<CameraScreen> createState() => _CameraScreenState();
@@ -24,6 +26,7 @@ class _CameraScreenState extends State<CameraScreen>
     with WidgetsBindingObserver, TickerProviderStateMixin {
   CameraController? _controller;
   List<CameraDescription>? _cameras;
+  CameraDescription? _currentCamera;
   bool _isInitialized = false;
   bool _hasPermission = false;
   bool _isCapturing = false;
@@ -41,6 +44,13 @@ class _CameraScreenState extends State<CameraScreen>
   late Animation<double> _minimizeAnimation;
   File? _minimizingImage;
   Rect? _previewButtonRect;
+  
+  // Face detection
+  FaceDetector? _faceDetector;
+  List<Face> _detectedFaces = [];
+  bool _isProcessing = false;
+  int _frameCounter = 0;
+  Size? _imageSize;
 
   @override
   void initState() {
@@ -69,6 +79,16 @@ class _CameraScreenState extends State<CameraScreen>
       curve: Curves.easeInOut,
     );
     
+    // Initialize face detector
+    _faceDetector = FaceDetector(
+      options: FaceDetectorOptions(
+        enableClassification: false,
+        enableLandmarks: false,
+        enableTracking: false,
+        performanceMode: FaceDetectorMode.accurate,
+      ),
+    );
+    
     _initializeCamera();
     _loadLatestPhoto();
   }
@@ -79,6 +99,7 @@ class _CameraScreenState extends State<CameraScreen>
     _controller?.dispose();
     _flashAnimationController.dispose();
     _minimizeAnimationController.dispose();
+    _faceDetector?.close();
     super.dispose();
   }
 
@@ -123,19 +144,28 @@ class _CameraScreenState extends State<CameraScreen>
       }
 
       // Use back camera by default
-      final backCamera = _cameras!.firstWhere(
+      _currentCamera = _cameras!.firstWhere(
         (camera) => camera.lensDirection == CameraLensDirection.back,
         orElse: () => _cameras!.first,
       );
 
-      // Initialize camera controller
+      // Initialize camera controller with NV21 format for ML Kit compatibility
       _controller = CameraController(
-        backCamera,
+        _currentCamera!,
         ResolutionPreset.high,
         enableAudio: false,
+        imageFormatGroup: ImageFormatGroup.nv21,
       );
 
       await _controller!.initialize();
+      
+      // Debug: Print sensor orientation clearly
+      debugPrint('=============================================');
+      debugPrint('CAMERA SENSOR ORIENTATION: ${_currentCamera!.sensorOrientation}°');
+      debugPrint('=============================================');
+
+      // Start image stream for face detection
+      _controller!.startImageStream(_processCameraImage);
 
       setState(() {
         _isInitialized = true;
@@ -270,6 +300,11 @@ class _CameraScreenState extends State<CameraScreen>
     });
 
     try {
+      // Stop image stream before taking photo
+      if (_controller!.value.isStreamingImages) {
+        await _controller!.stopImageStream();
+      }
+
       // Trigger flash animation
       _flashAnimationController.forward().then((_) {
         _flashAnimationController.reverse();
@@ -367,10 +402,115 @@ class _CameraScreenState extends State<CameraScreen>
     } catch (e) {
       debugPrint('Error taking picture: $e');
     } finally {
+      // Restart image stream after taking photo
+      if (_controller != null && 
+          _controller!.value.isInitialized && 
+          !_controller!.value.isStreamingImages) {
+        try {
+          await _controller!.startImageStream(_processCameraImage);
+        } catch (e) {
+          debugPrint('Error restarting image stream: $e');
+        }
+      }
+      
       setState(() {
         _isCapturing = false;
       });
     }
+  }
+
+  Future<void> _processCameraImage(CameraImage image) async {
+    // Skip frames for optimization (process every 5th frame)
+    _frameCounter++;
+    if (_frameCounter % 5 != 0) {
+      return;
+    }
+
+    // Skip if already processing to prevent queue buildup
+    if (_isProcessing || _faceDetector == null) {
+      return;
+    }
+
+    _isProcessing = true;
+
+    try {
+      // Convert CameraImage to InputImage
+      final inputImage = _convertCameraImage(image);
+      if (inputImage == null) {
+        _isProcessing = false;
+        debugPrint('Failed to convert camera image');
+        return;
+      }
+
+      // Detect faces
+      final faces = await _faceDetector!.processImage(inputImage);
+
+      // Update state with detected faces
+      if (mounted) {
+        setState(() {
+          _detectedFaces = faces;
+          _imageSize = Size(image.width.toDouble(), image.height.toDouble());
+        });
+        
+        // Debug once only
+        if (_frameCounter == 105 && faces.isNotEmpty) {
+          debugPrint('');
+          debugPrint('═══════════════════════════════════════════════════');
+          debugPrint('SENSOR: ${_currentCamera?.sensorOrientation}° | IMAGE: ${image.width}x${image.height}');
+          debugPrint('FACE BOUNDS (raw): ${faces.first.boundingBox}');
+          debugPrint('NUMBER OF FACES: ${faces.length}');
+          for (var i = 0; i < faces.length; i++) {
+            debugPrint('FACE $i: ${faces[i].boundingBox}');
+          }
+          debugPrint('═══════════════════════════════════════════════════');
+          debugPrint('');
+        }
+      }
+    } catch (e) {
+      // Don't spam console with repeated errors
+      if (_frameCounter % 50 == 0) {
+        debugPrint('Error processing image for face detection: $e');
+      }
+    } finally {
+      _isProcessing = false;
+    }
+  }
+
+  InputImage? _convertCameraImage(CameraImage image) {
+    final camera = _controller?.description;
+    if (camera == null) return null;
+
+    // Combine all image planes into a single Uint8List
+    final WriteBuffer allBytes = WriteBuffer();
+    for (final plane in image.planes) {
+      allBytes.putUint8List(plane.bytes);
+    }
+    final bytes = allBytes.done().buffer.asUint8List();
+
+    // Get image size
+    final Size imageSize = Size(image.width.toDouble(), image.height.toDouble());
+
+    // Determine image rotation based on sensor orientation
+    // The rotation tells ML Kit how the image is oriented relative to the device screen
+    final InputImageRotation imageRotation =
+        InputImageRotationValue.fromRawValue(camera.sensorOrientation) ??
+        InputImageRotation.rotation0deg;
+
+    // Determine image format
+    // Note: When using ImageFormatGroup.nv21, CameraX provides NV21 data
+    // even though the format identifier might say YUV_420_888
+    final InputImageFormat inputImageFormat = InputImageFormat.nv21;
+
+    // Create InputImageMetadata (updated API)
+    final InputImageMetadata metadata = InputImageMetadata(
+      size: imageSize,
+      rotation: imageRotation,
+      format: inputImageFormat,
+      bytesPerRow: image.planes.first.bytesPerRow,
+    );
+
+    // Create and return InputImage
+    return InputImage.fromBytes(bytes: bytes, metadata: metadata);
   }
 
   @override
@@ -432,13 +572,51 @@ class _CameraScreenState extends State<CameraScreen>
       );
     }
 
+    // Calculate the correct aspect ratio considering sensor orientation
+    // Most phone cameras have sensors rotated 90 degrees
+    final sensorOrientation = _currentCamera?.sensorOrientation ?? 0;
+    final isLandscapeSensor = sensorOrientation == 90 || sensorOrientation == 270;
+    
+    double cameraAspectRatio;
+    if (_imageSize != null) {
+      // For landscape sensor orientations (90/270), swap width and height
+      cameraAspectRatio = isLandscapeSensor 
+          ? _imageSize!.height / _imageSize!.width 
+          : _imageSize!.width / _imageSize!.height;
+    } else {
+      // Fallback to controller aspect ratio
+      cameraAspectRatio = 1 / _controller!.value.aspectRatio;
+    }
+    
     return Scaffold(
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          // Camera preview
-          Positioned.fill(
-            child: CameraPreview(_controller!),
+          // Camera preview with face detection overlay - centered with correct aspect ratio
+          Center(
+            child: AspectRatio(
+              aspectRatio: cameraAspectRatio,
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      CameraPreview(_controller!),
+                      // Face detection overlay
+                      CustomPaint(
+                        painter: FaceDetectorPainter(
+                          faces: _detectedFaces,
+                          imageSize: _imageSize,
+                          cameraPreviewSize: Size(constraints.maxWidth, constraints.maxHeight),
+                          sensorOrientation: _currentCamera?.sensorOrientation ?? 0,
+                          cameraLensDirection: _currentCamera?.lensDirection,
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
           ),
           
           // Flash animation overlay
@@ -762,5 +940,146 @@ class _CameraScreenState extends State<CameraScreen>
         );
       },
     );
+  }
+}
+
+// CustomPainter for drawing face detection outlines
+class FaceDetectorPainter extends CustomPainter {
+  final List<Face> faces;
+  final Size? imageSize;
+  final Size cameraPreviewSize;
+  final InputImageRotation? rotation;
+  final int sensorOrientation;
+  final CameraLensDirection? cameraLensDirection;
+
+  static bool _hasLogged = false;
+
+  FaceDetectorPainter({
+    required this.faces,
+    required this.imageSize,
+    required this.cameraPreviewSize,
+    this.rotation,
+    required this.sensorOrientation,
+    this.cameraLensDirection,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (imageSize == null || faces.isEmpty) return;
+
+    // Debug log once
+    if (!_hasLogged) {
+      _hasLogged = true;
+      debugPrint('');
+      debugPrint('🎨 PAINT DEBUG 🎨');
+      debugPrint('Canvas size (display): $size');
+      debugPrint('Image size (from camera): $imageSize');
+      debugPrint('Sensor orientation: $sensorOrientation°');
+      debugPrint('Camera preview size: $cameraPreviewSize');
+      debugPrint('Lens direction: $cameraLensDirection');
+      if (faces.isNotEmpty) {
+        debugPrint('First face bounds (raw): ${faces.first.boundingBox}');
+        final transformed = _scaleRect(
+          rect: faces.first.boundingBox,
+          imageSize: imageSize!,
+          widgetSize: size,
+        );
+        debugPrint('First face bounds (transformed): $transformed');
+      }
+      debugPrint('');
+    }
+
+    final paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3.0
+      ..color = Colors.greenAccent;
+
+    for (final face in faces) {
+      // Convert face bounding box from image coordinates to screen coordinates
+      final rect = _scaleRect(
+        rect: face.boundingBox,
+        imageSize: imageSize!,
+        widgetSize: size,
+      );
+
+      // Draw rectangle around the face
+      canvas.drawRect(rect, paint);
+    }
+  }
+
+  Rect _scaleRect({
+    required Rect rect,
+    required Size imageSize,
+    required Size widgetSize,
+  }) {
+    // ML Kit returns coordinates in the original image coordinate system
+    // We need to transform them based on sensor orientation
+    
+    if (sensorOrientation == 90) {
+      // For 90° sensor: transpose and mirror correctly
+      // Image is in landscape (width > height), display is portrait
+      final scaleX = widgetSize.width / imageSize.height;
+      final scaleY = widgetSize.height / imageSize.width;
+      
+      // Diagonal mirroring: transpose coordinates (swap X and Y)
+      // This mirrors across the main diagonal
+      final tempLeft = (imageSize.height - rect.bottom) * scaleX;
+      final tempTop = rect.left * scaleY;
+      final tempRight = (imageSize.height - rect.top) * scaleX;
+      final tempBottom = rect.right * scaleY;
+      
+      // Apply counter-clockwise 90° rotation: (x, y) → (y, width - x)
+      final newLeft = tempTop;
+      final newTop = widgetSize.width - tempRight;
+      final newRight = tempBottom;
+      final newBottom = widgetSize.width - tempLeft;
+      
+      return Rect.fromLTRB(newLeft, newTop, newRight, newBottom);
+    } else if (sensorOrientation == 270) {
+      // Rotate 90° clockwise: (x, y) -> (imageHeight - y, x)
+      final scaleX = widgetSize.width / imageSize.height;
+      final scaleY = widgetSize.height / imageSize.width;
+      
+      final newLeft = imageSize.height - rect.bottom;
+      final newTop = rect.left;
+      final newRight = imageSize.height - rect.top;
+      final newBottom = rect.right;
+      
+      return Rect.fromLTRB(
+        newLeft * scaleX,
+        newTop * scaleY,
+        newRight * scaleX,
+        newBottom * scaleY,
+      );
+    } else {
+      // 0° or 180° - no dimension swap needed
+      final scaleX = widgetSize.width / imageSize.width;
+      final scaleY = widgetSize.height / imageSize.height;
+      
+      if (sensorOrientation == 180) {
+        // Flip both axes
+        return Rect.fromLTRB(
+          (imageSize.width - rect.right) * scaleX,
+          (imageSize.height - rect.bottom) * scaleY,
+          (imageSize.width - rect.left) * scaleX,
+          (imageSize.height - rect.top) * scaleY,
+        );
+      }
+      
+      return Rect.fromLTRB(
+        rect.left * scaleX,
+        rect.top * scaleY,
+        rect.right * scaleX,
+        rect.bottom * scaleY,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(FaceDetectorPainter oldDelegate) {
+    return oldDelegate.faces != faces ||
+        oldDelegate.imageSize != imageSize ||
+        oldDelegate.cameraPreviewSize != cameraPreviewSize ||
+        oldDelegate.sensorOrientation != sensorOrientation;
   }
 }
