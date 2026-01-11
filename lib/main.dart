@@ -5,13 +5,13 @@ import 'screens/camera_screen.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Set preferred orientations to portrait only
+  // Lock app to portrait orientation
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
-  ]);
-  
-  runApp(const SimPicApp());
+  ]).then((_) {
+    runApp(const SimPicApp());
+  });
 }
 
 class SimPicApp extends StatelessWidget {

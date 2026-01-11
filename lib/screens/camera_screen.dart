@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
+import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
@@ -14,6 +15,8 @@ import 'package:android_intent_plus/flag.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:open_file/open_file.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
+import '../models/distance_coaching_scenario.dart';
+import '../widgets/distance_coaching_overlay.dart';
 
 class CameraScreen extends StatefulWidget {
   CameraScreen({super.key});
@@ -51,6 +54,23 @@ class _CameraScreenState extends State<CameraScreen>
   bool _isProcessing = false;
   int _frameCounter = 0;
   Size? _imageSize;
+  
+  // Distance coaching
+  DistanceCoachingResult? _distanceCoachingResult;
+  DistanceCoachingScenario? _currentDistanceScenario;
+  
+  // Focus feedback
+  Offset? _focusPoint;
+  AnimationController? _focusAnimationController;
+  Animation<double>? _focusAnimation;
+  Timer? _focusTimer;
+  
+  // Face tracking for stability in distance coaching (used in _selectBestFace)
+  Rect? _lastTrackedFaceBounds;
+  
+  // Frame comparison for stability (skip face detection when camera is stationary)
+  Uint8List? _previousFrameSample;
+  Size? _previousImageSize;
 
   @override
   void initState() {
@@ -89,6 +109,18 @@ class _CameraScreenState extends State<CameraScreen>
       ),
     );
     
+    // Initialize focus animation
+    _focusAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+    _focusAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _focusAnimationController!,
+        curve: Curves.easeOut,
+      ),
+    );
+    
     _initializeCamera();
     _loadLatestPhoto();
   }
@@ -99,6 +131,8 @@ class _CameraScreenState extends State<CameraScreen>
     _controller?.dispose();
     _flashAnimationController.dispose();
     _minimizeAnimationController.dispose();
+    _focusAnimationController?.dispose();
+    _focusTimer?.cancel();
     _faceDetector?.close();
     super.dispose();
   }
@@ -149,15 +183,21 @@ class _CameraScreenState extends State<CameraScreen>
         orElse: () => _cameras!.first,
       );
 
-      // Initialize camera controller with NV21 format for ML Kit compatibility
+      // Initialize camera controller with platform-appropriate format for ML Kit compatibility
+      // Android uses NV21, iOS uses YUV420
       _controller = CameraController(
         _currentCamera!,
         ResolutionPreset.high,
         enableAudio: false,
-        imageFormatGroup: ImageFormatGroup.nv21,
+        imageFormatGroup: Platform.isAndroid 
+            ? ImageFormatGroup.nv21 
+            : ImageFormatGroup.yuv420,
       );
 
       await _controller!.initialize();
+      
+      // Enable continuous autofocus
+      await _controller!.setFocusMode(FocusMode.auto);
       
       // Debug: Print sensor orientation clearly
       debugPrint('=============================================');
@@ -420,9 +460,9 @@ class _CameraScreenState extends State<CameraScreen>
   }
 
   Future<void> _processCameraImage(CameraImage image) async {
-    // Skip frames for optimization (process every 5th frame)
+    // Skip frames for optimization (process every 2nd frame for more real-time feel)
     _frameCounter++;
-    if (_frameCounter % 5 != 0) {
+    if (_frameCounter % 2 != 0) {
       return;
     }
 
@@ -434,23 +474,66 @@ class _CameraScreenState extends State<CameraScreen>
     _isProcessing = true;
 
     try {
-      // Convert CameraImage to InputImage
-      final inputImage = _convertCameraImage(image);
-      if (inputImage == null) {
-        _isProcessing = false;
-        debugPrint('Failed to convert camera image');
-        return;
-      }
-
-      // Detect faces
-      final faces = await _faceDetector!.processImage(inputImage);
-
-      // Update state with detected faces
-      if (mounted) {
-        setState(() {
-          _detectedFaces = faces;
-          _imageSize = Size(image.width.toDouble(), image.height.toDouble());
-        });
+      final imageSize = Size(image.width.toDouble(), image.height.toDouble());
+      
+      // Check if frame changed significantly before running face detection
+      final shouldRunFaceDetection = _shouldProcessFrame(image, imageSize);
+      
+      List<Face> faces = [];
+      DistanceCoachingResult? coachingResult;
+      
+      if (shouldRunFaceDetection) {
+        // Frame changed significantly, run face detection
+        final inputImage = _convertCameraImage(image);
+        if (inputImage == null) {
+          _isProcessing = false;
+          debugPrint('Failed to convert camera image');
+          return;
+        }
+        
+        faces = await _faceDetector!.processImage(inputImage);
+        
+        // Store frame sample for next comparison
+        _previousFrameSample = _sampleFrame(image);
+        _previousImageSize = imageSize;
+        
+        // Process face detection results
+        if (faces.isNotEmpty && imageSize.height > 0) {
+          // Select best face for coaching and focus (handles multiple faces)
+          // Uses a combination of size and position (larger + more central = better)
+          Face? bestFace = _selectBestFace(faces, imageSize);
+          
+          if (bestFace != null) {
+            // Calculate face height as percentage of image height
+            // ML Kit bounding box is already in image coordinates
+            final faceHeight = bestFace.boundingBox.height;
+            
+            // Safety check: ensure valid face height
+            if (faceHeight > 0 && imageSize.height > 0) {
+              final faceHeightPercentage = (faceHeight / imageSize.height) * 100.0;
+              
+              // Evaluate distance coaching with hysteresis to prevent flickering
+              coachingResult = evaluateDistanceCoaching(
+                faceHeightPercentage,
+                _currentDistanceScenario,
+              );
+            }
+          }
+        } else {
+          // No faces detected, clear previous state
+          _previousFrameSample = null;
+          _previousImageSize = null;
+        }
+        
+        // Always update UI when face detection runs
+        if (mounted) {
+          setState(() {
+            _detectedFaces = faces;
+            _imageSize = imageSize;
+            _distanceCoachingResult = coachingResult;
+            _currentDistanceScenario = coachingResult?.scenario;
+          });
+        }
         
         // Debug once only
         if (_frameCounter == 105 && faces.isNotEmpty) {
@@ -461,6 +544,9 @@ class _CameraScreenState extends State<CameraScreen>
           debugPrint('NUMBER OF FACES: ${faces.length}');
           for (var i = 0; i < faces.length; i++) {
             debugPrint('FACE $i: ${faces[i].boundingBox}');
+          }
+          if (_distanceCoachingResult != null) {
+            debugPrint('DISTANCE COACHING: ${_distanceCoachingResult!.scenario} - ${_distanceCoachingResult!.message} (${_distanceCoachingResult!.status})');
           }
           debugPrint('═══════════════════════════════════════════════════');
           debugPrint('');
@@ -474,6 +560,176 @@ class _CameraScreenState extends State<CameraScreen>
     } finally {
       _isProcessing = false;
     }
+  }
+
+  /// Select the best face from multiple detected faces
+  /// Uses a combination of size (70% weight) and centrality (30% weight)
+  /// Faces closer to center and larger are preferred
+  Face? _selectBestFace(List<Face> faces, Size imageSize) {
+    if (faces.isEmpty) return null;
+    if (faces.length == 1) return faces.first;
+    
+    final imageCenterX = imageSize.width / 2;
+    final imageCenterY = imageSize.height / 2;
+    
+    Face? bestFace;
+    double bestScore = -1;
+    
+    for (final face in faces) {
+      // Calculate face area (normalized to 0-1 range, assuming max face is ~50% of image)
+      final faceArea = face.boundingBox.width * face.boundingBox.height;
+      final maxPossibleArea = imageSize.width * imageSize.height * 0.5;
+      final normalizedArea = (faceArea / maxPossibleArea).clamp(0.0, 1.0);
+      
+      // Calculate face center
+      final faceCenterX = face.boundingBox.left + (face.boundingBox.width / 2);
+      final faceCenterY = face.boundingBox.top + (face.boundingBox.height / 2);
+      
+      // Calculate distance from image center (normalized to 0-1, where 0 = center, 1 = corner)
+      final distanceFromCenterX = (faceCenterX - imageCenterX).abs() / imageCenterX;
+      final distanceFromCenterY = (faceCenterY - imageCenterY).abs() / imageCenterY;
+      final distanceFromCenter = sqrt(distanceFromCenterX * distanceFromCenterX + distanceFromCenterY * distanceFromCenterY);
+      final normalizedDistance = distanceFromCenter.clamp(0.0, 1.0);
+      
+      // Centrality score (closer to center = higher score)
+      final centralityScore = 1.0 - normalizedDistance;
+      
+      // Combined score: 70% size, 30% centrality
+      // Add small bonus if this face is close to the previously tracked face (stability)
+      double stabilityBonus = 0.0;
+      if (_lastTrackedFaceBounds != null) {
+        final currentCenterX = face.boundingBox.left + (face.boundingBox.width / 2);
+        final currentCenterY = face.boundingBox.top + (face.boundingBox.height / 2);
+        final lastCenterX = _lastTrackedFaceBounds!.left + (_lastTrackedFaceBounds!.width / 2);
+        final lastCenterY = _lastTrackedFaceBounds!.top + (_lastTrackedFaceBounds!.height / 2);
+        
+        final distanceFromLast = sqrt(
+          (currentCenterX - lastCenterX) * (currentCenterX - lastCenterX) +
+          (currentCenterY - lastCenterY) * (currentCenterY - lastCenterY)
+        );
+        // Bonus if within 20% of image size from last face (10% of score)
+        if (distanceFromLast < imageSize.width * 0.2) {
+          stabilityBonus = 0.1 * (1.0 - (distanceFromLast / (imageSize.width * 0.2)));
+        }
+      }
+      
+      final score = (normalizedArea * 0.7) + (centralityScore * 0.3) + stabilityBonus;
+      
+      if (score > bestScore) {
+        bestScore = score;
+        bestFace = face;
+      }
+    }
+    
+    // Update tracked face bounds for next frame
+    if (bestFace != null) {
+      _lastTrackedFaceBounds = bestFace.boundingBox;
+    }
+    
+    return bestFace;
+  }
+
+  /// Handle tap to focus
+  Future<void> _handleTapToFocus(TapDownDetails details, Size previewSize) async {
+    if (_controller == null || !_controller!.value.isInitialized) {
+      return;
+    }
+    
+    try {
+      // Calculate normalized position (0-1 range)
+      final normalizedX = details.localPosition.dx / previewSize.width;
+      final normalizedY = details.localPosition.dy / previewSize.height;
+      
+      Offset focusPoint = Offset(normalizedX, normalizedY);
+      
+      // For front camera on iOS, mirror x coordinate
+      if (_currentCamera?.lensDirection == CameraLensDirection.front && Platform.isIOS) {
+        focusPoint = Offset(1.0 - normalizedX, normalizedY);
+      }
+      
+      // Clamp to valid range
+      focusPoint = Offset(
+        focusPoint.dx.clamp(0.0, 1.0),
+        focusPoint.dy.clamp(0.0, 1.0),
+      );
+      
+      await _controller!.setFocusPoint(focusPoint);
+      
+      // Show focus feedback ring
+      setState(() {
+        _focusPoint = details.localPosition;
+        _focusAnimationController?.reset();
+        _focusAnimationController?.forward();
+      });
+      
+      // Hide focus ring after animation
+      _focusTimer?.cancel();
+      _focusTimer = Timer(const Duration(milliseconds: 1000), () {
+        if (mounted) {
+          setState(() {
+            _focusPoint = null;
+          });
+        }
+      });
+    } catch (e) {
+      debugPrint('Error handling tap to focus: $e');
+    }
+  }
+
+  /// Sample frame pixels to detect if frame changed (for skipping face detection when stationary)
+  Uint8List _sampleFrame(CameraImage image) {
+    // Sample pixels in a grid pattern (e.g., every 20th pixel)
+    // This gives us a lightweight way to detect frame changes
+    const int sampleStep = 20;
+    final List<int> samples = [];
+    
+    // Sample from the Y plane (luminance) - first plane in NV21/YUV420
+    final plane = image.planes[0];
+    final bytesPerRow = plane.bytesPerRow;
+    
+    for (int y = 0; y < image.height; y += sampleStep) {
+      for (int x = 0; x < image.width; x += sampleStep) {
+        // For Y plane, typically 1 byte per pixel
+        final index = (y * bytesPerRow) + x;
+        if (index < plane.bytes.length) {
+          samples.add(plane.bytes[index]);
+        }
+      }
+    }
+    
+    return Uint8List.fromList(samples);
+  }
+  
+  /// Check if frame changed significantly (2% threshold) by comparing pixel samples
+  bool _shouldProcessFrame(CameraImage image, Size imageSize) {
+    // First frame or image size changed, always process
+    if (_previousFrameSample == null || 
+        _previousImageSize == null ||
+        _previousImageSize!.width != imageSize.width ||
+        _previousImageSize!.height != imageSize.height) {
+      return true;
+    }
+    
+    // Sample current frame
+    final currentSample = _sampleFrame(image);
+    
+    if (currentSample.length != _previousFrameSample!.length) {
+      return true; // Sample size mismatch, process frame
+    }
+    
+    // Calculate difference percentage
+    int totalDifference = 0;
+    for (int i = 0; i < currentSample.length; i++) {
+      totalDifference += (currentSample[i] - _previousFrameSample![i]).abs();
+    }
+    
+    // Average difference per pixel (0-255 range)
+    final avgDifference = totalDifference / currentSample.length;
+    // Convert to percentage (255 = 100%)
+    final differencePercentage = (avgDifference / 255.0) * 100.0;
+    
+    // Process if difference is >= 2%
+    return differencePercentage >= 2.0;
   }
 
   InputImage? _convertCameraImage(CameraImage image) {
@@ -490,16 +746,21 @@ class _CameraScreenState extends State<CameraScreen>
     // Get image size
     final Size imageSize = Size(image.width.toDouble(), image.height.toDouble());
 
+    // FIXME: Flipped portrait mode (portraitDown) - face detection rotation not handled
+    // Currently only uses camera sensor orientation, but doesn't account for physical device orientation
+    // (portraitUp vs portraitDown). This may cause face detection issues when device is upside down.
     // Determine image rotation based on sensor orientation
     // The rotation tells ML Kit how the image is oriented relative to the device screen
     final InputImageRotation imageRotation =
         InputImageRotationValue.fromRawValue(camera.sensorOrientation) ??
         InputImageRotation.rotation0deg;
 
-    // Determine image format
-    // Note: When using ImageFormatGroup.nv21, CameraX provides NV21 data
-    // even though the format identifier might say YUV_420_888
-    final InputImageFormat inputImageFormat = InputImageFormat.nv21;
+    // Determine image format based on platform
+    // Android uses NV21, iOS uses YUV420
+    // ML Kit on iOS can handle YUV420 format directly
+    final InputImageFormat inputImageFormat = Platform.isAndroid
+        ? InputImageFormat.nv21
+        : InputImageFormat.yuv420;
 
     // Create InputImageMetadata (updated API)
     final InputImageMetadata metadata = InputImageMetadata(
@@ -598,21 +859,48 @@ class _CameraScreenState extends State<CameraScreen>
               aspectRatio: cameraAspectRatio,
               child: LayoutBuilder(
                 builder: (context, constraints) {
-                  return Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      CameraPreview(_controller!),
-                      // Face detection overlay
-                      CustomPaint(
-                        painter: FaceDetectorPainter(
-                          faces: _detectedFaces,
-                          imageSize: _imageSize,
-                          cameraPreviewSize: Size(constraints.maxWidth, constraints.maxHeight),
-                          sensorOrientation: _currentCamera?.sensorOrientation ?? 0,
-                          cameraLensDirection: _currentCamera?.lensDirection,
+                  final previewSize = Size(constraints.maxWidth, constraints.maxHeight);
+                  
+                  return GestureDetector(
+                    onTapDown: (details) => _handleTapToFocus(details, previewSize),
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        CameraPreview(_controller!),
+                        // Face detection overlay
+                        CustomPaint(
+                          painter: FaceDetectorPainter(
+                            faces: _detectedFaces,
+                            imageSize: _imageSize,
+                            cameraPreviewSize: previewSize,
+                            sensorOrientation: _currentCamera?.sensorOrientation ?? 0,
+                            cameraLensDirection: _currentCamera?.lensDirection,
+                          ),
                         ),
-                      ),
-                    ],
+                        // Focus feedback ring
+                        if (_focusPoint != null && _focusAnimationController != null)
+                          AnimatedBuilder(
+                            animation: _focusAnimation!,
+                            builder: (context, child) {
+                              return Positioned(
+                                left: _focusPoint!.dx - 50,
+                                top: _focusPoint!.dy - 50,
+                                child: Container(
+                                  width: 100,
+                                  height: 100,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: Colors.white.withValues(alpha: _focusAnimation!.value),
+                                      width: 2,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                      ],
+                    ),
                   );
                 },
               ),
@@ -629,6 +917,11 @@ class _CameraScreenState extends State<CameraScreen>
                 ),
               );
             },
+          ),
+          
+          // Distance coaching overlay (rotates with orientation)
+          DistanceCoachingOverlay(
+            coachingResult: _distanceCoachingResult,
           ),
           
           // Bottom controls
@@ -1015,6 +1308,13 @@ class FaceDetectorPainter extends CustomPainter {
     // ML Kit returns coordinates in the original image coordinate system
     // We need to transform them based on sensor orientation
     
+    // FIXME: Landscape flipped (landscapeRight) - face detection coordinate transformation may be inaccurate
+    // Face detection seems to work worse in one landscape orientation (likely landscapeRight)
+    // The coordinate transformation only uses sensor orientation, not physical device orientation,
+    // which may cause misalignment when device is in landscapeRight vs landscapeLeft.
+    // FIXME: Flipped portrait mode (portraitDown) - face detection coordinate transformation not handled
+    // Currently only handles sensor orientation (0°, 90°, 180°, 270°) but doesn't account for
+    // physical device orientation (portraitUp vs portraitDown), which may cause face box misalignment.
     if (sensorOrientation == 90) {
       // For 90° sensor: transpose and mirror correctly
       // Image is in landscape (width > height), display is portrait
@@ -1076,10 +1376,5 @@ class FaceDetectorPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(FaceDetectorPainter oldDelegate) {
-    return oldDelegate.faces != faces ||
-        oldDelegate.imageSize != imageSize ||
-        oldDelegate.cameraPreviewSize != cameraPreviewSize ||
-        oldDelegate.sensorOrientation != sensorOrientation;
-  }
+  bool shouldRepaint(FaceDetectorPainter oldDelegate) => true;
 }

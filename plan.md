@@ -32,8 +32,8 @@
 - **Logic:**
   - Calculate face size as % of frame height
   - Optimal range: 25-40% of frame height for portraits
-  - Too small (<20%): Show "MOVE CLOSER" with up arrow
-  - Too large (>50%): Show "STEP BACK" with down arrow
+  - Too small (<20%): Show "MOVE CLOSER" with a forward arrow
+  - Too large (>50%): Show "STEP BACK" with a backward arrow
   - Good range: Show green checkmark or "Good distance"
 - **UI:** Large text overlay at top of screen, color-coded (red/yellow/green)
 
