@@ -160,6 +160,9 @@
 
 ## Technical Implementation Notes
 
+### TODO / Known Issues
+- **Arrow Visibility**: Guide arrows (currently cyan/blue) should use negative/inverse color of background for better visibility. Blue arrows would be invisible against blue sky backgrounds. Consider using white with dark outline, or dynamically sampling background color and inverting.
+
 ### Performance Optimization
 - **Face detection frequency:** Process every 3-5 frames (~6-10 fps), not every frame
 - **Use InputImage.fromMediaImage** for efficient frame processing

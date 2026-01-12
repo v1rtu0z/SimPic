@@ -2,14 +2,17 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:native_device_orientation/native_device_orientation.dart';
 import '../models/distance_coaching_scenario.dart';
+import '../models/composition_guidance.dart';
 
 /// Overlay widget for distance coaching UI
 class DistanceCoachingOverlay extends StatefulWidget {
   final DistanceCoachingResult? coachingResult;
+  final CompositionGuidanceResult? compositionResult;
 
   const DistanceCoachingOverlay({
     super.key,
     this.coachingResult,
+    this.compositionResult,
   });
 
   @override
@@ -49,8 +52,15 @@ class _DistanceCoachingOverlayState extends State<DistanceCoachingOverlay> {
     }
 
     final status = widget.coachingResult!.status;
-    final message = widget.coachingResult!.message;
+    String message = widget.coachingResult!.message;
     final scenario = widget.coachingResult!.scenario;
+    
+    // If distance is optimal and composition is also optimal, append positioning info
+    if (status == DistanceCoachingStatus.optimal && 
+        widget.compositionResult != null &&
+        widget.compositionResult!.status == CompositionStatus.wellPositioned) {
+      message = '$message, positioning';
+    }
 
     // Determine color based on status
     Color statusColor;

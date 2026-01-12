@@ -17,6 +17,8 @@ import 'package:open_file/open_file.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import '../models/distance_coaching_scenario.dart';
 import '../widgets/distance_coaching_overlay.dart';
+import '../models/composition_guidance.dart';
+import '../widgets/composition_grid_overlay.dart';
 
 class CameraScreen extends StatefulWidget {
   CameraScreen({super.key});
@@ -58,6 +60,12 @@ class _CameraScreenState extends State<CameraScreen>
   // Distance coaching
   DistanceCoachingResult? _distanceCoachingResult;
   DistanceCoachingScenario? _currentDistanceScenario;
+  
+  // Composition guidance
+  CompositionGuidanceResult? _compositionGuidanceResult;
+  PowerPoint? _previousPowerPoint; // For hysteresis to prevent flickering
+  Offset? _lastDisplayFaceCenter; // Tracked for UI overlay
+  Size? _lastDisplayImageSize;    // Tracked for UI overlay
   
   // Focus feedback
   Offset? _focusPoint;
@@ -462,9 +470,9 @@ class _CameraScreenState extends State<CameraScreen>
   Future<void> _processCameraImage(CameraImage image) async {
     // Skip frames for optimization (process every 2nd frame for more real-time feel)
     _frameCounter++;
-    if (_frameCounter % 2 != 0) {
-      return;
-    }
+    // if (_frameCounter % 2 != 0) {
+    //   return;
+    // }
 
     // Skip if already processing to prevent queue buildup
     if (_isProcessing || _faceDetector == null) {
@@ -504,25 +512,95 @@ class _CameraScreenState extends State<CameraScreen>
           Face? bestFace = _selectBestFace(faces, imageSize);
           
           if (bestFace != null) {
-            // Calculate face height as percentage of image height
-            // ML Kit bounding box is already in image coordinates
-            final faceHeight = bestFace.boundingBox.height;
+            // Calculate face height relative to the display vertical axis
+            final sensorOrientation = _currentCamera!.sensorOrientation;
+            
+            // For 90° orientation, ML Kit typically returns coordinates already rotated to display space
+            // for the back camera on most Android devices. For 270°, it often requires manual transformation.
+            // This logic matches the FaceDetectorPainter logic which the user confirmed works correctly.
+            final faceHeight = (sensorOrientation == 90) ? bestFace.boundingBox.height : bestFace.boundingBox.width;
+            final displayHeight = (sensorOrientation == 90 || sensorOrientation == 270) ? imageSize.width : imageSize.height;
             
             // Safety check: ensure valid face height
-            if (faceHeight > 0 && imageSize.height > 0) {
-              final faceHeightPercentage = (faceHeight / imageSize.height) * 100.0;
+            if (faceHeight > 0 && displayHeight > 0) {
+              final faceHeightPercentage = (faceHeight / displayHeight) * 100.0;
               
               // Evaluate distance coaching with hysteresis to prevent flickering
               coachingResult = evaluateDistanceCoaching(
                 faceHeightPercentage,
                 _currentDistanceScenario,
               );
+              
+              // Transform face center from camera coordinates to display coordinates
+              // matches FaceDetectorPainter.scaleRect logic
+              Offset displayFaceCenter;
+              Size displayImageSize;
+
+              // Camera image size (usually landscape: e.g. 1280x720)
+              final camW = imageSize.width;
+              final camH = imageSize.height;
+
+              // Calculate face center in camera coordinates (raw buffer)
+              final rawFaceCenterX = bestFace.boundingBox.left + (bestFace.boundingBox.width / 2);
+              final rawFaceCenterY = bestFace.boundingBox.top + (bestFace.boundingBox.height / 2);
+
+              if (sensorOrientation == 90) {
+                // Identity mapping for 90 deg - suggests ML Kit already handles rotation
+                displayFaceCenter = Offset(rawFaceCenterX, rawFaceCenterY);
+                displayImageSize = Size(camH, camW);
+              } else if (sensorOrientation == 270) {
+                // Rotation for 270 deg: Display X = camH - y, Display Y = x
+                displayFaceCenter = Offset(camH - rawFaceCenterY, rawFaceCenterX);
+                displayImageSize = Size(camH, camW);
+              } else if (sensorOrientation == 180) {
+                // Mirror both for 180 deg
+                displayFaceCenter = Offset(camW - rawFaceCenterX, camH - rawFaceCenterY);
+                displayImageSize = Size(camW, camH);
+              } else {
+                // Default identity (0 deg)
+                displayFaceCenter = Offset(rawFaceCenterX, rawFaceCenterY);
+                displayImageSize = Size(camW, camH);
+              }
+
+              // No manual mirroring here - handled by coordinate mapping or ML Kit
+              
+              final normX = displayFaceCenter.dx / displayImageSize.width;
+              final normY = displayFaceCenter.dy / displayImageSize.height;
+              
+              if (_frameCounter % 30 == 0) {
+                debugPrint('🔧 TRANSFORM: Sensor($sensorOrientation) Raw(${rawFaceCenterX.toStringAsFixed(1)}, ${rawFaceCenterY.toStringAsFixed(1)}) on ${camW.toInt()}x${camH.toInt()} -> Display(${displayFaceCenter.dx.toStringAsFixed(1)}, ${displayFaceCenter.dy.toStringAsFixed(1)}) on ${displayImageSize.width.toInt()}x${displayImageSize.height.toInt()} | Norm[${normX.toStringAsFixed(3)}, ${normY.toStringAsFixed(3)}]');
+              }
+
+              // Now evaluate composition with display coordinates
+              final compositionResult = evaluateComposition(
+                displayFaceCenter,  // ✅ Transformed to display space!
+                displayImageSize,   // ✅ Size matches display orientation!
+                previousPowerPoint: _previousPowerPoint,
+              );
+              
+              // Update composition guidance result and track power point for hysteresis
+              if (mounted) {
+                setState(() {
+                  _compositionGuidanceResult = compositionResult;
+                  _previousPowerPoint = compositionResult.nearestPowerPoint;
+                  _lastDisplayFaceCenter = displayFaceCenter;
+                  _lastDisplayImageSize = displayImageSize;
+                });
+              }
             }
           }
         } else {
           // No faces detected, clear previous state
           _previousFrameSample = null;
           _previousImageSize = null;
+          // Clear composition guidance
+          if (mounted) {
+            setState(() {
+              _compositionGuidanceResult = null;
+              _previousPowerPoint = null;
+              _lastDisplayFaceCenter = null;
+            });
+          }
         }
         
         // Always update UI when face detection runs
@@ -535,15 +613,22 @@ class _CameraScreenState extends State<CameraScreen>
           });
         }
         
+        // Debug composition guidance with transformed coordinates
+        if (_frameCounter % 30 == 0 && faces.isNotEmpty && _compositionGuidanceResult != null) {
+          debugPrint('COMPOSITION DEBUG: Face center ($_lastDisplayFaceCenter) | Size ($_lastDisplayImageSize) | Nearest PP: (${_compositionGuidanceResult!.nearestPowerPoint.x.toStringAsFixed(3)}, ${_compositionGuidanceResult!.nearestPowerPoint.y.toStringAsFixed(3)}) | Distance: ${_compositionGuidanceResult!.distancePercentage.toStringAsFixed(3)} | Status: ${_compositionGuidanceResult!.status}');
+        }
+        
         // Debug once only
         if (_frameCounter == 105 && faces.isNotEmpty) {
+          final bestFace = _selectBestFace(faces, imageSize);
+          final displayFace = bestFace ?? faces.first;
           debugPrint('');
           debugPrint('═══════════════════════════════════════════════════');
           debugPrint('SENSOR: ${_currentCamera?.sensorOrientation}° | IMAGE: ${image.width}x${image.height}');
-          debugPrint('FACE BOUNDS (raw): ${faces.first.boundingBox}');
+          debugPrint('FACE BOUNDS (raw): ${displayFace.boundingBox}');
           debugPrint('NUMBER OF FACES: ${faces.length}');
           for (var i = 0; i < faces.length; i++) {
-            debugPrint('FACE $i: ${faces[i].boundingBox}');
+            debugPrint('FACE $i: ${faces[i].boundingBox}${bestFace == faces[i] ? " (BEST)" : ""}');
           }
           if (_distanceCoachingResult != null) {
             debugPrint('DISTANCE COACHING: ${_distanceCoachingResult!.scenario} - ${_distanceCoachingResult!.message} (${_distanceCoachingResult!.status})');
@@ -899,6 +984,12 @@ class _CameraScreenState extends State<CameraScreen>
                               );
                             },
                           ),
+                        // Composition grid overlay (inside preview area)
+                        CompositionGridOverlay(
+                          compositionResult: _compositionGuidanceResult,
+                          distanceResult: _distanceCoachingResult,
+                          previewSize: previewSize,
+                        ),
                       ],
                     ),
                   );
@@ -922,6 +1013,7 @@ class _CameraScreenState extends State<CameraScreen>
           // Distance coaching overlay (rotates with orientation)
           DistanceCoachingOverlay(
             coachingResult: _distanceCoachingResult,
+            compositionResult: _compositionGuidanceResult,
           ),
           
           // Bottom controls
@@ -1284,8 +1376,8 @@ class FaceDetectorPainter extends CustomPainter {
 
     final paint = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 3.0
-      ..color = Colors.greenAccent;
+      ..strokeWidth = 1.5
+      ..color = Colors.white.withValues(alpha: 0.4);
 
     for (final face in faces) {
       // Convert face bounding box from image coordinates to screen coordinates
