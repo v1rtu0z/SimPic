@@ -60,6 +60,7 @@ class _CameraScreenState extends State<CameraScreen>
   // Distance coaching
   DistanceCoachingResult? _distanceCoachingResult;
   DistanceCoachingScenario? _currentDistanceScenario;
+  int _significantFaceCount = 0;
   
   // Composition guidance
   CompositionGuidanceResult? _compositionGuidanceResult;
@@ -505,8 +506,26 @@ class _CameraScreenState extends State<CameraScreen>
         _previousFrameSample = _sampleFrame(image);
         _previousImageSize = imageSize;
         
+        int significantFaceCount = 0;
+
         // Process face detection results
         if (faces.isNotEmpty && imageSize.height > 0) {
+          // Count significant faces for orientation suggestion
+          // A face is significant if it takes up at least 15% of frame height
+          final sensorOrientation = _currentCamera!.sensorOrientation;
+          final displayHeight = (sensorOrientation == 90 || sensorOrientation == 270) ? imageSize.width : imageSize.height;
+          const significantThreshold = 15.0; // 15%
+
+          for (final face in faces) {
+            final faceHeight = (sensorOrientation == 270) ? face.boundingBox.width : face.boundingBox.height;
+            if (displayHeight > 0) {
+              final faceHeightPercentage = (faceHeight / displayHeight) * 100.0;
+              if (faceHeightPercentage >= significantThreshold) {
+                significantFaceCount++;
+              }
+            }
+          }
+
           // Select best face for coaching and focus (handles multiple faces)
           // Uses a combination of size and position (larger + more central = better)
           Face? bestFace = _selectBestFace(faces, imageSize);
@@ -518,7 +537,7 @@ class _CameraScreenState extends State<CameraScreen>
             // For 90° orientation, ML Kit typically returns coordinates already rotated to display space
             // for the back camera on most Android devices. For 270°, it often requires manual transformation.
             // This logic matches the FaceDetectorPainter logic which the user confirmed works correctly.
-            final faceHeight = (sensorOrientation == 90) ? bestFace.boundingBox.height : bestFace.boundingBox.width;
+            final faceHeight = (sensorOrientation == 270) ? bestFace.boundingBox.width : bestFace.boundingBox.height;
             final displayHeight = (sensorOrientation == 90 || sensorOrientation == 270) ? imageSize.width : imageSize.height;
             
             // Safety check: ensure valid face height
@@ -610,6 +629,7 @@ class _CameraScreenState extends State<CameraScreen>
             _imageSize = imageSize;
             _distanceCoachingResult = coachingResult;
             _currentDistanceScenario = coachingResult?.scenario;
+            _significantFaceCount = significantFaceCount;
           });
         }
         
@@ -1014,6 +1034,7 @@ class _CameraScreenState extends State<CameraScreen>
           DistanceCoachingOverlay(
             coachingResult: _distanceCoachingResult,
             compositionResult: _compositionGuidanceResult,
+            significantFaceCount: _significantFaceCount,
           ),
           
           // Bottom controls

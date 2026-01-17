@@ -3,16 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:native_device_orientation/native_device_orientation.dart';
 import '../models/distance_coaching_scenario.dart';
 import '../models/composition_guidance.dart';
+import '../models/orientation_guidance.dart';
 
 /// Overlay widget for distance coaching UI
 class DistanceCoachingOverlay extends StatefulWidget {
   final DistanceCoachingResult? coachingResult;
   final CompositionGuidanceResult? compositionResult;
+  final int significantFaceCount;
 
   const DistanceCoachingOverlay({
     super.key,
     this.coachingResult,
     this.compositionResult,
+    this.significantFaceCount = 0,
   });
 
   @override
@@ -46,79 +49,160 @@ class _DistanceCoachingOverlayState extends State<DistanceCoachingOverlay> {
 
   @override
   Widget build(BuildContext context) {
-    // Hide overlay if no coaching result (no face detected)
-    if (widget.coachingResult == null) {
+    final orientationGuidance = OrientationGuidance.evaluate(
+      significantFaceCount: widget.significantFaceCount,
+      currentOrientation: _deviceOrientation,
+    );
+
+    final List<Widget> children = [];
+
+    // 1. Orientation Suggestion Icon
+    if (orientationGuidance.isMismatch) {
+      children.add(_buildOrientationSuggestion(orientationGuidance.suggestedOrientation));
+    }
+
+    // 2. Distance Coaching Content
+    if (widget.coachingResult != null) {
+      final status = widget.coachingResult!.status;
+      String message = widget.coachingResult!.message;
+      final scenario = widget.coachingResult!.scenario;
+      
+      // If distance is optimal and composition is also optimal, append positioning info
+      if (status == DistanceCoachingStatus.optimal && 
+          widget.compositionResult != null &&
+          widget.compositionResult!.status == CompositionStatus.wellPositioned) {
+        message = '$message, positioning';
+      }
+
+      // Determine color based on status
+      Color statusColor;
+      IconData statusIcon;
+      
+      switch (status) {
+        case DistanceCoachingStatus.optimal:
+          statusColor = Colors.green;
+          statusIcon = Icons.check_circle;
+          break;
+        case DistanceCoachingStatus.tooClose:
+          statusColor = Colors.red;
+          statusIcon = Icons.arrow_downward;
+          break;
+        case DistanceCoachingStatus.tooFar:
+          statusColor = Colors.orange;
+          statusIcon = Icons.arrow_upward;
+          break;
+      }
+
+      // Determine orientation from physical device orientation
+      final isLandscape = _deviceOrientation == NativeDeviceOrientation.landscapeLeft ||
+          _deviceOrientation == NativeDeviceOrientation.landscapeRight;
+      
+      if (isLandscape) {
+        final quarterTurns = _deviceOrientation == NativeDeviceOrientation.landscapeLeft ? 1 : 3;
+        children.add(Positioned(
+          top: 0,
+          left: 0,
+          bottom: 0,
+          width: 120, // Fixed width for vertical layout
+          child: SafeArea(
+            child: Center(
+              child: RotatedBox(
+                quarterTurns: quarterTurns,
+                child: _buildOverlayContent(statusColor, statusIcon, message, scenario),
+              ),
+            ),
+          ),
+        ));
+      } else {
+        children.add(Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: SafeArea(
+            child: _buildOverlayContent(statusColor, statusIcon, message, scenario),
+          ),
+        ));
+      }
+    }
+
+    if (children.isEmpty) {
       return const SizedBox.shrink();
     }
 
-    final status = widget.coachingResult!.status;
-    String message = widget.coachingResult!.message;
-    final scenario = widget.coachingResult!.scenario;
-    
-    // If distance is optimal and composition is also optimal, append positioning info
-    if (status == DistanceCoachingStatus.optimal && 
-        widget.compositionResult != null &&
-        widget.compositionResult!.status == CompositionStatus.wellPositioned) {
-      message = '$message, positioning';
-    }
+    return IgnorePointer(
+      child: Stack(
+        children: children,
+      ),
+    );
+  }
 
-    // Determine color based on status
-    Color statusColor;
-    IconData statusIcon;
-    
-    switch (status) {
-      case DistanceCoachingStatus.optimal:
-        statusColor = Colors.green;
-        statusIcon = Icons.check_circle;
-        break;
-      case DistanceCoachingStatus.tooClose:
-        statusColor = Colors.red;
-        statusIcon = Icons.arrow_downward;
-        break;
-      case DistanceCoachingStatus.tooFar:
-        statusColor = Colors.orange;
-        statusIcon = Icons.arrow_upward;
-        break;
-    }
-
-    // Determine orientation from physical device orientation
+  Widget _buildOrientationSuggestion(OrientationSuggestion suggestion) {
     final isLandscape = _deviceOrientation == NativeDeviceOrientation.landscapeLeft ||
         _deviceOrientation == NativeDeviceOrientation.landscapeRight;
-    
-    // Position based on physical device orientation
+        
     if (isLandscape) {
-      // In landscape, position on the left side with vertical text
-      // landscapeLeft needs 90° counter-clockwise (quarterTurns: 1)
-      // landscapeRight needs 270° counter-clockwise (quarterTurns: 3) to keep text readable
       final quarterTurns = _deviceOrientation == NativeDeviceOrientation.landscapeLeft ? 1 : 3;
-      
       return Positioned(
-        top: 0,
-        left: 0,
-        bottom: 0,
-        width: 120, // Fixed width for vertical layout
+        top: 20,
+        right: 20,
         child: SafeArea(
-          child: Center(
-            child: RotatedBox(
-              quarterTurns: quarterTurns,
-              child: _buildOverlayContent(statusColor, statusIcon, message, scenario),
-            ),
+          child: RotatedBox(
+            quarterTurns: quarterTurns,
+            child: _buildOrientationIcon(suggestion),
           ),
         ),
       );
     } else {
-      // FIXME: Flipped portrait mode (portraitDown) - overlay positioning and rotation not handled
-      // Currently treats all portrait orientations the same, but portraitDown may need different positioning/rotation
-      // In portrait, position at the top
       return Positioned(
-        top: 0,
-        left: 0,
-        right: 0,
+        top: 80, // Lowered to avoid overlap with distance coaching text
+        right: 20,
         child: SafeArea(
-          child: _buildOverlayContent(statusColor, statusIcon, message, scenario),
+          child: _buildOrientationIcon(suggestion),
         ),
       );
     }
+  }
+
+  Widget _buildOrientationIcon(OrientationSuggestion suggestion) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.7),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: Colors.orangeAccent.withValues(alpha: 0.6),
+          width: 2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(
+            Icons.screen_rotation,
+            color: Colors.orangeAccent,
+            size: 32,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            suggestion == OrientationSuggestion.portrait ? 'FLIP TO PORTRAIT' : 'FLIP TO LANDSCAPE',
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 0.5,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildOverlayContent(Color statusColor, IconData statusIcon, String message, DistanceCoachingScenario scenario) {
