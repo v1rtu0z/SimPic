@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'screens/camera_screen.dart';
+import 'models/app_settings.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize settings
+  await appSettings.init();
   
   // Lock app to portrait orientation
   SystemChrome.setPreferredOrientations([

@@ -1,14 +1,11 @@
-import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
+import 'dart:async';
 import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
-import 'package:gallery_saver_plus/gallery_saver.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:android_intent_plus/flag.dart';
@@ -17,10 +14,12 @@ import 'package:open_file/open_file.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'package:native_device_orientation/native_device_orientation.dart';
 import '../models/distance_coaching_scenario.dart';
-import '../widgets/distance_coaching_overlay.dart';
+import '../widgets/coaching_overlay.dart';
 import '../models/composition_guidance.dart';
 import '../widgets/composition_grid_overlay.dart';
 import '../models/orientation_guidance.dart';
+import '../models/app_settings.dart';
+import 'settings_screen.dart';
 
 class CameraScreen extends StatefulWidget {
   CameraScreen({super.key});
@@ -37,8 +36,8 @@ class _CameraScreenState extends State<CameraScreen>
   bool _isInitialized = false;
   bool _hasPermission = false;
   bool _isCapturing = false;
-  String? _lastImagePath;
   File? _lastImageFile;
+  String? _lastImagePath;
   String? _lastImageUri; // Content URI for opening in gallery
   GlobalKey _previewButtonKey = GlobalKey();
   final GlobalKey _previewKey = GlobalKey();
@@ -91,10 +90,17 @@ class _CameraScreenState extends State<CameraScreen>
   Uint8List? _previousFrameSample;
   Size? _previousImageSize;
 
+  // Auto-shutter
+  DateTime? _lastAutoCaptureTime;
+  int _goodFrameCount = 0;
+  static const int _autoShutterRequiredGoodFrames = 5; // Reduced from 10 for faster response
+  static const Duration _autoShutterCooldown = Duration(seconds: 3);
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    appSettings.addListener(_onSettingsChanged);
     
     // Listen to physical device orientation changes using sensors
     _orientationSubscription = NativeDeviceOrientationCommunicator()
@@ -162,6 +168,7 @@ class _CameraScreenState extends State<CameraScreen>
 
   @override
   void dispose() {
+    appSettings.removeListener(_onSettingsChanged);
     WidgetsBinding.instance.removeObserver(this);
     _orientationSubscription?.cancel();
     _controller?.dispose();
@@ -171,6 +178,26 @@ class _CameraScreenState extends State<CameraScreen>
     _focusTimer?.cancel();
     _faceDetector?.close();
     super.dispose();
+  }
+
+  void _onSettingsChanged() {
+    if (mounted) {
+      setState(() {
+        if (!appSettings.faceDetectionEnabled) {
+          _detectedFaces = [];
+          _distanceCoachingResult = null;
+          _compositionGuidanceResult = null;
+          _significantFaceCount = 0;
+        } else {
+          if (!appSettings.distanceCoachingEnabled) {
+            _distanceCoachingResult = null;
+          }
+          if (!appSettings.compositionGridEnabled) {
+            _compositionGuidanceResult = null;
+          }
+        }
+      });
+    }
   }
 
   /// Updates the layout orientation for UI elements (icons, text)
@@ -223,6 +250,9 @@ class _CameraScreenState extends State<CameraScreen>
         (camera) => camera.lensDirection == CameraLensDirection.back,
         orElse: () => _cameras!.first,
       );
+
+      // Update app settings with lens direction
+      appSettings.setCameraLens(_currentCamera!.lensDirection == CameraLensDirection.front);
 
       // Initialize camera controller with platform-appropriate format for ML Kit compatibility
       // Android uses NV21, iOS uses YUV420
@@ -508,7 +538,14 @@ class _CameraScreenState extends State<CameraScreen>
     final currentOrientation = _deviceOrientation;
 
     // Skip if already processing to prevent queue buildup
-    if (_isProcessing || _faceDetector == null) {
+    if (_isProcessing || _faceDetector == null || !appSettings.faceDetectionEnabled) {
+      if (!appSettings.faceDetectionEnabled && _detectedFaces.isNotEmpty) {
+        setState(() {
+          _detectedFaces = [];
+          _distanceCoachingResult = null;
+          _compositionGuidanceResult = null;
+        });
+      }
       return;
     }
 
@@ -623,11 +660,11 @@ class _CameraScreenState extends State<CameraScreen>
             _detectedFacesRotation = currentRotation;
             _detectedFacesOrientation = currentOrientation;
             
-            _distanceCoachingResult = coachingResult;
+            _distanceCoachingResult = appSettings.distanceCoachingEnabled ? coachingResult : null;
             _currentDistanceScenario = coachingResult?.scenario;
             _significantFaceCount = significantFaceCount;
             
-            _compositionGuidanceResult = compositionResult;
+            _compositionGuidanceResult = appSettings.compositionGridEnabled ? compositionResult : null;
             if (compositionResult != null) {
               _previousPowerPoint = compositionResult.nearestPowerPoint;
             }
@@ -635,6 +672,12 @@ class _CameraScreenState extends State<CameraScreen>
             _lastDisplayImageSize = displayImageSize;
           });
         }
+        
+        // Auto-shutter logic
+        _handleAutoShutter(
+          appSettings.distanceCoachingEnabled ? coachingResult : null,
+          appSettings.compositionGridEnabled ? compositionResult : null,
+        );
         
         // Debug logging
         if (_frameCounter % 30 == 0 && faces.isNotEmpty) {
@@ -649,6 +692,71 @@ class _CameraScreenState extends State<CameraScreen>
       }
     } finally {
       _isProcessing = false;
+    }
+  }
+
+  void _handleAutoShutter(DistanceCoachingResult? coaching, CompositionGuidanceResult? composition) {
+    if (!appSettings.autoShutterEnabled || _isCapturing) {
+      _goodFrameCount = 0;
+      return;
+    }
+
+    // Check if "guidance" features are enabled.
+    // Orientation doesn't count as per request.
+    bool distanceEnabled = appSettings.distanceCoachingEnabled;
+    bool compositionEnabled = appSettings.compositionGridEnabled;
+    
+    // Auto-shutter should be auto turned off when all "guidance" features get turned off
+    if (!distanceEnabled && !compositionEnabled) {
+      _goodFrameCount = 0;
+      return;
+    }
+
+    // Check cooldown
+    if (_lastAutoCaptureTime != null) {
+      if (DateTime.now().difference(_lastAutoCaptureTime!) < _autoShutterCooldown) {
+        return;
+      }
+    }
+
+    // Auto-shutter criteria:
+    // 1. If distance coaching is enabled, status must be optimal.
+    // 2. If composition guidance is enabled, status must be wellPositioned.
+    // 3. If orientation suggestion is enabled, there must be no mismatch.
+    
+    bool isDistanceGood = !distanceEnabled || (coaching != null && coaching.status == DistanceCoachingStatus.optimal);
+    
+    // In landscape and multi-face mode, composition should be turned off automatically
+    // (not in settings but logically).
+    // TODO: Explore how composition coaching should work for groups (multi-face)
+    final bool isLandscape = _stableLayoutOrientation == NativeDeviceOrientation.landscapeLeft ||
+        _stableLayoutOrientation == NativeDeviceOrientation.landscapeRight;
+    final bool isMultiFaceGroup = _significantFaceCount >= 2;
+    final bool shouldIgnoreComposition = isLandscape && isMultiFaceGroup;
+
+    bool isCompositionGood = !compositionEnabled || 
+                             shouldIgnoreComposition || 
+                             (composition != null && composition.status == CompositionStatus.wellPositioned);
+    
+    // For orientation, we still use it if enabled
+    bool isOrientationGood = true;
+    if (appSettings.orientationSuggestionEnabled) {
+      final orientationGuidance = OrientationGuidance.evaluate(
+        significantFaceCount: _significantFaceCount,
+        currentOrientation: _stableLayoutOrientation,
+      );
+      isOrientationGood = !orientationGuidance.isMismatch;
+    }
+
+    if (isDistanceGood && isCompositionGood && isOrientationGood) {
+      _goodFrameCount++;
+      if (_goodFrameCount >= _autoShutterRequiredGoodFrames) {
+        _goodFrameCount = 0;
+        _lastAutoCaptureTime = DateTime.now();
+        _takePicture();
+      }
+    } else {
+      _goodFrameCount = 0;
     }
   }
 
@@ -914,12 +1022,7 @@ class _CameraScreenState extends State<CameraScreen>
   }
 
   Future<void> _switchCamera() async {
-    if (_cameras == null || _cameras!.length < 2 || _isProcessing) return;
-
-    // Stop current stream before switching
-    if (_controller != null && _controller!.value.isStreamingImages) {
-      await _controller!.stopImageStream();
-    }
+    if (_cameras == null || _cameras!.length < 2 || _isProcessing || _isCapturing) return;
 
     final lensDirection = _currentCamera?.lensDirection == CameraLensDirection.back
         ? CameraLensDirection.front
@@ -932,13 +1035,30 @@ class _CameraScreenState extends State<CameraScreen>
 
     if (newCamera == _currentCamera) return;
 
+    // Show a quick fade to black to hide the transition "blink"
+    setState(() {
+      _isInitialized = false;
+    });
+
+    // Stop current stream before switching
+    if (_controller != null && _controller!.value.isStreamingImages) {
+      try {
+        await _controller!.stopImageStream();
+      } catch (e) {
+        debugPrint('Error stopping image stream: $e');
+      }
+    }
+
     // Dispose old controller
     final oldController = _controller;
     _controller = null;
-    if (mounted) setState(() {});
     await oldController?.dispose();
 
     _currentCamera = newCamera;
+    
+    // Update app settings with lens direction
+    appSettings.setCameraLens(_currentCamera!.lensDirection == CameraLensDirection.front);
+    
     _controller = CameraController(
       _currentCamera!,
       ResolutionPreset.high,
@@ -951,10 +1071,26 @@ class _CameraScreenState extends State<CameraScreen>
     try {
       await _controller!.initialize();
       await _controller!.setFocusMode(FocusMode.auto);
-      _controller!.startImageStream(_processCameraImage);
-      if (mounted) setState(() {});
+      
+      // Start streaming before setting _isInitialized to true
+      // to ensure the first frame is ready when the UI rebuilds
+      await _controller!.startImageStream(_processCameraImage);
+      
+      if (mounted) {
+        setState(() {
+          _isInitialized = true;
+          _detectedFaces = []; // Clear old results
+          _distanceCoachingResult = null;
+          _compositionGuidanceResult = null;
+        });
+      }
     } catch (e) {
       debugPrint('Error switching camera: $e');
+      if (mounted) {
+        setState(() {
+          _isInitialized = true;
+        });
+      }
     }
   }
 
@@ -1030,10 +1166,12 @@ class _CameraScreenState extends State<CameraScreen>
       previewAspectRatio = controllerRatio > 1 ? 1 / controllerRatio : controllerRatio;
     }
     
-    final orientationGuidance = OrientationGuidance.evaluate(
-      significantFaceCount: _significantFaceCount,
-      currentOrientation: _stableLayoutOrientation,
-    );
+    final orientationGuidance = appSettings.orientationSuggestionEnabled 
+      ? OrientationGuidance.evaluate(
+          significantFaceCount: _significantFaceCount,
+          currentOrientation: _stableLayoutOrientation,
+        )
+      : const OrientationGuidance(isMismatch: false, suggestedOrientation: OrientationSuggestion.none);
     final isOrientationMismatch = orientationGuidance.isMismatch;
     
     return Scaffold(
@@ -1056,25 +1194,27 @@ class _CameraScreenState extends State<CameraScreen>
                       children: [
                         CameraPreview(_controller!),
                         // Face detection overlay
-                        CustomPaint(
-                          painter: FaceDetectorPainter(
-                            faces: _detectedFaces,
-                            imageSize: _imageSize,
-                            cameraPreviewSize: portraitPreviewSize,
-                            rotationDegrees: _detectedFacesRotation,
-                            deviceOrientation: _detectedFacesOrientation,
-                            cameraLensDirection: _currentCamera?.lensDirection,
+                        if (appSettings.faceDetectionEnabled)
+                          CustomPaint(
+                            painter: FaceDetectorPainter(
+                              faces: _detectedFaces,
+                              imageSize: _imageSize,
+                              cameraPreviewSize: portraitPreviewSize,
+                              rotationDegrees: _detectedFacesRotation,
+                              deviceOrientation: _detectedFacesOrientation,
+                              cameraLensDirection: _currentCamera?.lensDirection,
+                            ),
                           ),
-                        ),
                         // Composition grid overlay (inside preview area)
-                        CompositionGridOverlay(
-                          compositionResult: _compositionGuidanceResult,
-                          distanceResult: _distanceCoachingResult,
-                          previewSize: portraitPreviewSize,
-                          deviceOrientation: _detectedFacesOrientation,
-                          isOrientationMismatch: isOrientationMismatch,
-                          significantFaceCount: _significantFaceCount,
-                        ),
+                        if (appSettings.compositionGridEnabled)
+                          CompositionGridOverlay(
+                            compositionResult: _compositionGuidanceResult,
+                            distanceResult: _distanceCoachingResult,
+                            previewSize: portraitPreviewSize,
+                            deviceOrientation: _detectedFacesOrientation,
+                            isOrientationMismatch: isOrientationMismatch && appSettings.orientationSuggestionEnabled,
+                            significantFaceCount: _significantFaceCount,
+                          ),
                         
                         // Focus feedback ring (in portrait coordinate space relative to preview)
                         if (_focusPoint != null && _focusAnimationController != null)
@@ -1114,6 +1254,24 @@ class _CameraScreenState extends State<CameraScreen>
             ),
           ),
           
+          // Settings Button
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 16,
+            left: 16,
+            child: IconButton(
+              icon: const Icon(
+                Icons.settings,
+                color: Colors.white,
+                size: 32,
+              ),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                );
+              },
+            ),
+          ),
+          
           // Flash animation overlay
           AnimatedBuilder(
             animation: _flashAnimation,
@@ -1126,13 +1284,13 @@ class _CameraScreenState extends State<CameraScreen>
             },
           ),
           
-          // Distance coaching overlay (rotates with orientation)
-          DistanceCoachingOverlay(
+          // Coaching & Orientation overlay (rotates with orientation)
+          CoachingOverlay(
             coachingResult: _distanceCoachingResult,
             compositionResult: _compositionGuidanceResult,
             significantFaceCount: _significantFaceCount,
             deviceOrientation: _stableLayoutOrientation,
-            isOrientationMismatch: isOrientationMismatch,
+            isOrientationMismatch: isOrientationMismatch && appSettings.orientationSuggestionEnabled,
           ),
           
           // Bottom controls
@@ -1157,9 +1315,9 @@ class _CameraScreenState extends State<CameraScreen>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    _buildCameraSwitchButton(),
-                    _buildShutterButton(),
                     _buildThumbnailButton(),
+                    _buildShutterButton(),
+                    _buildCameraSwitchButton(),
                   ],
                 ),
               ),
@@ -1300,25 +1458,34 @@ class _CameraScreenState extends State<CameraScreen>
   }
 
   Widget _buildCameraSwitchButton() {
-    return GestureDetector(
-      onTap: _switchCamera,
-      child: RotatedBox(
-        quarterTurns: _getIconRotationQuarterTurns(),
-        child: Container(
-          width: 60,
-          height: 60,
-          decoration: BoxDecoration(
-            color: Colors.black.withValues(alpha: 0.5),
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: Colors.white.withValues(alpha: 0.3),
-              width: 2,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: IconButton(
+        onPressed: _switchCamera,
+        iconSize: 32,
+        padding: EdgeInsets.zero,
+        constraints: const BoxConstraints(
+          minWidth: 60,
+          minHeight: 60,
+        ),
+        icon: RotatedBox(
+          quarterTurns: _getIconRotationQuarterTurns(),
+          child: Container(
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(
+              color: Colors.black.withValues(alpha: 0.5),
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.3),
+                width: 2,
+              ),
             ),
-          ),
-          child: const Icon(
-            Icons.flip_camera_ios_outlined,
-            color: Colors.white,
-            size: 30,
+            child: const Icon(
+              Icons.flip_camera_ios_outlined,
+              color: Colors.white,
+              size: 30,
+            ),
           ),
         ),
       ),
@@ -1613,7 +1780,17 @@ class FaceDetectorPainter extends CustomPainter {
     // 3. Handle mirroring for front camera
     if (cameraLensDirection == CameraLensDirection.front) {
       // For front camera, the preview is mirrored horizontally in the portrait coordinate space.
-      finalNx = 1.0 - (finalNx + finalNw);
+      if (deviceOrientation == NativeDeviceOrientation.landscapeLeft) {
+        // Landscape Left: Rotate 270 (Counter-clockwise 90)
+        // Mirrors along the vertical axis of the preview (which is the horizontal axis of the screen)
+        finalNy = 1.0 - (finalNy + finalNh);
+      } else if (deviceOrientation == NativeDeviceOrientation.landscapeRight) {
+        // Landscape Right: Rotate 90
+        finalNy = 1.0 - (finalNy + finalNh);
+      } else {
+        // Portrait
+        finalNx = 1.0 - (finalNx + finalNw);
+      }
     }
 
     // 4. Scale to widget size

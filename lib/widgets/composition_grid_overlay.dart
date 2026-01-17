@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:native_device_orientation/native_device_orientation.dart';
 import '../models/composition_guidance.dart';
@@ -59,11 +58,25 @@ class _CompositionGridOverlayState extends State<CompositionGridOverlay>
   /// Check if active coaching is allowed based on priority:
   /// 1. Orientation must match (highest priority)
   /// 2. Only single face framing (composition for groups is hidden)
+  ///    Exception: in landscape, we logically disable composition for groups.
   /// 3. Distance must be optimal
   bool get _isActiveGuidanceAllowed {
     if (widget.isOrientationMismatch) return false;
+
+    // Logically disable composition coaching in landscape for groups
+    final bool isLandscape = widget.deviceOrientation == NativeDeviceOrientation.landscapeLeft ||
+        widget.deviceOrientation == NativeDeviceOrientation.landscapeRight;
+    if (isLandscape && widget.significantFaceCount >= 2) return false;
+    
+    // Original multi-face check (still apply for portrait if we want to be consistent)
     if (widget.significantFaceCount >= 2) return false;
-    return widget.distanceResult?.status == DistanceCoachingStatus.optimal;
+
+    // If distance coaching is enabled, it must be optimal
+    if (widget.distanceResult != null) {
+      return widget.distanceResult!.status == DistanceCoachingStatus.optimal;
+    }
+    // If distance coaching is disabled (distanceResult is null), allow composition coaching
+    return true;
   }
 
   @override
