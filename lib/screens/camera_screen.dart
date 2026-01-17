@@ -41,6 +41,7 @@ class _CameraScreenState extends State<CameraScreen>
   File? _lastImageFile;
   String? _lastImageUri; // Content URI for opening in gallery
   GlobalKey _previewButtonKey = GlobalKey();
+  final GlobalKey _previewKey = GlobalKey();
   
   // Animation for flash effect
   late AnimationController _flashAnimationController;
@@ -725,9 +726,15 @@ class _CameraScreenState extends State<CameraScreen>
     }
     
     try {
-      // Calculate normalized position (0-1 range)
-      final normalizedX = details.localPosition.dx / previewSize.width;
-      final normalizedY = details.localPosition.dy / previewSize.height;
+      // Get the local position relative to the preview box using GlobalKey for precision
+      final RenderBox? renderBox = _previewKey.currentContext?.findRenderObject() as RenderBox?;
+      if (renderBox == null) return;
+      
+      final Offset localPosition = renderBox.globalToLocal(details.globalPosition);
+      
+      // Calculate normalized position (0-1 range) for the camera plugin
+      final normalizedX = localPosition.dx / renderBox.size.width;
+      final normalizedY = localPosition.dy / renderBox.size.height;
       
       Offset focusPoint = Offset(normalizedX, normalizedY);
       
@@ -742,11 +749,9 @@ class _CameraScreenState extends State<CameraScreen>
         focusPoint.dy.clamp(0.0, 1.0),
       );
       
-      await _controller!.setFocusPoint(focusPoint);
-      
-      // Show focus feedback ring
+      // Show focus feedback ring immediately for better responsiveness
       setState(() {
-        _focusPoint = details.localPosition;
+        _focusPoint = localPosition;
         _focusAnimationController?.reset();
         _focusAnimationController?.forward();
       });
@@ -760,6 +765,8 @@ class _CameraScreenState extends State<CameraScreen>
           });
         }
       });
+
+      await _controller!.setFocusPoint(focusPoint);
     } catch (e) {
       debugPrint('Error handling tap to focus: $e');
     }
@@ -1042,6 +1049,7 @@ class _CameraScreenState extends State<CameraScreen>
                   final portraitPreviewSize = Size(portraitConstraints.maxWidth, portraitConstraints.maxHeight);
                   
                   return GestureDetector(
+                    key: _previewKey,
                     onTapDown: (details) => _handleTapToFocus(details, portraitPreviewSize),
                     child: Stack(
                       fit: StackFit.expand,
@@ -1074,20 +1082,26 @@ class _CameraScreenState extends State<CameraScreen>
                             child: AnimatedBuilder(
                               animation: _focusAnimation!,
                               builder: (context, child) {
-                                return Positioned(
-                                  left: _focusPoint!.dx - 30,
-                                  top: _focusPoint!.dy - 30,
-                                  child: Container(
-                                    width: 60,
-                                    height: 60,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color: Colors.white.withValues(alpha: _focusAnimation!.value),
-                                        width: 2,
+                                // Shrink from 55 to 40 as it fades out
+                                final double size = 40 + (15 * _focusAnimation!.value);
+                                return Stack(
+                                  children: [
+                                    Positioned(
+                                      left: _focusPoint!.dx - size / 2,
+                                      top: _focusPoint!.dy - size / 2,
+                                      child: Container(
+                                        width: size,
+                                        height: size,
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: Colors.white.withValues(alpha: _focusAnimation!.value),
+                                            width: 1.5,
+                                          ),
+                                          shape: BoxShape.circle,
+                                        ),
                                       ),
                                     ),
-                                  ),
+                                  ],
                                 );
                               },
                             ),
