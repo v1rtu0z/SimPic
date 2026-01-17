@@ -63,6 +63,7 @@ class _CameraScreenState extends State<CameraScreen>
   
   // Orientation tracking
   NativeDeviceOrientation _deviceOrientation = NativeDeviceOrientation.portraitUp;
+  NativeDeviceOrientation _stableLayoutOrientation = NativeDeviceOrientation.portraitUp;
   StreamSubscription<NativeDeviceOrientation>? _orientationSubscription;
   
   // Distance coaching
@@ -99,8 +100,13 @@ class _CameraScreenState extends State<CameraScreen>
         .onOrientationChanged(useSensor: true)
         .listen((orientation) {
       if (mounted) {
+        // Ignore unknown orientation to prevent flickering
+        if (orientation == NativeDeviceOrientation.unknown) return;
+
         setState(() {
           _deviceOrientation = orientation;
+          // Stabilize layout orientation to prevent the control bar from jumping
+          _updateLayoutOrientation(orientation);
         });
       }
     });
@@ -164,6 +170,11 @@ class _CameraScreenState extends State<CameraScreen>
     _focusTimer?.cancel();
     _faceDetector?.close();
     super.dispose();
+  }
+
+  /// Updates the layout orientation for UI elements (icons, text)
+  void _updateLayoutOrientation(NativeDeviceOrientation newOrientation) {
+    _stableLayoutOrientation = newOrientation;
   }
 
   @override
@@ -879,7 +890,7 @@ class _CameraScreenState extends State<CameraScreen>
   }
 
   int _getPreviewRotationTurns() {
-    switch (_deviceOrientation) {
+    switch (_stableLayoutOrientation) {
       case NativeDeviceOrientation.landscapeLeft:
         return 1;
       case NativeDeviceOrientation.landscapeRight:
@@ -1014,7 +1025,7 @@ class _CameraScreenState extends State<CameraScreen>
     
     final orientationGuidance = OrientationGuidance.evaluate(
       significantFaceCount: _significantFaceCount,
-      currentOrientation: _deviceOrientation,
+      currentOrientation: _stableLayoutOrientation,
     );
     final isOrientationMismatch = orientationGuidance.isMismatch;
     
@@ -1064,11 +1075,11 @@ class _CameraScreenState extends State<CameraScreen>
                               animation: _focusAnimation!,
                               builder: (context, child) {
                                 return Positioned(
-                                  left: _focusPoint!.dx - 50,
-                                  top: _focusPoint!.dy - 50,
+                                  left: _focusPoint!.dx - 30,
+                                  top: _focusPoint!.dy - 30,
                                   child: Container(
-                                    width: 100,
-                                    height: 100,
+                                    width: 60,
+                                    height: 60,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
                                       border: Border.all(
@@ -1106,14 +1117,13 @@ class _CameraScreenState extends State<CameraScreen>
             coachingResult: _distanceCoachingResult,
             compositionResult: _compositionGuidanceResult,
             significantFaceCount: _significantFaceCount,
-            deviceOrientation: _deviceOrientation,
+            deviceOrientation: _stableLayoutOrientation,
             isOrientationMismatch: isOrientationMismatch,
           ),
           
           // Bottom controls
           Positioned(
-            bottom: _deviceOrientation == NativeDeviceOrientation.landscapeRight ? null : 0,
-            top: _deviceOrientation == NativeDeviceOrientation.landscapeRight ? 0 : null,
+            bottom: 0,
             left: 0,
             right: 0,
             child: SafeArea(
@@ -1121,12 +1131,8 @@ class _CameraScreenState extends State<CameraScreen>
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    begin: _deviceOrientation == NativeDeviceOrientation.landscapeRight 
-                        ? Alignment.bottomCenter 
-                        : Alignment.topCenter,
-                    end: _deviceOrientation == NativeDeviceOrientation.landscapeRight 
-                        ? Alignment.topCenter 
-                        : Alignment.bottomCenter,
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
                     colors: [
                       Colors.transparent,
                       Colors.black.withValues(alpha: 0.7),
@@ -1136,17 +1142,11 @@ class _CameraScreenState extends State<CameraScreen>
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: _deviceOrientation == NativeDeviceOrientation.landscapeRight
-                      ? [
-                          _buildThumbnailButton(),
-                          _buildShutterButton(),
-                          _buildCameraSwitchButton(),
-                        ]
-                      : [
-                          _buildCameraSwitchButton(),
-                          _buildShutterButton(),
-                          _buildThumbnailButton(),
-                        ],
+                  children: [
+                    _buildCameraSwitchButton(),
+                    _buildShutterButton(),
+                    _buildThumbnailButton(),
+                  ],
                 ),
               ),
             ),

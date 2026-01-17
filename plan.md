@@ -63,7 +63,10 @@
   - Multiple faces (2+): suggest landscape orientation
   - If current orientation doesn't match suggestion, show rotation icon
   - **Priority Logic:** Orientation suggestions take precedence over distance and composition guidance.
-- **UI:** Small rotation icon in corner when orientation mismatch detected
+- **UI:** 
+  - Small rotation icon in corner when orientation mismatch detected.
+  - UI remains locked in portrait mode, but icons rotate to stay upright.
+  - Control bar (shutter) stays fixed at the bottom of the screen to match standard camera app behavior.
 
 #### Feature 2.4: Multi-face Coaching Refinement
 - **Priority: P1**
