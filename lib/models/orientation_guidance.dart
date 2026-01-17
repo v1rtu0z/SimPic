@@ -25,6 +25,9 @@ class OrientationGuidance {
   }) {
     OrientationSuggestion suggestion = OrientationSuggestion.none;
     
+    // Logic: 
+    // - 1 face: Suggest Portrait (optimized for single subject)
+    // - 2+ faces: Suggest Landscape (optimized for groups/wider context)
     if (significantFaceCount == 1) {
       suggestion = OrientationSuggestion.portrait;
     } else if (significantFaceCount >= 2) {
@@ -39,22 +42,25 @@ class OrientationGuidance {
     }
 
     // Check if current orientation matches the suggestion
+    // Landscape orientations
     final isLandscape = currentOrientation == NativeDeviceOrientation.landscapeLeft ||
         currentOrientation == NativeDeviceOrientation.landscapeRight;
     
+    // Portrait orientations
     final isPortrait = currentOrientation == NativeDeviceOrientation.portraitUp ||
         currentOrientation == NativeDeviceOrientation.portraitDown;
 
     bool mismatch = false;
-    if (suggestion == OrientationSuggestion.portrait && !isPortrait) {
-      // It's a mismatch if we suggest portrait but we're not in portrait
-      // (and orientation is known)
+    
+    if (suggestion == OrientationSuggestion.portrait) {
+      // Suggesting portrait, but we're in landscape (or unknown/flat)
+      // We only flag mismatch if we are SURE we're in landscape to avoid flickering
       if (isLandscape) {
         mismatch = true;
       }
-    } else if (suggestion == OrientationSuggestion.landscape && !isLandscape) {
-      // It's a mismatch if we suggest landscape but we're not in landscape
-      // (and orientation is known)
+    } else if (suggestion == OrientationSuggestion.landscape) {
+      // Suggesting landscape, but we're in portrait (or unknown/flat)
+      // We only flag mismatch if we are SURE we're in portrait
       if (isPortrait) {
         mismatch = true;
       }

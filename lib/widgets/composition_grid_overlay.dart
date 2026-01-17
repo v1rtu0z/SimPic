@@ -23,25 +23,12 @@ class CompositionGridOverlay extends StatefulWidget {
 
 class _CompositionGridOverlayState extends State<CompositionGridOverlay>
     with SingleTickerProviderStateMixin {
-  NativeDeviceOrientation _deviceOrientation = NativeDeviceOrientation.portraitUp;
-  StreamSubscription<NativeDeviceOrientation>? _orientationSubscription;
   late AnimationController _pulseController;
   late Animation<double> _pulseAnimation;
 
   @override
   void initState() {
     super.initState();
-    
-    // Listen to device orientation
-    _orientationSubscription = NativeDeviceOrientationCommunicator()
-        .onOrientationChanged(useSensor: true)
-        .listen((orientation) {
-      if (mounted) {
-        setState(() {
-          _deviceOrientation = orientation;
-        });
-      }
-    });
     
     // Pulse animation for power points
     _pulseController = AnimationController(
@@ -59,7 +46,6 @@ class _CompositionGridOverlayState extends State<CompositionGridOverlay>
 
   @override
   void dispose() {
-    _orientationSubscription?.cancel();
     _pulseController.dispose();
     super.dispose();
   }

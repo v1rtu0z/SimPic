@@ -6,52 +6,25 @@ import '../models/composition_guidance.dart';
 import '../models/orientation_guidance.dart';
 
 /// Overlay widget for distance coaching UI
-class DistanceCoachingOverlay extends StatefulWidget {
+class DistanceCoachingOverlay extends StatelessWidget {
   final DistanceCoachingResult? coachingResult;
   final CompositionGuidanceResult? compositionResult;
   final int significantFaceCount;
+  final NativeDeviceOrientation deviceOrientation;
 
   const DistanceCoachingOverlay({
     super.key,
     this.coachingResult,
     this.compositionResult,
     this.significantFaceCount = 0,
+    required this.deviceOrientation,
   });
-
-  @override
-  State<DistanceCoachingOverlay> createState() => _DistanceCoachingOverlayState();
-}
-
-class _DistanceCoachingOverlayState extends State<DistanceCoachingOverlay> {
-  NativeDeviceOrientation _deviceOrientation = NativeDeviceOrientation.portraitUp;
-  StreamSubscription<NativeDeviceOrientation>? _orientationSubscription;
-
-  @override
-  void initState() {
-    super.initState();
-    // Listen to physical device orientation changes using sensors
-    _orientationSubscription = NativeDeviceOrientationCommunicator()
-        .onOrientationChanged(useSensor: true)
-        .listen((orientation) {
-      if (mounted) {
-        setState(() {
-          _deviceOrientation = orientation;
-        });
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _orientationSubscription?.cancel();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     final orientationGuidance = OrientationGuidance.evaluate(
-      significantFaceCount: widget.significantFaceCount,
-      currentOrientation: _deviceOrientation,
+      significantFaceCount: significantFaceCount,
+      currentOrientation: deviceOrientation,
     );
 
     final List<Widget> children = [];
@@ -62,15 +35,15 @@ class _DistanceCoachingOverlayState extends State<DistanceCoachingOverlay> {
     }
 
     // 2. Distance Coaching Content
-    if (widget.coachingResult != null) {
-      final status = widget.coachingResult!.status;
-      String message = widget.coachingResult!.message;
-      final scenario = widget.coachingResult!.scenario;
+    if (coachingResult != null) {
+      final status = coachingResult!.status;
+      String message = coachingResult!.message;
+      final scenario = coachingResult!.scenario;
       
       // If distance is optimal and composition is also optimal, append positioning info
       if (status == DistanceCoachingStatus.optimal && 
-          widget.compositionResult != null &&
-          widget.compositionResult!.status == CompositionStatus.wellPositioned) {
+          compositionResult != null &&
+          compositionResult!.status == CompositionStatus.wellPositioned) {
         message = '$message, positioning';
       }
 
@@ -94,11 +67,11 @@ class _DistanceCoachingOverlayState extends State<DistanceCoachingOverlay> {
       }
 
       // Determine orientation from physical device orientation
-      final isLandscape = _deviceOrientation == NativeDeviceOrientation.landscapeLeft ||
-          _deviceOrientation == NativeDeviceOrientation.landscapeRight;
+      final isLandscape = deviceOrientation == NativeDeviceOrientation.landscapeLeft ||
+          deviceOrientation == NativeDeviceOrientation.landscapeRight;
       
       if (isLandscape) {
-        final quarterTurns = _deviceOrientation == NativeDeviceOrientation.landscapeLeft ? 1 : 3;
+        final quarterTurns = deviceOrientation == NativeDeviceOrientation.landscapeLeft ? 1 : 3;
         children.add(Positioned(
           top: 0,
           left: 0,
@@ -137,11 +110,11 @@ class _DistanceCoachingOverlayState extends State<DistanceCoachingOverlay> {
   }
 
   Widget _buildOrientationSuggestion(OrientationSuggestion suggestion) {
-    final isLandscape = _deviceOrientation == NativeDeviceOrientation.landscapeLeft ||
-        _deviceOrientation == NativeDeviceOrientation.landscapeRight;
+    final isLandscape = deviceOrientation == NativeDeviceOrientation.landscapeLeft ||
+        deviceOrientation == NativeDeviceOrientation.landscapeRight;
         
     if (isLandscape) {
-      final quarterTurns = _deviceOrientation == NativeDeviceOrientation.landscapeLeft ? 1 : 3;
+      final quarterTurns = deviceOrientation == NativeDeviceOrientation.landscapeLeft ? 1 : 3;
       return Positioned(
         top: 20,
         right: 20,

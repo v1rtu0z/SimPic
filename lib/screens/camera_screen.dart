@@ -15,6 +15,7 @@ import 'package:android_intent_plus/flag.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:open_file/open_file.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
+import 'package:native_device_orientation/native_device_orientation.dart';
 import '../models/distance_coaching_scenario.dart';
 import '../widgets/distance_coaching_overlay.dart';
 import '../models/composition_guidance.dart';
@@ -57,6 +58,10 @@ class _CameraScreenState extends State<CameraScreen>
   int _frameCounter = 0;
   Size? _imageSize;
   
+  // Orientation tracking
+  NativeDeviceOrientation _deviceOrientation = NativeDeviceOrientation.portraitUp;
+  StreamSubscription<NativeDeviceOrientation>? _orientationSubscription;
+  
   // Distance coaching
   DistanceCoachingResult? _distanceCoachingResult;
   DistanceCoachingScenario? _currentDistanceScenario;
@@ -80,11 +85,23 @@ class _CameraScreenState extends State<CameraScreen>
   // Frame comparison for stability (skip face detection when camera is stationary)
   Uint8List? _previousFrameSample;
   Size? _previousImageSize;
+  int _currentRotationDegrees = 0;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    
+    // Listen to physical device orientation changes using sensors
+    _orientationSubscription = NativeDeviceOrientationCommunicator()
+        .onOrientationChanged(useSensor: true)
+        .listen((orientation) {
+      if (mounted) {
+        setState(() {
+          _deviceOrientation = orientation;
+        });
+      }
+    });
     
     // Initialize flash animation
     _flashAnimationController = AnimationController(
@@ -137,6 +154,7 @@ class _CameraScreenState extends State<CameraScreen>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _orientationSubscription?.cancel();
     _controller?.dispose();
     _flashAnimationController.dispose();
     _minimizeAnimationController.dispose();
@@ -510,14 +528,24 @@ class _CameraScreenState extends State<CameraScreen>
 
         // Process face detection results
         if (faces.isNotEmpty && imageSize.height > 0) {
+          // Determine display height and effective size based on rotation
+          final double displayHeight;
+          final Size effectiveSize;
+          if (_currentRotationDegrees == 90 || _currentRotationDegrees == 270) {
+            displayHeight = imageSize.width; // camW is height in portrait
+            effectiveSize = Size(imageSize.height, imageSize.width); // camH x camW (e.g. 720x1280)
+          } else {
+            displayHeight = imageSize.height; // camH is height in landscape
+            effectiveSize = Size(imageSize.width, imageSize.height); // camW x camH (e.g. 1280x720)
+          }
+
           // Count significant faces for orientation suggestion
           // A face is significant if it takes up at least 15% of frame height
-          final sensorOrientation = _currentCamera!.sensorOrientation;
-          final displayHeight = (sensorOrientation == 90 || sensorOrientation == 270) ? imageSize.width : imageSize.height;
           const significantThreshold = 15.0; // 15%
 
           for (final face in faces) {
-            final faceHeight = (sensorOrientation == 270) ? face.boundingBox.width : face.boundingBox.height;
+            // With correct rotation, ML Kit height is always the vertical axis relative to display
+            final faceHeight = face.boundingBox.height;
             if (displayHeight > 0) {
               final faceHeightPercentage = (faceHeight / displayHeight) * 100.0;
               if (faceHeightPercentage >= significantThreshold) {
@@ -528,17 +556,12 @@ class _CameraScreenState extends State<CameraScreen>
 
           // Select best face for coaching and focus (handles multiple faces)
           // Uses a combination of size and position (larger + more central = better)
-          Face? bestFace = _selectBestFace(faces, imageSize);
+          Face? bestFace = _selectBestFace(faces, effectiveSize);
           
           if (bestFace != null) {
             // Calculate face height relative to the display vertical axis
-            final sensorOrientation = _currentCamera!.sensorOrientation;
-            
-            // For 90° orientation, ML Kit typically returns coordinates already rotated to display space
-            // for the back camera on most Android devices. For 270°, it often requires manual transformation.
-            // This logic matches the FaceDetectorPainter logic which the user confirmed works correctly.
-            final faceHeight = (sensorOrientation == 270) ? bestFace.boundingBox.width : bestFace.boundingBox.height;
-            final displayHeight = (sensorOrientation == 90 || sensorOrientation == 270) ? imageSize.width : imageSize.height;
+            // With correct rotation, face.boundingBox.height is already vertical
+            final faceHeight = bestFace.boundingBox.height;
             
             // Safety check: ensure valid face height
             if (faceHeight > 0 && displayHeight > 0) {
@@ -551,7 +574,7 @@ class _CameraScreenState extends State<CameraScreen>
               );
               
               // Transform face center from camera coordinates to display coordinates
-              // matches FaceDetectorPainter.scaleRect logic
+              // Now simplified because we pass the correct rotation to ML Kit!
               Offset displayFaceCenter;
               Size displayImageSize;
 
@@ -559,35 +582,30 @@ class _CameraScreenState extends State<CameraScreen>
               final camW = imageSize.width;
               final camH = imageSize.height;
 
-              // Calculate face center in camera coordinates (raw buffer)
+              // Calculate face center in camera coordinates (as returned by ML Kit)
+              // ML Kit returns coordinates in the rotated (upright) image space
               final rawFaceCenterX = bestFace.boundingBox.left + (bestFace.boundingBox.width / 2);
               final rawFaceCenterY = bestFace.boundingBox.top + (bestFace.boundingBox.height / 2);
 
-              if (sensorOrientation == 90) {
-                // Identity mapping for 90 deg - suggests ML Kit already handles rotation
-                displayFaceCenter = Offset(rawFaceCenterX, rawFaceCenterY);
+              if (_currentRotationDegrees == 90 || _currentRotationDegrees == 270) {
                 displayImageSize = Size(camH, camW);
-              } else if (sensorOrientation == 270) {
-                // Rotation for 270 deg: Display X = camH - y, Display Y = x
-                displayFaceCenter = Offset(camH - rawFaceCenterY, rawFaceCenterX);
-                displayImageSize = Size(camH, camW);
-              } else if (sensorOrientation == 180) {
-                // Mirror both for 180 deg
-                displayFaceCenter = Offset(camW - rawFaceCenterX, camH - rawFaceCenterY);
-                displayImageSize = Size(camW, camH);
               } else {
-                // Default identity (0 deg)
-                displayFaceCenter = Offset(rawFaceCenterX, rawFaceCenterY);
                 displayImageSize = Size(camW, camH);
               }
 
-              // No manual mirroring here - handled by coordinate mapping or ML Kit
+              displayFaceCenter = Offset(rawFaceCenterX, rawFaceCenterY);
+
+              // Mirror X for front camera to match mirrored preview
+              if (_currentCamera?.lensDirection == CameraLensDirection.front) {
+                displayFaceCenter = Offset(displayImageSize.width - displayFaceCenter.dx, displayFaceCenter.dy);
+              }
               
               final normX = displayFaceCenter.dx / displayImageSize.width;
               final normY = displayFaceCenter.dy / displayImageSize.height;
               
               if (_frameCounter % 30 == 0) {
-                debugPrint('🔧 TRANSFORM: Sensor($sensorOrientation) Raw(${rawFaceCenterX.toStringAsFixed(1)}, ${rawFaceCenterY.toStringAsFixed(1)}) on ${camW.toInt()}x${camH.toInt()} -> Display(${displayFaceCenter.dx.toStringAsFixed(1)}, ${displayFaceCenter.dy.toStringAsFixed(1)}) on ${displayImageSize.width.toInt()}x${displayImageSize.height.toInt()} | Norm[${normX.toStringAsFixed(3)}, ${normY.toStringAsFixed(3)}]');
+                final sO = _currentCamera?.sensorOrientation ?? 0;
+                debugPrint('🔧 TRANSFORM: Sensor($sO) Raw(${rawFaceCenterX.toStringAsFixed(1)}, ${rawFaceCenterY.toStringAsFixed(1)}) on ${camW.toInt()}x${camH.toInt()} -> Display(${displayFaceCenter.dx.toStringAsFixed(1)}, ${displayFaceCenter.dy.toStringAsFixed(1)}) on ${displayImageSize.width.toInt()}x${displayImageSize.height.toInt()} | Norm[${normX.toStringAsFixed(3)}, ${normY.toStringAsFixed(3)}]');
               }
 
               // Now evaluate composition with display coordinates
@@ -837,6 +855,37 @@ class _CameraScreenState extends State<CameraScreen>
     return differencePercentage >= 2.0;
   }
 
+  int _calculateRotationDegrees() {
+    final camera = _currentCamera;
+    if (camera == null) return 0;
+
+    int degrees = 0;
+    switch (_deviceOrientation) {
+      case NativeDeviceOrientation.portraitUp:
+        degrees = 0;
+        break;
+      case NativeDeviceOrientation.landscapeLeft:
+        degrees = 270;
+        break;
+      case NativeDeviceOrientation.portraitDown:
+        degrees = 180;
+        break;
+      case NativeDeviceOrientation.landscapeRight:
+        degrees = 90;
+        break;
+      case NativeDeviceOrientation.unknown:
+        degrees = 0;
+        break;
+    }
+
+    int sensorOrientation = camera.sensorOrientation;
+    if (camera.lensDirection == CameraLensDirection.front) {
+      return (sensorOrientation - degrees + 360) % 360;
+    } else {
+      return (sensorOrientation + degrees) % 360;
+    }
+  }
+
   InputImage? _convertCameraImage(CameraImage image) {
     final camera = _controller?.description;
     if (camera == null) return null;
@@ -851,13 +900,11 @@ class _CameraScreenState extends State<CameraScreen>
     // Get image size
     final Size imageSize = Size(image.width.toDouble(), image.height.toDouble());
 
-    // FIXME: Flipped portrait mode (portraitDown) - face detection rotation not handled
-    // Currently only uses camera sensor orientation, but doesn't account for physical device orientation
-    // (portraitUp vs portraitDown). This may cause face detection issues when device is upside down.
-    // Determine image rotation based on sensor orientation
-    // The rotation tells ML Kit how the image is oriented relative to the device screen
+    // Calculate rotation based on sensor orientation and device orientation
+    _currentRotationDegrees = _calculateRotationDegrees();
+
     final InputImageRotation imageRotation =
-        InputImageRotationValue.fromRawValue(camera.sensorOrientation) ??
+        InputImageRotationValue.fromRawValue(_currentRotationDegrees) ??
         InputImageRotation.rotation0deg;
 
     // Determine image format based on platform
@@ -879,8 +926,69 @@ class _CameraScreenState extends State<CameraScreen>
     return InputImage.fromBytes(bytes: bytes, metadata: metadata);
   }
 
+  int _getIconRotationQuarterTurns() {
+    switch (_deviceOrientation) {
+      case NativeDeviceOrientation.landscapeLeft:
+        return 1;
+      case NativeDeviceOrientation.landscapeRight:
+        return 3;
+      case NativeDeviceOrientation.portraitDown:
+        return 2;
+      default:
+        return 0;
+    }
+  }
+
+  Future<void> _switchCamera() async {
+    if (_cameras == null || _cameras!.length < 2 || _isProcessing) return;
+
+    // Stop current stream before switching
+    if (_controller != null && _controller!.value.isStreamingImages) {
+      await _controller!.stopImageStream();
+    }
+
+    final lensDirection = _currentCamera?.lensDirection == CameraLensDirection.back
+        ? CameraLensDirection.front
+        : CameraLensDirection.back;
+
+    final newCamera = _cameras!.firstWhere(
+      (camera) => camera.lensDirection == lensDirection,
+      orElse: () => _cameras!.first,
+    );
+
+    if (newCamera == _currentCamera) return;
+
+    // Dispose old controller
+    final oldController = _controller;
+    _controller = null;
+    if (mounted) setState(() {});
+    await oldController?.dispose();
+
+    _currentCamera = newCamera;
+    _controller = CameraController(
+      _currentCamera!,
+      ResolutionPreset.high,
+      enableAudio: false,
+      imageFormatGroup: Platform.isAndroid 
+          ? ImageFormatGroup.nv21 
+          : ImageFormatGroup.yuv420,
+    );
+
+    try {
+      await _controller!.initialize();
+      await _controller!.setFocusMode(FocusMode.auto);
+      _controller!.startImageStream(_processCameraImage);
+      if (mounted) setState(() {});
+    } catch (e) {
+      debugPrint('Error switching camera: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Ensure rotation is up to date for UI overlays
+    _currentRotationDegrees = _calculateRotationDegrees();
+
     if (!_hasPermission) {
       return Scaffold(
         backgroundColor: Colors.black,
@@ -978,7 +1086,7 @@ class _CameraScreenState extends State<CameraScreen>
                             faces: _detectedFaces,
                             imageSize: _imageSize,
                             cameraPreviewSize: previewSize,
-                            sensorOrientation: _currentCamera?.sensorOrientation ?? 0,
+                            rotationDegrees: _currentRotationDegrees,
                             cameraLensDirection: _currentCamera?.lensDirection,
                           ),
                         ),
@@ -1035,11 +1143,13 @@ class _CameraScreenState extends State<CameraScreen>
             coachingResult: _distanceCoachingResult,
             compositionResult: _compositionGuidanceResult,
             significantFaceCount: _significantFaceCount,
+            deviceOrientation: _deviceOrientation,
           ),
           
           // Bottom controls
           Positioned(
-            bottom: 0,
+            bottom: _deviceOrientation == NativeDeviceOrientation.landscapeRight ? null : 0,
+            top: _deviceOrientation == NativeDeviceOrientation.landscapeRight ? 0 : null,
             left: 0,
             right: 0,
             child: SafeArea(
@@ -1047,8 +1157,12 @@ class _CameraScreenState extends State<CameraScreen>
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
+                    begin: _deviceOrientation == NativeDeviceOrientation.landscapeRight 
+                        ? Alignment.bottomCenter 
+                        : Alignment.topCenter,
+                    end: _deviceOrientation == NativeDeviceOrientation.landscapeRight 
+                        ? Alignment.topCenter 
+                        : Alignment.bottomCenter,
                     colors: [
                       Colors.transparent,
                       Colors.black.withValues(alpha: 0.7),
@@ -1058,94 +1172,17 @@ class _CameraScreenState extends State<CameraScreen>
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // Image preview thumbnail
-                    GestureDetector(
-                      onTap: () {
-                        if (_lastImageFile != null) {
-                          _showImagePreview(_lastImageFile!);
-                        }
-                      },
-                      child: Container(
-                        key: _previewButtonKey,
-                        width: 60,
-                        height: 60,
-                        decoration: BoxDecoration(
-                          color: Colors.black.withValues(alpha: 0.5),
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.3),
-                            width: 2,
-                          ),
-                        ),
-                        child: _lastImageFile != null
-                            ? ClipRRect(
-                                borderRadius: BorderRadius.circular(6),
-                                child: Image.file(
-                                  _lastImageFile!,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return const Icon(
-                                      Icons.image_outlined,
-                                      color: Colors.white54,
-                                      size: 30,
-                                    );
-                                  },
-                                ),
-                              )
-                            : const Icon(
-                                Icons.image_outlined,
-                                color: Colors.white54,
-                                size: 30,
-                              ),
-                      ),
-                    ),
-                    
-                    // Shutter button
-                    GestureDetector(
-                      onTap: _isCapturing ? null : _takePicture,
-                      child: Container(
-                        width: 70,
-                        height: 70,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white,
-                          border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.3),
-                            width: 4,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.3),
-                              blurRadius: 10,
-                              spreadRadius: 2,
-                            ),
-                          ],
-                        ),
-                        child: _isCapturing
-                            ? const Center(
-                                child: SizedBox(
-                                  width: 30,
-                                  height: 30,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 3,
-                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
-                                  ),
-                                ),
-                              )
-                            : Container(
-                                margin: const EdgeInsets.all(4),
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.white,
-                                ),
-                              ),
-                      ),
-                    ),
-                    
-                    // Placeholder for symmetry (or future button)
-                    const SizedBox(width: 60),
-                  ],
+                  children: _deviceOrientation == NativeDeviceOrientation.landscapeRight
+                      ? [
+                          _buildThumbnailButton(),
+                          _buildShutterButton(),
+                          _buildCameraSwitchButton(),
+                        ]
+                      : [
+                          _buildCameraSwitchButton(),
+                          _buildShutterButton(),
+                          _buildThumbnailButton(),
+                        ],
                 ),
               ),
             ),
@@ -1191,6 +1228,121 @@ class _CameraScreenState extends State<CameraScreen>
               },
             ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildThumbnailButton() {
+    return GestureDetector(
+      onTap: () {
+        if (_lastImageFile != null) {
+          _showImagePreview(_lastImageFile!);
+        }
+      },
+      child: RotatedBox(
+        quarterTurns: _getIconRotationQuarterTurns(),
+        child: Container(
+          key: _previewButtonKey,
+          width: 60,
+          height: 60,
+          decoration: BoxDecoration(
+            color: Colors.black.withValues(alpha: 0.5),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: Colors.white.withValues(alpha: 0.3),
+              width: 2,
+            ),
+          ),
+          child: _lastImageFile != null
+              ? ClipRRect(
+                  borderRadius: BorderRadius.circular(6),
+                  child: Image.file(
+                    _lastImageFile!,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Icon(
+                        Icons.image_outlined,
+                        color: Colors.white54,
+                        size: 30,
+                      );
+                    },
+                  ),
+                )
+              : const Icon(
+                  Icons.image_outlined,
+                  color: Colors.white54,
+                  size: 30,
+                ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildShutterButton() {
+    return GestureDetector(
+      onTap: _isCapturing ? null : _takePicture,
+      child: Container(
+        width: 70,
+        height: 70,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.white,
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.3),
+            width: 4,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.3),
+              blurRadius: 10,
+              spreadRadius: 2,
+            ),
+          ],
+        ),
+        child: _isCapturing
+            ? const Center(
+                child: SizedBox(
+                  width: 30,
+                  height: 30,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 3,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                  ),
+                ),
+              )
+            : Container(
+                margin: const EdgeInsets.all(4),
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white,
+                ),
+              ),
+      ),
+    );
+  }
+
+  Widget _buildCameraSwitchButton() {
+    return GestureDetector(
+      onTap: _switchCamera,
+      child: RotatedBox(
+        quarterTurns: _getIconRotationQuarterTurns(),
+        child: Container(
+          width: 60,
+          height: 60,
+          decoration: BoxDecoration(
+            color: Colors.black.withValues(alpha: 0.5),
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: Colors.white.withValues(alpha: 0.3),
+              width: 2,
+            ),
+          ),
+          child: const Icon(
+            Icons.flip_camera_ios_outlined,
+            color: Colors.white,
+            size: 30,
+          ),
+        ),
       ),
     );
   }
@@ -1354,8 +1506,7 @@ class FaceDetectorPainter extends CustomPainter {
   final List<Face> faces;
   final Size? imageSize;
   final Size cameraPreviewSize;
-  final InputImageRotation? rotation;
-  final int sensorOrientation;
+  final int rotationDegrees;
   final CameraLensDirection? cameraLensDirection;
 
   static bool _hasLogged = false;
@@ -1364,8 +1515,7 @@ class FaceDetectorPainter extends CustomPainter {
     required this.faces,
     required this.imageSize,
     required this.cameraPreviewSize,
-    this.rotation,
-    required this.sensorOrientation,
+    required this.rotationDegrees,
     this.cameraLensDirection,
   });
 
@@ -1380,7 +1530,7 @@ class FaceDetectorPainter extends CustomPainter {
       debugPrint('🎨 PAINT DEBUG 🎨');
       debugPrint('Canvas size (display): $size');
       debugPrint('Image size (from camera): $imageSize');
-      debugPrint('Sensor orientation: $sensorOrientation°');
+      debugPrint('Rotation degrees: $rotationDegrees°');
       debugPrint('Camera preview size: $cameraPreviewSize');
       debugPrint('Lens direction: $cameraLensDirection');
       if (faces.isNotEmpty) {
@@ -1418,74 +1568,33 @@ class FaceDetectorPainter extends CustomPainter {
     required Size imageSize,
     required Size widgetSize,
   }) {
-    // ML Kit returns coordinates in the original image coordinate system
-    // We need to transform them based on sensor orientation
+    // ML Kit returns coordinates in the rotated (upright) image space
+    // We just need to scale them to the widget size, considering the rotated image dimensions.
     
-    // FIXME: Landscape flipped (landscapeRight) - face detection coordinate transformation may be inaccurate
-    // Face detection seems to work worse in one landscape orientation (likely landscapeRight)
-    // The coordinate transformation only uses sensor orientation, not physical device orientation,
-    // which may cause misalignment when device is in landscapeRight vs landscapeLeft.
-    // FIXME: Flipped portrait mode (portraitDown) - face detection coordinate transformation not handled
-    // Currently only handles sensor orientation (0°, 90°, 180°, 270°) but doesn't account for
-    // physical device orientation (portraitUp vs portraitDown), which may cause face box misalignment.
-    if (sensorOrientation == 90) {
-      // For 90° sensor: transpose and mirror correctly
-      // Image is in landscape (width > height), display is portrait
-      final scaleX = widgetSize.width / imageSize.height;
-      final scaleY = widgetSize.height / imageSize.width;
-      
-      // Diagonal mirroring: transpose coordinates (swap X and Y)
-      // This mirrors across the main diagonal
-      final tempLeft = (imageSize.height - rect.bottom) * scaleX;
-      final tempTop = rect.left * scaleY;
-      final tempRight = (imageSize.height - rect.top) * scaleX;
-      final tempBottom = rect.right * scaleY;
-      
-      // Apply counter-clockwise 90° rotation: (x, y) → (y, width - x)
-      final newLeft = tempTop;
-      final newTop = widgetSize.width - tempRight;
-      final newRight = tempBottom;
-      final newBottom = widgetSize.width - tempLeft;
-      
-      return Rect.fromLTRB(newLeft, newTop, newRight, newBottom);
-    } else if (sensorOrientation == 270) {
-      // Rotate 90° clockwise: (x, y) -> (imageHeight - y, x)
-      final scaleX = widgetSize.width / imageSize.height;
-      final scaleY = widgetSize.height / imageSize.width;
-      
-      final newLeft = imageSize.height - rect.bottom;
-      final newTop = rect.left;
-      final newRight = imageSize.height - rect.top;
-      final newBottom = rect.right;
-      
-      return Rect.fromLTRB(
-        newLeft * scaleX,
-        newTop * scaleY,
-        newRight * scaleX,
-        newBottom * scaleY,
-      );
+    Size effectiveImageSize;
+    if (rotationDegrees == 90 || rotationDegrees == 270) {
+      effectiveImageSize = Size(imageSize.height, imageSize.width);
     } else {
-      // 0° or 180° - no dimension swap needed
-      final scaleX = widgetSize.width / imageSize.width;
-      final scaleY = widgetSize.height / imageSize.height;
-      
-      if (sensorOrientation == 180) {
-        // Flip both axes
-        return Rect.fromLTRB(
-          (imageSize.width - rect.right) * scaleX,
-          (imageSize.height - rect.bottom) * scaleY,
-          (imageSize.width - rect.left) * scaleX,
-          (imageSize.height - rect.top) * scaleY,
-        );
-      }
-      
-      return Rect.fromLTRB(
-        rect.left * scaleX,
-        rect.top * scaleY,
-        rect.right * scaleX,
-        rect.bottom * scaleY,
-      );
+      effectiveImageSize = Size(imageSize.width, imageSize.height);
     }
+
+    final scaleX = widgetSize.width / effectiveImageSize.width;
+    final scaleY = widgetSize.height / effectiveImageSize.height;
+
+    double left = rect.left * scaleX;
+    double top = rect.top * scaleY;
+    double right = rect.right * scaleX;
+    double bottom = rect.bottom * scaleY;
+
+    // Handle mirroring for front camera
+    if (cameraLensDirection == CameraLensDirection.front) {
+      final mirroredLeft = widgetSize.width - right;
+      final mirroredRight = widgetSize.width - left;
+      left = mirroredLeft;
+      right = mirroredRight;
+    }
+
+    return Rect.fromLTRB(left, top, right, bottom);
   }
 
   @override
