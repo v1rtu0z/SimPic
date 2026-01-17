@@ -51,6 +51,7 @@
   - Pulsing circles at power points
   - Arrow overlays (←↑→↓) showing which direction to move camera
   - "Perfect positioning!" when aligned
+  - **Note:** Active composition guidance is hidden when multiple faces are detected, prioritizing group distance coaching.
 
 #### Feature 2.3: Orientation Suggestion
 - **Priority: P1**
@@ -61,7 +62,18 @@
   - Single face: suggest portrait orientation
   - Multiple faces (2+): suggest landscape orientation
   - If current orientation doesn't match suggestion, show rotation icon
+  - **Priority Logic:** Orientation suggestions take precedence over distance and composition guidance.
 - **UI:** Small rotation icon in corner when orientation mismatch detected
+
+#### Feature 2.4: Multi-face Coaching Refinement
+- **Priority: P1**
+- **Complexity: Low**
+- **Status: ✅ Completed**
+- **Logic:**
+  - Detect when 2+ "significant" faces are in frame
+  - Switch to "Group photo" distance scenario with adjusted thresholds (Optimal: 10-20% face height)
+  - Hide active composition guidance (arrows/highlights) for group shots
+- **UI:** "Group photo" label and specific distance coaching for multi-subject scenes.
 
 ---
 

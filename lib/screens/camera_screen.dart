@@ -20,6 +20,7 @@ import '../models/distance_coaching_scenario.dart';
 import '../widgets/distance_coaching_overlay.dart';
 import '../models/composition_guidance.dart';
 import '../widgets/composition_grid_overlay.dart';
+import '../models/orientation_guidance.dart';
 
 class CameraScreen extends StatefulWidget {
   CameraScreen({super.key});
@@ -542,10 +543,10 @@ class _CameraScreenState extends State<CameraScreen>
           }
 
           // Count significant faces for orientation suggestion
-          // IMPROVEMENT: Use a consistent threshold based on the minimum dimension
-          // to avoid flickering between portrait and landscape significance.
+          // Use a threshold that accounts for full-body shots (where faces are smaller, ~8-12%)
           final minDimension = min(imageSize.width, imageSize.height);
-          final significantPixelThreshold = minDimension * 0.15; // 15% of smaller dimension
+          // 7% threshold is enough to catch full-body subjects while ignoring small background faces
+          final significantPixelThreshold = minDimension * 0.07;
 
           for (final face in faces) {
             // With correct rotation, ML Kit height is always the vertical axis relative to display
@@ -568,6 +569,7 @@ class _CameraScreenState extends State<CameraScreen>
               coachingResult = evaluateDistanceCoaching(
                 faceHeightPercentage,
                 _currentDistanceScenario,
+                significantFaceCount: significantFaceCount,
               );
               
               // Camera image size (usually landscape: e.g. 1280x720)
@@ -1010,6 +1012,12 @@ class _CameraScreenState extends State<CameraScreen>
       previewAspectRatio = controllerRatio > 1 ? 1 / controllerRatio : controllerRatio;
     }
     
+    final orientationGuidance = OrientationGuidance.evaluate(
+      significantFaceCount: _significantFaceCount,
+      currentOrientation: _deviceOrientation,
+    );
+    final isOrientationMismatch = orientationGuidance.isMismatch;
+    
     return Scaffold(
       backgroundColor: Colors.black,
       body: Stack(
@@ -1045,6 +1053,8 @@ class _CameraScreenState extends State<CameraScreen>
                           distanceResult: _distanceCoachingResult,
                           previewSize: portraitPreviewSize,
                           deviceOrientation: _detectedFacesOrientation,
+                          isOrientationMismatch: isOrientationMismatch,
+                          significantFaceCount: _significantFaceCount,
                         ),
                         
                         // Focus feedback ring (in portrait coordinate space relative to preview)
@@ -1097,6 +1107,7 @@ class _CameraScreenState extends State<CameraScreen>
             compositionResult: _compositionGuidanceResult,
             significantFaceCount: _significantFaceCount,
             deviceOrientation: _deviceOrientation,
+            isOrientationMismatch: isOrientationMismatch,
           ),
           
           // Bottom controls

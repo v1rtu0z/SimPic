@@ -11,6 +11,7 @@ class DistanceCoachingOverlay extends StatelessWidget {
   final CompositionGuidanceResult? compositionResult;
   final int significantFaceCount;
   final NativeDeviceOrientation deviceOrientation;
+  final bool isOrientationMismatch;
 
   const DistanceCoachingOverlay({
     super.key,
@@ -18,6 +19,7 @@ class DistanceCoachingOverlay extends StatelessWidget {
     this.compositionResult,
     this.significantFaceCount = 0,
     required this.deviceOrientation,
+    this.isOrientationMismatch = false,
   });
 
   @override
@@ -30,18 +32,21 @@ class DistanceCoachingOverlay extends StatelessWidget {
     final List<Widget> children = [];
 
     // 1. Orientation Suggestion Icon
-    if (orientationGuidance.isMismatch) {
+    if (isOrientationMismatch) {
       children.add(_buildOrientationSuggestion(orientationGuidance.suggestedOrientation));
     }
 
     // 2. Distance Coaching Content
-    if (coachingResult != null) {
+    // PRIORITY: Hide distance coaching if orientation mismatch is detected
+    if (coachingResult != null && !isOrientationMismatch) {
       final status = coachingResult!.status;
       String message = coachingResult!.message;
       final scenario = coachingResult!.scenario;
       
       // If distance is optimal and composition is also optimal, append positioning info
+      // Only for single subject shots (composition guidance is hidden for groups)
       if (status == DistanceCoachingStatus.optimal && 
+          significantFaceCount < 2 &&
           compositionResult != null &&
           compositionResult!.status == CompositionStatus.wellPositioned) {
         message = '$message, positioning';
@@ -239,6 +244,8 @@ class DistanceCoachingOverlay extends StatelessWidget {
         return 'Waist-up portrait';
       case DistanceCoachingScenario.fullBody:
         return 'Full body';
+      case DistanceCoachingScenario.groupPhoto:
+        return 'Group photo';
     }
   }
 }

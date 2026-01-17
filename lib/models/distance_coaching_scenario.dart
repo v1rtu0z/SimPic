@@ -3,6 +3,7 @@ enum DistanceCoachingScenario {
   closeUpPortrait,
   waistUp,
   fullBody,
+  groupPhoto,
 }
 
 /// Threshold ranges for each scenario type
@@ -40,6 +41,12 @@ class DistanceCoachingThresholds {
       optimalMax: 12.0,
       tooSmall: 5.0,
       tooLarge: 15.0,
+    ),
+    DistanceCoachingScenario.groupPhoto: ScenarioThresholds(
+      optimalMin: 10.0,
+      optimalMax: 20.0,
+      tooSmall: 7.0,
+      tooLarge: 25.0,
     ),
   };
 
@@ -114,13 +121,21 @@ class DistanceCoachingResult {
 /// Evaluate distance coaching based on face height percentage
 DistanceCoachingResult evaluateDistanceCoaching(
   double faceHeightPercentage,
-  DistanceCoachingScenario? currentScenario,
-) {
+  DistanceCoachingScenario? currentScenario, {
+  int significantFaceCount = 1,
+}) {
   // Detect scenario with hysteresis
-  final scenario = DistanceCoachingThresholds.detectScenario(
-    faceHeightPercentage,
-    currentScenario: currentScenario,
-  );
+  DistanceCoachingScenario scenario;
+  
+  if (significantFaceCount >= 2) {
+    // Force group photo scenario when multiple people are detected
+    scenario = DistanceCoachingScenario.groupPhoto;
+  } else {
+    scenario = DistanceCoachingThresholds.detectScenario(
+      faceHeightPercentage,
+      currentScenario: currentScenario,
+    );
+  }
 
   final thresholds = DistanceCoachingThresholds.getThresholds(scenario);
 

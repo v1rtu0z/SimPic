@@ -10,6 +10,8 @@ class CompositionGridOverlay extends StatefulWidget {
   final DistanceCoachingResult? distanceResult; // Used to determine if we should show active guidance
   final Size? previewSize;
   final NativeDeviceOrientation deviceOrientation;
+  final bool isOrientationMismatch;
+  final int significantFaceCount;
 
   const CompositionGridOverlay({
     super.key,
@@ -17,6 +19,8 @@ class CompositionGridOverlay extends StatefulWidget {
     this.distanceResult,
     this.previewSize,
     required this.deviceOrientation,
+    this.isOrientationMismatch = false,
+    this.significantFaceCount = 0,
   });
 
   @override
@@ -52,14 +56,19 @@ class _CompositionGridOverlayState extends State<CompositionGridOverlay>
     super.dispose();
   }
 
-  /// Check if distance is optimal (allows composition guidance to be active)
-  bool get _isDistanceOptimal {
+  /// Check if active coaching is allowed based on priority:
+  /// 1. Orientation must match (highest priority)
+  /// 2. Only single face framing (composition for groups is hidden)
+  /// 3. Distance must be optimal
+  bool get _isActiveGuidanceAllowed {
+    if (widget.isOrientationMismatch) return false;
+    if (widget.significantFaceCount >= 2) return false;
     return widget.distanceResult?.status == DistanceCoachingStatus.optimal;
   }
 
   @override
   Widget build(BuildContext context) {
-    // Always show grid (subtle), but only show active guidance when distance is optimal
+    // Always show grid (subtle), but only show active guidance when allowed by priority
     if (widget.previewSize == null) {
       return const SizedBox.shrink();
     }
@@ -70,7 +79,7 @@ class _CompositionGridOverlayState extends State<CompositionGridOverlay>
       child: CustomPaint(
         painter: CompositionGridPainter(
           compositionResult: widget.compositionResult,
-          isDistanceOptimal: _isDistanceOptimal,
+          isActiveGuidanceAllowed: _isActiveGuidanceAllowed,
           pulseAnimation: _pulseAnimation,
           deviceOrientation: widget.deviceOrientation,
         ),
@@ -82,13 +91,13 @@ class _CompositionGridOverlayState extends State<CompositionGridOverlay>
 /// Custom painter for composition grid overlay
 class CompositionGridPainter extends CustomPainter {
   final CompositionGuidanceResult? compositionResult;
-  final bool isDistanceOptimal;
+  final bool isActiveGuidanceAllowed;
   final Animation<double> pulseAnimation;
   final NativeDeviceOrientation deviceOrientation;
 
   CompositionGridPainter({
     required this.compositionResult,
-    required this.isDistanceOptimal,
+    required this.isActiveGuidanceAllowed,
     required this.pulseAnimation,
     required this.deviceOrientation,
   }) : super(repaint: pulseAnimation);
@@ -104,8 +113,8 @@ class CompositionGridPainter extends CustomPainter {
     // Draw power points
     _drawPowerPoints(canvas, size, powerPoints);
     
-    // Draw directional arrows (only when distance is optimal AND needs adjustment)
-    if (isDistanceOptimal && 
+    // Draw directional arrows (only when active guidance is allowed AND needs adjustment)
+    if (isActiveGuidanceAllowed && 
         compositionResult != null && 
         compositionResult!.status == CompositionStatus.needsAdjustment) {
       _drawDirectionalArrows(canvas, size, compositionResult!);
@@ -212,9 +221,9 @@ class CompositionGridPainter extends CustomPainter {
       final isTarget = (pointNormalizedX - targetX).abs() < tolerance &&
                        (pointNormalizedY - targetY).abs() < tolerance;
       
-      // Only highlight target power point when distance is optimal AND composition needs adjustment
+      // Only highlight target power point when active guidance is allowed AND composition needs adjustment
       if (isTarget && 
-          isDistanceOptimal && 
+          isActiveGuidanceAllowed && 
           compositionResult!.status == CompositionStatus.needsAdjustment) {
         // Target power point: pulsing and highlighted
         final pulseScale = pulseAnimation.value;
@@ -233,7 +242,7 @@ class CompositionGridPainter extends CustomPainter {
       } else {
         // Other power points: static
         final paint = Paint()
-          ..color = Colors.white.withValues(alpha: isDistanceOptimal ? 0.3 : 0.15)
+          ..color = Colors.white.withValues(alpha: isActiveGuidanceAllowed ? 0.3 : 0.15)
           ..style = PaintingStyle.fill;
         canvas.drawCircle(point, 7, paint);
       }
@@ -242,8 +251,8 @@ class CompositionGridPainter extends CustomPainter {
 
   /// Draw directional arrows
   void _drawDirectionalArrows(Canvas canvas, Size size, CompositionGuidanceResult result) {
-    // Only show arrows when needs adjustment
-    if (result.status != CompositionStatus.needsAdjustment) {
+    // Only show arrows when allowed AND needs adjustment
+    if (!isActiveGuidanceAllowed || result.status != CompositionStatus.needsAdjustment) {
       return;
     }
 
@@ -373,7 +382,8 @@ class CompositionGridPainter extends CustomPainter {
   @override
   bool shouldRepaint(CompositionGridPainter oldDelegate) {
     return oldDelegate.compositionResult != compositionResult ||
-        oldDelegate.isDistanceOptimal != isDistanceOptimal;
+        oldDelegate.isActiveGuidanceAllowed != isActiveGuidanceAllowed ||
+        oldDelegate.deviceOrientation != deviceOrientation;
   }
 }
 
