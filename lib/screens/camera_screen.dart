@@ -57,6 +57,8 @@ class _CameraScreenState extends State<CameraScreen>
   bool _isProcessing = false;
   int _frameCounter = 0;
   Size? _imageSize;
+  int _detectedFacesRotation = 0;
+  NativeDeviceOrientation _detectedFacesOrientation = NativeDeviceOrientation.portraitUp;
   
   // Orientation tracking
   NativeDeviceOrientation _deviceOrientation = NativeDeviceOrientation.portraitUp;
@@ -85,7 +87,6 @@ class _CameraScreenState extends State<CameraScreen>
   // Frame comparison for stability (skip face detection when camera is stationary)
   Uint8List? _previousFrameSample;
   Size? _previousImageSize;
-  int _currentRotationDegrees = 0;
 
   @override
   void initState() {
@@ -489,9 +490,9 @@ class _CameraScreenState extends State<CameraScreen>
   Future<void> _processCameraImage(CameraImage image) async {
     // Skip frames for optimization (process every 2nd frame for more real-time feel)
     _frameCounter++;
-    // if (_frameCounter % 2 != 0) {
-    //   return;
-    // }
+
+    // Capture current orientation data to ensure consistency throughout processing
+    final currentOrientation = _deviceOrientation;
 
     // Skip if already processing to prevent queue buildup
     if (_isProcessing || _faceDetector == null) {
@@ -506,32 +507,33 @@ class _CameraScreenState extends State<CameraScreen>
       // Check if frame changed significantly before running face detection
       final shouldRunFaceDetection = _shouldProcessFrame(image, imageSize);
       
-      List<Face> faces = [];
-      DistanceCoachingResult? coachingResult;
-      
       if (shouldRunFaceDetection) {
         // Frame changed significantly, run face detection
-        final inputImage = _convertCameraImage(image);
+        final currentRotation = _calculateRotationDegrees();
+        final inputImage = _convertCameraImage(image, currentRotation);
         if (inputImage == null) {
           _isProcessing = false;
-          debugPrint('Failed to convert camera image');
           return;
         }
         
-        faces = await _faceDetector!.processImage(inputImage);
+        final List<Face> faces = await _faceDetector!.processImage(inputImage);
         
         // Store frame sample for next comparison
         _previousFrameSample = _sampleFrame(image);
         _previousImageSize = imageSize;
         
         int significantFaceCount = 0;
+        DistanceCoachingResult? coachingResult;
+        CompositionGuidanceResult? compositionResult;
+        Offset? displayFaceCenter;
+        Size? displayImageSize;
 
         // Process face detection results
         if (faces.isNotEmpty && imageSize.height > 0) {
           // Determine display height and effective size based on rotation
           final double displayHeight;
           final Size effectiveSize;
-          if (_currentRotationDegrees == 90 || _currentRotationDegrees == 270) {
+          if (currentRotation == 90 || currentRotation == 270) {
             displayHeight = imageSize.width; // camW is height in portrait
             effectiveSize = Size(imageSize.height, imageSize.width); // camH x camW (e.g. 720x1280)
           } else {
@@ -540,27 +542,22 @@ class _CameraScreenState extends State<CameraScreen>
           }
 
           // Count significant faces for orientation suggestion
-          // A face is significant if it takes up at least 15% of frame height
-          const significantThreshold = 15.0; // 15%
+          // IMPROVEMENT: Use a consistent threshold based on the minimum dimension
+          // to avoid flickering between portrait and landscape significance.
+          final minDimension = min(imageSize.width, imageSize.height);
+          final significantPixelThreshold = minDimension * 0.15; // 15% of smaller dimension
 
           for (final face in faces) {
             // With correct rotation, ML Kit height is always the vertical axis relative to display
-            final faceHeight = face.boundingBox.height;
-            if (displayHeight > 0) {
-              final faceHeightPercentage = (faceHeight / displayHeight) * 100.0;
-              if (faceHeightPercentage >= significantThreshold) {
-                significantFaceCount++;
-              }
+            if (face.boundingBox.height >= significantPixelThreshold) {
+              significantFaceCount++;
             }
           }
 
           // Select best face for coaching and focus (handles multiple faces)
-          // Uses a combination of size and position (larger + more central = better)
           Face? bestFace = _selectBestFace(faces, effectiveSize);
           
           if (bestFace != null) {
-            // Calculate face height relative to the display vertical axis
-            // With correct rotation, face.boundingBox.height is already vertical
             final faceHeight = bestFace.boundingBox.height;
             
             // Safety check: ensure valid face height
@@ -573,21 +570,15 @@ class _CameraScreenState extends State<CameraScreen>
                 _currentDistanceScenario,
               );
               
-              // Transform face center from camera coordinates to display coordinates
-              // Now simplified because we pass the correct rotation to ML Kit!
-              Offset displayFaceCenter;
-              Size displayImageSize;
-
               // Camera image size (usually landscape: e.g. 1280x720)
               final camW = imageSize.width;
               final camH = imageSize.height;
 
               // Calculate face center in camera coordinates (as returned by ML Kit)
-              // ML Kit returns coordinates in the rotated (upright) image space
               final rawFaceCenterX = bestFace.boundingBox.left + (bestFace.boundingBox.width / 2);
               final rawFaceCenterY = bestFace.boundingBox.top + (bestFace.boundingBox.height / 2);
 
-              if (_currentRotationDegrees == 90 || _currentRotationDegrees == 270) {
+              if (currentRotation == 90 || currentRotation == 270) {
                 displayImageSize = Size(camH, camW);
               } else {
                 displayImageSize = Size(camW, camH);
@@ -600,83 +591,45 @@ class _CameraScreenState extends State<CameraScreen>
                 displayFaceCenter = Offset(displayImageSize.width - displayFaceCenter.dx, displayFaceCenter.dy);
               }
               
-              final normX = displayFaceCenter.dx / displayImageSize.width;
-              final normY = displayFaceCenter.dy / displayImageSize.height;
-              
-              if (_frameCounter % 30 == 0) {
-                final sO = _currentCamera?.sensorOrientation ?? 0;
-                debugPrint('🔧 TRANSFORM: Sensor($sO) Raw(${rawFaceCenterX.toStringAsFixed(1)}, ${rawFaceCenterY.toStringAsFixed(1)}) on ${camW.toInt()}x${camH.toInt()} -> Display(${displayFaceCenter.dx.toStringAsFixed(1)}, ${displayFaceCenter.dy.toStringAsFixed(1)}) on ${displayImageSize.width.toInt()}x${displayImageSize.height.toInt()} | Norm[${normX.toStringAsFixed(3)}, ${normY.toStringAsFixed(3)}]');
-              }
-
               // Now evaluate composition with display coordinates
-              final compositionResult = evaluateComposition(
-                displayFaceCenter,  // ✅ Transformed to display space!
-                displayImageSize,   // ✅ Size matches display orientation!
+              compositionResult = evaluateComposition(
+                displayFaceCenter,
+                displayImageSize,
                 previousPowerPoint: _previousPowerPoint,
               );
-              
-              // Update composition guidance result and track power point for hysteresis
-              if (mounted) {
-                setState(() {
-                  _compositionGuidanceResult = compositionResult;
-                  _previousPowerPoint = compositionResult.nearestPowerPoint;
-                  _lastDisplayFaceCenter = displayFaceCenter;
-                  _lastDisplayImageSize = displayImageSize;
-                });
-              }
             }
           }
-        } else {
-          // No faces detected, clear previous state
-          _previousFrameSample = null;
-          _previousImageSize = null;
-          // Clear composition guidance
-          if (mounted) {
-            setState(() {
-              _compositionGuidanceResult = null;
-              _previousPowerPoint = null;
-              _lastDisplayFaceCenter = null;
-            });
-          }
         }
-        
-        // Always update UI when face detection runs
+
+        // Always update UI when face detection runs, combining all updates into one setState
         if (mounted) {
           setState(() {
             _detectedFaces = faces;
             _imageSize = imageSize;
+            _detectedFacesRotation = currentRotation;
+            _detectedFacesOrientation = currentOrientation;
+            
             _distanceCoachingResult = coachingResult;
             _currentDistanceScenario = coachingResult?.scenario;
             _significantFaceCount = significantFaceCount;
+            
+            _compositionGuidanceResult = compositionResult;
+            if (compositionResult != null) {
+              _previousPowerPoint = compositionResult.nearestPowerPoint;
+            }
+            _lastDisplayFaceCenter = displayFaceCenter;
+            _lastDisplayImageSize = displayImageSize;
           });
         }
         
-        // Debug composition guidance with transformed coordinates
-        if (_frameCounter % 30 == 0 && faces.isNotEmpty && _compositionGuidanceResult != null) {
-          debugPrint('COMPOSITION DEBUG: Face center ($_lastDisplayFaceCenter) | Size ($_lastDisplayImageSize) | Nearest PP: (${_compositionGuidanceResult!.nearestPowerPoint.x.toStringAsFixed(3)}, ${_compositionGuidanceResult!.nearestPowerPoint.y.toStringAsFixed(3)}) | Distance: ${_compositionGuidanceResult!.distancePercentage.toStringAsFixed(3)} | Status: ${_compositionGuidanceResult!.status}');
-        }
-        
-        // Debug once only
-        if (_frameCounter == 105 && faces.isNotEmpty) {
-          final bestFace = _selectBestFace(faces, imageSize);
-          final displayFace = bestFace ?? faces.first;
-          debugPrint('');
-          debugPrint('═══════════════════════════════════════════════════');
-          debugPrint('SENSOR: ${_currentCamera?.sensorOrientation}° | IMAGE: ${image.width}x${image.height}');
-          debugPrint('FACE BOUNDS (raw): ${displayFace.boundingBox}');
-          debugPrint('NUMBER OF FACES: ${faces.length}');
-          for (var i = 0; i < faces.length; i++) {
-            debugPrint('FACE $i: ${faces[i].boundingBox}${bestFace == faces[i] ? " (BEST)" : ""}');
+        // Debug logging
+        if (_frameCounter % 30 == 0 && faces.isNotEmpty) {
+          if (_compositionGuidanceResult != null) {
+            debugPrint('COMPOSITION DEBUG: Face center ($_lastDisplayFaceCenter) | Size ($_lastDisplayImageSize) | Nearest PP: (${_compositionGuidanceResult!.nearestPowerPoint.x.toStringAsFixed(3)}, ${_compositionGuidanceResult!.nearestPowerPoint.y.toStringAsFixed(3)}) | Distance: ${_compositionGuidanceResult!.distancePercentage.toStringAsFixed(3)} | Status: ${_compositionGuidanceResult!.status}');
           }
-          if (_distanceCoachingResult != null) {
-            debugPrint('DISTANCE COACHING: ${_distanceCoachingResult!.scenario} - ${_distanceCoachingResult!.message} (${_distanceCoachingResult!.status})');
-          }
-          debugPrint('═══════════════════════════════════════════════════');
-          debugPrint('');
         }
       }
     } catch (e) {
-      // Don't spam console with repeated errors
       if (_frameCounter % 50 == 0) {
         debugPrint('Error processing image for face detection: $e');
       }
@@ -886,7 +839,7 @@ class _CameraScreenState extends State<CameraScreen>
     }
   }
 
-  InputImage? _convertCameraImage(CameraImage image) {
+  InputImage? _convertCameraImage(CameraImage image, int rotationDegrees) {
     final camera = _controller?.description;
     if (camera == null) return null;
 
@@ -900,11 +853,8 @@ class _CameraScreenState extends State<CameraScreen>
     // Get image size
     final Size imageSize = Size(image.width.toDouble(), image.height.toDouble());
 
-    // Calculate rotation based on sensor orientation and device orientation
-    _currentRotationDegrees = _calculateRotationDegrees();
-
     final InputImageRotation imageRotation =
-        InputImageRotationValue.fromRawValue(_currentRotationDegrees) ??
+        InputImageRotationValue.fromRawValue(rotationDegrees) ??
         InputImageRotation.rotation0deg;
 
     // Determine image format based on platform
@@ -926,7 +876,7 @@ class _CameraScreenState extends State<CameraScreen>
     return InputImage.fromBytes(bytes: bytes, metadata: metadata);
   }
 
-  int _getIconRotationQuarterTurns() {
+  int _getPreviewRotationTurns() {
     switch (_deviceOrientation) {
       case NativeDeviceOrientation.landscapeLeft:
         return 1;
@@ -937,6 +887,10 @@ class _CameraScreenState extends State<CameraScreen>
       default:
         return 0;
     }
+  }
+
+  int _getIconRotationQuarterTurns() {
+    return _getPreviewRotationTurns();
   }
 
   Future<void> _switchCamera() async {
@@ -986,9 +940,6 @@ class _CameraScreenState extends State<CameraScreen>
 
   @override
   Widget build(BuildContext context) {
-    // Ensure rotation is up to date for UI overlays
-    _currentRotationDegrees = _calculateRotationDegrees();
-
     if (!_hasPermission) {
       return Scaffold(
         backgroundColor: Colors.black,
@@ -1046,36 +997,33 @@ class _CameraScreenState extends State<CameraScreen>
       );
     }
 
-    // Calculate the correct aspect ratio considering sensor orientation
-    // Most phone cameras have sensors rotated 90 degrees
-    final sensorOrientation = _currentCamera?.sensorOrientation ?? 0;
-    final isLandscapeSensor = sensorOrientation == 90 || sensorOrientation == 270;
-    
-    double cameraAspectRatio;
+    // Calculate the correct aspect ratio for the preview container
+    // Since the app is locked in portrait, we always want a portrait-proportioned container (e.g., 720/1280)
+    // The content inside will be rotated to match the physical orientation
+    double previewAspectRatio;
     if (_imageSize != null) {
-      // For landscape sensor orientations (90/270), swap width and height
-      cameraAspectRatio = isLandscapeSensor 
-          ? _imageSize!.height / _imageSize!.width 
-          : _imageSize!.width / _imageSize!.height;
+      // imageSize is typically landscape (e.g., 1280x720), so ratio is 720/1280
+      previewAspectRatio = _imageSize!.height / _imageSize!.width;
     } else {
-      // Fallback to controller aspect ratio
-      cameraAspectRatio = 1 / _controller!.value.aspectRatio;
+      // Fallback to controller aspect ratio (inverted for portrait container)
+      final controllerRatio = _controller!.value.aspectRatio;
+      previewAspectRatio = controllerRatio > 1 ? 1 / controllerRatio : controllerRatio;
     }
     
     return Scaffold(
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          // Camera preview with face detection overlay - centered with correct aspect ratio
+          // Camera preview with overlays - centered with correct aspect ratio
           Center(
             child: AspectRatio(
-              aspectRatio: cameraAspectRatio,
+              aspectRatio: previewAspectRatio,
               child: LayoutBuilder(
-                builder: (context, constraints) {
-                  final previewSize = Size(constraints.maxWidth, constraints.maxHeight);
+                builder: (context, portraitConstraints) {
+                  final portraitPreviewSize = Size(portraitConstraints.maxWidth, portraitConstraints.maxHeight);
                   
                   return GestureDetector(
-                    onTapDown: (details) => _handleTapToFocus(details, previewSize),
+                    onTapDown: (details) => _handleTapToFocus(details, portraitPreviewSize),
                     child: Stack(
                       fit: StackFit.expand,
                       children: [
@@ -1085,39 +1033,44 @@ class _CameraScreenState extends State<CameraScreen>
                           painter: FaceDetectorPainter(
                             faces: _detectedFaces,
                             imageSize: _imageSize,
-                            cameraPreviewSize: previewSize,
-                            rotationDegrees: _currentRotationDegrees,
+                            cameraPreviewSize: portraitPreviewSize,
+                            rotationDegrees: _detectedFacesRotation,
+                            deviceOrientation: _detectedFacesOrientation,
                             cameraLensDirection: _currentCamera?.lensDirection,
                           ),
                         ),
-                        // Focus feedback ring
-                        if (_focusPoint != null && _focusAnimationController != null)
-                          AnimatedBuilder(
-                            animation: _focusAnimation!,
-                            builder: (context, child) {
-                              return Positioned(
-                                left: _focusPoint!.dx - 50,
-                                top: _focusPoint!.dy - 50,
-                                child: Container(
-                                  width: 100,
-                                  height: 100,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      color: Colors.white.withValues(alpha: _focusAnimation!.value),
-                                      width: 2,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
                         // Composition grid overlay (inside preview area)
                         CompositionGridOverlay(
                           compositionResult: _compositionGuidanceResult,
                           distanceResult: _distanceCoachingResult,
-                          previewSize: previewSize,
+                          previewSize: portraitPreviewSize,
+                          deviceOrientation: _detectedFacesOrientation,
                         ),
+                        
+                        // Focus feedback ring (in portrait coordinate space relative to preview)
+                        if (_focusPoint != null && _focusAnimationController != null)
+                          IgnorePointer(
+                            child: AnimatedBuilder(
+                              animation: _focusAnimation!,
+                              builder: (context, child) {
+                                return Positioned(
+                                  left: _focusPoint!.dx - 50,
+                                  top: _focusPoint!.dy - 50,
+                                  child: Container(
+                                    width: 100,
+                                    height: 100,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: Colors.white.withValues(alpha: _focusAnimation!.value),
+                                        width: 2,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
                       ],
                     ),
                   );
@@ -1507,6 +1460,7 @@ class FaceDetectorPainter extends CustomPainter {
   final Size? imageSize;
   final Size cameraPreviewSize;
   final int rotationDegrees;
+  final NativeDeviceOrientation deviceOrientation;
   final CameraLensDirection? cameraLensDirection;
 
   static bool _hasLogged = false;
@@ -1516,6 +1470,7 @@ class FaceDetectorPainter extends CustomPainter {
     required this.imageSize,
     required this.cameraPreviewSize,
     required this.rotationDegrees,
+    required this.deviceOrientation,
     this.cameraLensDirection,
   });
 
@@ -1568,9 +1523,8 @@ class FaceDetectorPainter extends CustomPainter {
     required Size imageSize,
     required Size widgetSize,
   }) {
-    // ML Kit returns coordinates in the rotated (upright) image space
-    // We just need to scale them to the widget size, considering the rotated image dimensions.
-    
+    // ML Kit returns coordinates in the rotated (upright) image space.
+    // effectiveImageSize is the size of the image as ML Kit sees it.
     Size effectiveImageSize;
     if (rotationDegrees == 90 || rotationDegrees == 270) {
       effectiveImageSize = Size(imageSize.height, imageSize.width);
@@ -1578,23 +1532,72 @@ class FaceDetectorPainter extends CustomPainter {
       effectiveImageSize = Size(imageSize.width, imageSize.height);
     }
 
-    final scaleX = widgetSize.width / effectiveImageSize.width;
-    final scaleY = widgetSize.height / effectiveImageSize.height;
+    // 1. Normalize coordinates (0 to 1)
+    double nx = rect.left / effectiveImageSize.width;
+    double ny = rect.top / effectiveImageSize.height;
+    double nw = rect.width / effectiveImageSize.width;
+    double nh = rect.height / effectiveImageSize.height;
 
-    double left = rect.left * scaleX;
-    double top = rect.top * scaleY;
-    double right = rect.right * scaleX;
-    double bottom = rect.bottom * scaleY;
+    // 2. Map from ML Kit's "upright" space to the "portrait" preview space.
+    // The CameraPreview is always in portrait and its content is rotated by sensorOrientation.
+    // To match, we must counter-rotate by the device orientation.
+    double finalNx, finalNy, finalNw, finalNh;
 
-    // Handle mirroring for front camera
-    if (cameraLensDirection == CameraLensDirection.front) {
-      final mirroredLeft = widgetSize.width - right;
-      final mirroredRight = widgetSize.width - left;
-      left = mirroredLeft;
-      right = mirroredRight;
+    int degrees = 0;
+    switch (deviceOrientation) {
+      case NativeDeviceOrientation.landscapeRight:
+        degrees = 90;
+        break;
+      case NativeDeviceOrientation.portraitDown:
+        degrees = 180;
+        break;
+      case NativeDeviceOrientation.landscapeLeft:
+        degrees = 270;
+        break;
+      default:
+        degrees = 0;
     }
 
-    return Rect.fromLTRB(left, top, right, bottom);
+    // Apply rotation to normalized coordinates
+    if (degrees == 90) {
+      // Rotate -90 degrees (or 270)
+      finalNx = ny;
+      finalNy = 1.0 - (nx + nw);
+      finalNw = nh;
+      finalNh = nw;
+    } else if (degrees == 180) {
+      // Rotate 180 degrees
+      finalNx = 1.0 - (nx + nw);
+      finalNy = 1.0 - (ny + nh);
+      finalNw = nw;
+      finalNh = nh;
+    } else if (degrees == 270) {
+      // Rotate -270 degrees (or 90)
+      finalNx = 1.0 - (ny + nh);
+      finalNy = nx;
+      finalNw = nh;
+      finalNh = nw;
+    } else {
+      // portraitUp
+      finalNx = nx;
+      finalNy = ny;
+      finalNw = nw;
+      finalNh = nh;
+    }
+
+    // 3. Handle mirroring for front camera
+    if (cameraLensDirection == CameraLensDirection.front) {
+      // For front camera, the preview is mirrored horizontally in the portrait coordinate space.
+      finalNx = 1.0 - (finalNx + finalNw);
+    }
+
+    // 4. Scale to widget size
+    return Rect.fromLTWH(
+      finalNx * widgetSize.width,
+      finalNy * widgetSize.height,
+      finalNw * widgetSize.width,
+      finalNh * widgetSize.height,
+    );
   }
 
   @override

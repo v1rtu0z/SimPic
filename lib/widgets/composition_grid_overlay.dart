@@ -9,12 +9,14 @@ class CompositionGridOverlay extends StatefulWidget {
   final CompositionGuidanceResult? compositionResult;
   final DistanceCoachingResult? distanceResult; // Used to determine if we should show active guidance
   final Size? previewSize;
+  final NativeDeviceOrientation deviceOrientation;
 
   const CompositionGridOverlay({
     super.key,
     this.compositionResult,
     this.distanceResult,
     this.previewSize,
+    required this.deviceOrientation,
   });
 
   @override
@@ -70,6 +72,7 @@ class _CompositionGridOverlayState extends State<CompositionGridOverlay>
           compositionResult: widget.compositionResult,
           isDistanceOptimal: _isDistanceOptimal,
           pulseAnimation: _pulseAnimation,
+          deviceOrientation: widget.deviceOrientation,
         ),
       ),
     );
@@ -81,11 +84,13 @@ class CompositionGridPainter extends CustomPainter {
   final CompositionGuidanceResult? compositionResult;
   final bool isDistanceOptimal;
   final Animation<double> pulseAnimation;
+  final NativeDeviceOrientation deviceOrientation;
 
   CompositionGridPainter({
     required this.compositionResult,
     required this.isDistanceOptimal,
     required this.pulseAnimation,
+    required this.deviceOrientation,
   }) : super(repaint: pulseAnimation);
 
   @override
@@ -169,20 +174,43 @@ class CompositionGridPainter extends CustomPainter {
       return;
     }
 
-    // Get the target power point from composition result
-    final targetNormalized = compositionResult!.nearestPowerPoint;
+    // Get the target power point from composition result (normalized in upright space)
+    final targetUpright = compositionResult!.nearestPowerPoint;
+    
+    // Map target power point to portrait space
+    double targetX, targetY;
+    int degrees = 0;
+    switch (deviceOrientation) {
+      case NativeDeviceOrientation.landscapeRight: degrees = 90; break;
+      case NativeDeviceOrientation.portraitDown: degrees = 180; break;
+      case NativeDeviceOrientation.landscapeLeft: degrees = 270; break;
+      default: degrees = 0;
+    }
+
+    if (degrees == 90) {
+      targetX = targetUpright.y;
+      targetY = 1.0 - targetUpright.x;
+    } else if (degrees == 180) {
+      targetX = 1.0 - targetUpright.x;
+      targetY = 1.0 - targetUpright.y;
+    } else if (degrees == 270) {
+      targetX = 1.0 - targetUpright.y;
+      targetY = targetUpright.x;
+    } else {
+      targetX = targetUpright.x;
+      targetY = targetUpright.y;
+    }
     
     // Draw all power points
     for (final point in powerPoints) {
-      // Calculate normalized coordinates for this power point
+      // Calculate normalized coordinates for this power point (always portrait)
       final pointNormalizedX = point.dx / size.width;
       final pointNormalizedY = point.dy / size.height;
       
       // Match power point by comparing normalized coordinates
-      // Use tolerance to account for floating point precision
-      const tolerance = 0.005; // Small tolerance for floating point comparison
-      final isTarget = (pointNormalizedX - targetNormalized.x).abs() < tolerance &&
-                       (pointNormalizedY - targetNormalized.y).abs() < tolerance;
+      const tolerance = 0.05; // Increased tolerance for power point matching
+      final isTarget = (pointNormalizedX - targetX).abs() < tolerance &&
+                       (pointNormalizedY - targetY).abs() < tolerance;
       
       // Only highlight target power point when distance is optimal AND composition needs adjustment
       if (isTarget && 
@@ -224,9 +252,6 @@ class CompositionGridPainter extends CustomPainter {
       return;
     }
 
-    // TODO: Make arrows use negative/inverse color of background for better visibility
-    // Currently cyan/blue arrows would be invisible against blue sky backgrounds.
-    // Consider: white with dark outline, or dynamically sample background color and invert.
     final arrowPaint = Paint()
       ..color = Colors.cyan.withValues(alpha: 0.7)
       ..style = PaintingStyle.stroke
@@ -238,17 +263,66 @@ class CompositionGridPainter extends CustomPainter {
     const arrowSize = 30.0;
     const margin = 40.0;
 
-    // Draw arrows at edges
-    if (guidance.moveLeft) {
+    // Rotate directional guidance from upright space to portrait screen space
+    bool moveLeft = guidance.moveLeft;
+    bool moveRight = guidance.moveRight;
+    bool moveUp = guidance.moveUp;
+    bool moveDown = guidance.moveDown;
+
+    bool fLeft = false, fRight = false, fUp = false, fDown = false;
+
+    int degrees = 0;
+    switch (deviceOrientation) {
+      case NativeDeviceOrientation.landscapeRight: degrees = 90; break;
+      case NativeDeviceOrientation.portraitDown: degrees = 180; break;
+      case NativeDeviceOrientation.landscapeLeft: degrees = 270; break;
+      default: degrees = 0;
+    }
+
+    if (degrees == 90) {
+      // Upright -> Portrait (+90 rotation)
+      // Upright Left (ux=0) -> Portrait Bottom (py=1)
+      // Upright Right (ux=1) -> Portrait Top (py=0)
+      // Upright Top (uy=0) -> Portrait Left (px=0)
+      // Upright Bottom (uy=1) -> Portrait Right (px=1)
+      fDown = moveLeft;
+      fUp = moveRight;
+      fLeft = moveUp;
+      fRight = moveDown;
+    } else if (degrees == 180) {
+      // Upright -> Portrait (+180 rotation)
+      fRight = moveLeft;
+      fLeft = moveRight;
+      fDown = moveUp;
+      fUp = moveDown;
+    } else if (degrees == 270) {
+      // Upright -> Portrait (+270 rotation)
+      // Upright Left (ux=0) -> Portrait Top (py=0)
+      // Upright Right (ux=1) -> Portrait Bottom (py=1)
+      // Upright Top (uy=0) -> Portrait Right (px=1)
+      // Upright Bottom (uy=1) -> Portrait Left (px=0)
+      fUp = moveLeft;
+      fDown = moveRight;
+      fRight = moveUp;
+      fLeft = moveDown;
+    } else {
+      fLeft = moveLeft;
+      fRight = moveRight;
+      fUp = moveUp;
+      fDown = moveDown;
+    }
+
+    // Draw arrows at edges based on rotated guidance
+    if (fLeft) {
       _drawArrow(canvas, Offset(margin, size.height / 2), arrowSize, ArrowDirection.left, arrowPaint);
     }
-    if (guidance.moveRight) {
+    if (fRight) {
       _drawArrow(canvas, Offset(size.width - margin, size.height / 2), arrowSize, ArrowDirection.right, arrowPaint);
     }
-    if (guidance.moveUp) {
+    if (fUp) {
       _drawArrow(canvas, Offset(size.width / 2, margin), arrowSize, ArrowDirection.up, arrowPaint);
     }
-    if (guidance.moveDown) {
+    if (fDown) {
       _drawArrow(canvas, Offset(size.width / 2, size.height - margin), arrowSize, ArrowDirection.down, arrowPaint);
     }
   }
