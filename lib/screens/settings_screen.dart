@@ -60,11 +60,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
         _buildIndentedToggle(
           title: 'Auto-Shutter',
-          subtitle: 'Take photo automatically when perfect',
+          subtitle: 'Takes photo automatically when enabled coaching features are satisfied',
           value: appSettings.isAutoShutterSet,
           enabled: faceEnabled,
           onChanged: (value) => appSettings.autoShutterEnabled = value,
         ),
+        _buildSubgroupHeader('COACHING FEATURES (AUTO-SHUTTER DEPENDS ON THESE)'),
         _buildIndentedToggle(
           title: 'Distance Coaching',
           subtitle: 'Show guidance for subject distance',
@@ -86,6 +87,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
           enabled: faceEnabled,
           onChanged: (value) => appSettings.orientationSuggestionEnabled = value,
         ),
+        _buildIndentedToggle(
+          title: 'Lighting Intelligence',
+          subtitle: 'Warn about backlit or harsh shadows',
+          value: appSettings.isLightingIntelligenceSet,
+          enabled: faceEnabled,
+          onChanged: (value) => appSettings.lightingIntelligenceEnabled = value,
+        ),
       ],
     );
   }
@@ -102,11 +110,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
         _buildIndentedToggle(
           title: 'Auto-Shutter',
-          subtitle: 'Take photo automatically when perfect',
+          subtitle: 'Takes photo automatically when enabled coaching features are satisfied',
           value: appSettings.isFrontAutoShutterSet,
           enabled: faceEnabled,
           onChanged: (value) => appSettings.frontAutoShutterEnabled = value,
         ),
+        _buildSubgroupHeader('COACHING FEATURES (AUTO-SHUTTER DEPENDS ON THESE)'),
         _buildIndentedToggle(
           title: 'Distance Coaching',
           subtitle: 'Show guidance for subject distance',
@@ -128,7 +137,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
           enabled: faceEnabled,
           onChanged: (value) => appSettings.frontOrientationSuggestionEnabled = value,
         ),
+        _buildIndentedToggle(
+          title: 'Lighting Intelligence',
+          subtitle: 'Warn about backlit or harsh shadows',
+          value: appSettings.isFrontLightingIntelligenceSet,
+          enabled: faceEnabled,
+          onChanged: (value) => appSettings.frontLightingIntelligenceEnabled = value,
+        ),
       ],
+    );
+  }
+
+  Widget _buildSubgroupHeader(String title) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(32, 8, 16, 4),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          title,
+          style: const TextStyle(
+            color: Colors.white54,
+            fontWeight: FontWeight.w500,
+            fontSize: 10,
+            letterSpacing: 0.8,
+          ),
+        ),
+      ),
     );
   }
 

@@ -82,6 +82,7 @@
 
 ### Phase 3: Lighting Intelligence (Hours 13-16)
 **Goal: Help avoid harsh shadows and backlit faces**
+**Status: ✅ Completed**
 
 #### Feature 3.1: Face Exposure Analysis
 - **Priority: P0 (Huge quality impact)**
@@ -97,6 +98,10 @@
   - "⚠️ Face in shadow - move to brighter area"
   - "☀️ Backlit - turn around or use flash"
   - "✓ Good lighting" (green indicator)
+- **Integration:**
+  - Added to `AppSettings` (per camera).
+  - Included in `CoachingOverlay` with color-coded feedback.
+  - Added as criteria for Auto-shutter.
 
 #### Feature 3.2: Auto-exposure Lock on Face
 - **Priority: P0**

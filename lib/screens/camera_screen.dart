@@ -18,6 +18,7 @@ import '../widgets/coaching_overlay.dart';
 import '../models/composition_guidance.dart';
 import '../widgets/composition_grid_overlay.dart';
 import '../models/orientation_guidance.dart';
+import '../models/exposure_guidance.dart';
 import '../models/app_settings.dart';
 import 'settings_screen.dart';
 
@@ -76,6 +77,9 @@ class _CameraScreenState extends State<CameraScreen>
   PowerPoint? _previousPowerPoint; // For hysteresis to prevent flickering
   Offset? _lastDisplayFaceCenter; // Tracked for UI overlay
   Size? _lastDisplayImageSize;    // Tracked for UI overlay
+  
+  // Exposure analysis
+  FaceExposureResult? _faceExposureResult;
   
   // Focus feedback
   Offset? _focusPoint;
@@ -575,6 +579,7 @@ class _CameraScreenState extends State<CameraScreen>
         int significantFaceCount = 0;
         DistanceCoachingResult? coachingResult;
         CompositionGuidanceResult? compositionResult;
+        FaceExposureResult? exposureResult;
         Offset? displayFaceCenter;
         Size? displayImageSize;
 
@@ -648,6 +653,16 @@ class _CameraScreenState extends State<CameraScreen>
                 displayImageSize,
                 previousPowerPoint: _previousPowerPoint,
               );
+
+              // Perform Lighting Intelligence (Exposure Analysis)
+              if (appSettings.lightingIntelligenceEnabled) {
+                exposureResult = analyzeFaceExposure(
+                  image,
+                  bestFace.boundingBox,
+                  currentRotation,
+                  _currentCamera?.lensDirection == CameraLensDirection.front,
+                );
+              }
             }
           }
         }
@@ -668,6 +683,7 @@ class _CameraScreenState extends State<CameraScreen>
             if (compositionResult != null) {
               _previousPowerPoint = compositionResult.nearestPowerPoint;
             }
+            _faceExposureResult = appSettings.lightingIntelligenceEnabled ? exposureResult : null;
             _lastDisplayFaceCenter = displayFaceCenter;
             _lastDisplayImageSize = displayImageSize;
           });
@@ -677,6 +693,7 @@ class _CameraScreenState extends State<CameraScreen>
         _handleAutoShutter(
           appSettings.distanceCoachingEnabled ? coachingResult : null,
           appSettings.compositionGridEnabled ? compositionResult : null,
+          appSettings.lightingIntelligenceEnabled ? exposureResult : null,
         );
         
         // Debug logging
@@ -695,19 +712,27 @@ class _CameraScreenState extends State<CameraScreen>
     }
   }
 
-  void _handleAutoShutter(DistanceCoachingResult? coaching, CompositionGuidanceResult? composition) {
+  void _handleAutoShutter(
+    DistanceCoachingResult? coaching,
+    CompositionGuidanceResult? composition,
+    FaceExposureResult? exposure,
+  ) {
     if (!appSettings.autoShutterEnabled || _isCapturing) {
       _goodFrameCount = 0;
       return;
     }
 
-    // Check if "guidance" features are enabled.
-    // Orientation doesn't count as per request.
+    // Check if any coaching features are enabled.
+    // Auto-shutter depends on these.
     bool distanceEnabled = appSettings.distanceCoachingEnabled;
     bool compositionEnabled = appSettings.compositionGridEnabled;
+    bool lightingEnabled = appSettings.lightingIntelligenceEnabled;
+    bool orientationEnabled = appSettings.orientationSuggestionEnabled;
     
-    // Auto-shutter should be auto turned off when all "guidance" features get turned off
-    if (!distanceEnabled && !compositionEnabled) {
+    // Safety check: if all are disabled, auto-shutter shouldn't be running.
+    // The AppSettings logic already auto-disables autoShutterEnabled in this case,
+    // but we keep this for extra robustness.
+    if (!distanceEnabled && !compositionEnabled && !lightingEnabled && !orientationEnabled) {
       _goodFrameCount = 0;
       return;
     }
@@ -738,6 +763,8 @@ class _CameraScreenState extends State<CameraScreen>
                              shouldIgnoreComposition || 
                              (composition != null && composition.status == CompositionStatus.wellPositioned);
     
+    bool isLightingGood = !lightingEnabled || (exposure != null && exposure.status == ExposureStatus.good);
+    
     // For orientation, we still use it if enabled
     bool isOrientationGood = true;
     if (appSettings.orientationSuggestionEnabled) {
@@ -748,7 +775,7 @@ class _CameraScreenState extends State<CameraScreen>
       isOrientationGood = !orientationGuidance.isMismatch;
     }
 
-    if (isDistanceGood && isCompositionGood && isOrientationGood) {
+    if (isDistanceGood && isCompositionGood && isOrientationGood && isLightingGood) {
       _goodFrameCount++;
       if (_goodFrameCount >= _autoShutterRequiredGoodFrames) {
         _goodFrameCount = 0;
@@ -1288,6 +1315,7 @@ class _CameraScreenState extends State<CameraScreen>
           CoachingOverlay(
             coachingResult: _distanceCoachingResult,
             compositionResult: _compositionGuidanceResult,
+            exposureResult: _faceExposureResult,
             significantFaceCount: _significantFaceCount,
             deviceOrientation: _stableLayoutOrientation,
             isOrientationMismatch: isOrientationMismatch && appSettings.orientationSuggestionEnabled,

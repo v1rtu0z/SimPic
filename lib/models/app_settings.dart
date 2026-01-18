@@ -7,24 +7,28 @@ class AppSettings extends ChangeNotifier {
   static const String _keyDistanceCoaching = 'distanceCoachingEnabled';
   static const String _keyCompositionGrid = 'compositionGridEnabled';
   static const String _keyOrientationSuggestion = 'orientationSuggestionEnabled';
+  static const String _keyLightingIntelligence = 'lightingIntelligenceEnabled';
 
   static const String _keyFrontFaceDetection = 'frontFaceDetectionEnabled';
   static const String _keyFrontAutoShutter = 'frontAutoShutterEnabled';
   static const String _keyFrontDistanceCoaching = 'frontDistanceCoachingEnabled';
   static const String _keyFrontCompositionGrid = 'frontCompositionGridEnabled';
   static const String _keyFrontOrientationSuggestion = 'frontOrientationSuggestionEnabled';
+  static const String _keyFrontLightingIntelligence = 'frontLightingIntelligenceEnabled';
 
   bool _faceDetectionEnabled = true;
   bool _autoShutterEnabled = true;
   bool _distanceCoachingEnabled = true;
   bool _compositionGridEnabled = true;
   bool _orientationSuggestionEnabled = true;
+  bool _lightingIntelligenceEnabled = true;
 
   bool _frontFaceDetectionEnabled = true;
   bool _frontAutoShutterEnabled = true; // Default to true for selfie
   bool _frontDistanceCoachingEnabled = true;
   bool _frontCompositionGridEnabled = true;
   bool _frontOrientationSuggestionEnabled = true;
+  bool _frontLightingIntelligenceEnabled = true;
 
   bool _isFrontCamera = false;
 
@@ -41,6 +45,7 @@ class AppSettings extends ChangeNotifier {
   bool get distanceCoachingEnabled => faceDetectionEnabled && (_isFrontCamera ? _frontDistanceCoachingEnabled : _distanceCoachingEnabled);
   bool get compositionGridEnabled => faceDetectionEnabled && (_isFrontCamera ? _frontCompositionGridEnabled : _compositionGridEnabled);
   bool get orientationSuggestionEnabled => faceDetectionEnabled && (_isFrontCamera ? _frontOrientationSuggestionEnabled : _orientationSuggestionEnabled);
+  bool get lightingIntelligenceEnabled => faceDetectionEnabled && (_isFrontCamera ? _frontLightingIntelligenceEnabled : _lightingIntelligenceEnabled);
 
   // Internal getters for actual state
   bool get isFaceDetectionSet => _faceDetectionEnabled;
@@ -48,12 +53,14 @@ class AppSettings extends ChangeNotifier {
   bool get isDistanceCoachingSet => _distanceCoachingEnabled;
   bool get isCompositionGridSet => _compositionGridEnabled;
   bool get isOrientationSuggestionSet => _orientationSuggestionEnabled;
+  bool get isLightingIntelligenceSet => _lightingIntelligenceEnabled;
 
   bool get isFrontFaceDetectionSet => _frontFaceDetectionEnabled;
   bool get isFrontAutoShutterSet => _frontAutoShutterEnabled;
   bool get isFrontDistanceCoachingSet => _frontDistanceCoachingEnabled;
   bool get isFrontCompositionGridSet => _frontCompositionGridEnabled;
   bool get isFrontOrientationSuggestionSet => _frontOrientationSuggestionEnabled;
+  bool get isFrontLightingIntelligenceSet => _frontLightingIntelligenceEnabled;
 
   void setCameraLens(bool isFront) {
     if (_isFrontCamera == isFront) return;
@@ -70,6 +77,7 @@ class AppSettings extends ChangeNotifier {
     _distanceCoachingEnabled = prefs.getBool(_keyDistanceCoaching) ?? true;
     _compositionGridEnabled = prefs.getBool(_keyCompositionGrid) ?? true;
     _orientationSuggestionEnabled = prefs.getBool(_keyOrientationSuggestion) ?? true;
+    _lightingIntelligenceEnabled = prefs.getBool(_keyLightingIntelligence) ?? true;
 
     // Front camera
     _frontFaceDetectionEnabled = prefs.getBool(_keyFrontFaceDetection) ?? true;
@@ -77,6 +85,7 @@ class AppSettings extends ChangeNotifier {
     _frontDistanceCoachingEnabled = prefs.getBool(_keyFrontDistanceCoaching) ?? true;
     _frontCompositionGridEnabled = prefs.getBool(_keyFrontCompositionGrid) ?? true;
     _frontOrientationSuggestionEnabled = prefs.getBool(_keyFrontOrientationSuggestion) ?? true;
+    _frontLightingIntelligenceEnabled = prefs.getBool(_keyFrontLightingIntelligence) ?? true;
     
     notifyListeners();
   }
@@ -100,6 +109,7 @@ class AppSettings extends ChangeNotifier {
     if (_distanceCoachingEnabled == value) return;
     _distanceCoachingEnabled = value;
     _save(_keyDistanceCoaching, value);
+    _checkAutoShutterDependencies();
     notifyListeners();
   }
 
@@ -107,6 +117,7 @@ class AppSettings extends ChangeNotifier {
     if (_compositionGridEnabled == value) return;
     _compositionGridEnabled = value;
     _save(_keyCompositionGrid, value);
+    _checkAutoShutterDependencies();
     notifyListeners();
   }
 
@@ -114,6 +125,15 @@ class AppSettings extends ChangeNotifier {
     if (_orientationSuggestionEnabled == value) return;
     _orientationSuggestionEnabled = value;
     _save(_keyOrientationSuggestion, value);
+    _checkAutoShutterDependencies();
+    notifyListeners();
+  }
+
+  set lightingIntelligenceEnabled(bool value) {
+    if (_lightingIntelligenceEnabled == value) return;
+    _lightingIntelligenceEnabled = value;
+    _save(_keyLightingIntelligence, value);
+    _checkAutoShutterDependencies();
     notifyListeners();
   }
 
@@ -122,6 +142,11 @@ class AppSettings extends ChangeNotifier {
     if (_frontFaceDetectionEnabled == value) return;
     _frontFaceDetectionEnabled = value;
     _save(_keyFrontFaceDetection, value);
+    if (!value) {
+      // If face detection is off, auto-shutter should be off too
+      _frontAutoShutterEnabled = false;
+      _save(_keyFrontAutoShutter, false);
+    }
     notifyListeners();
   }
 
@@ -136,6 +161,7 @@ class AppSettings extends ChangeNotifier {
     if (_frontDistanceCoachingEnabled == value) return;
     _frontDistanceCoachingEnabled = value;
     _save(_keyFrontDistanceCoaching, value);
+    _checkFrontAutoShutterDependencies();
     notifyListeners();
   }
 
@@ -143,6 +169,7 @@ class AppSettings extends ChangeNotifier {
     if (_frontCompositionGridEnabled == value) return;
     _frontCompositionGridEnabled = value;
     _save(_keyFrontCompositionGrid, value);
+    _checkFrontAutoShutterDependencies();
     notifyListeners();
   }
 
@@ -150,7 +177,40 @@ class AppSettings extends ChangeNotifier {
     if (_frontOrientationSuggestionEnabled == value) return;
     _frontOrientationSuggestionEnabled = value;
     _save(_keyFrontOrientationSuggestion, value);
+    _checkFrontAutoShutterDependencies();
     notifyListeners();
+  }
+
+  set frontLightingIntelligenceEnabled(bool value) {
+    if (_frontLightingIntelligenceEnabled == value) return;
+    _frontLightingIntelligenceEnabled = value;
+    _save(_keyFrontLightingIntelligence, value);
+    _checkFrontAutoShutterDependencies();
+    notifyListeners();
+  }
+
+  void _checkAutoShutterDependencies() {
+    if (!_distanceCoachingEnabled && 
+        !_compositionGridEnabled && 
+        !_orientationSuggestionEnabled && 
+        !_lightingIntelligenceEnabled) {
+      if (_autoShutterEnabled) {
+        _autoShutterEnabled = false;
+        _save(_keyAutoShutter, false);
+      }
+    }
+  }
+
+  void _checkFrontAutoShutterDependencies() {
+    if (!_frontDistanceCoachingEnabled && 
+        !_frontCompositionGridEnabled && 
+        !_frontOrientationSuggestionEnabled && 
+        !_frontLightingIntelligenceEnabled) {
+      if (_frontAutoShutterEnabled) {
+        _frontAutoShutterEnabled = false;
+        _save(_keyFrontAutoShutter, false);
+      }
+    }
   }
 
   Future<void> _save(String key, bool value) async {

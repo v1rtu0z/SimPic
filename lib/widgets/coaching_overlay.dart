@@ -3,11 +3,13 @@ import 'package:native_device_orientation/native_device_orientation.dart';
 import '../models/distance_coaching_scenario.dart';
 import '../models/composition_guidance.dart';
 import '../models/orientation_guidance.dart';
+import '../models/exposure_guidance.dart';
 
 /// Overlay widget for coaching UI
 class CoachingOverlay extends StatelessWidget {
   final DistanceCoachingResult? coachingResult;
   final CompositionGuidanceResult? compositionResult;
+  final FaceExposureResult? exposureResult;
   final int significantFaceCount;
   final NativeDeviceOrientation deviceOrientation;
   final bool isOrientationMismatch;
@@ -16,6 +18,7 @@ class CoachingOverlay extends StatelessWidget {
     super.key,
     this.coachingResult,
     this.compositionResult,
+    this.exposureResult,
     this.significantFaceCount = 0,
     required this.deviceOrientation,
     this.isOrientationMismatch = false,
@@ -91,17 +94,25 @@ class CoachingOverlay extends StatelessWidget {
   }
 
   _CoachingData? _getCoachingData() {
-    // If no coaching result and no composition result, nothing to show
-    if (coachingResult == null && compositionResult == null) return null;
+    // If no coaching results, nothing to show
+    if (coachingResult == null && compositionResult == null && exposureResult == null) return null;
 
     final List<String> messages = [];
     DistanceCoachingStatus distanceStatus = DistanceCoachingStatus.optimal;
     CompositionStatus compStatus = CompositionStatus.wellPositioned;
+    ExposureStatus expStatus = ExposureStatus.good;
 
     if (coachingResult != null) {
       distanceStatus = coachingResult!.status;
       if (distanceStatus != DistanceCoachingStatus.optimal) {
         messages.add(coachingResult!.message);
+      }
+    }
+
+    if (exposureResult != null) {
+      expStatus = exposureResult!.status;
+      if (expStatus != ExposureStatus.good && exposureResult!.message.isNotEmpty) {
+        messages.add(exposureResult!.message);
       }
     }
 
@@ -146,32 +157,44 @@ class CoachingOverlay extends StatelessWidget {
     }
 
     // If we have messages, it means something is not optimal
-    final String combinedMessage = messages.join(' & ');
+    final String combinedMessage = messages.isNotEmpty ? messages.join(' & ') : "✓ Good lighting";
     
-    // Priority for color: Red (too close) > Orange (too far/positioning)
-    Color statusColor = Colors.orange;
-    IconData statusIcon = Icons.info_outline;
+    // Priority for color: Red (critical issues) > Orange (warnings) > Green (Good)
+    Color statusColor = Colors.green;
+    IconData statusIcon = Icons.check_circle_outline;
 
-    if (coachingResult != null) {
-      if (distanceStatus == DistanceCoachingStatus.tooClose) {
-        statusColor = Colors.red;
+    if (expStatus == ExposureStatus.backlit || 
+        expStatus == ExposureStatus.shadowed ||
+        distanceStatus == DistanceCoachingStatus.tooClose) {
+      statusColor = Colors.red;
+      statusIcon = Icons.warning_amber_rounded;
+      
+      if (expStatus == ExposureStatus.backlit) {
+        statusIcon = Icons.wb_sunny_rounded;
+      } else if (expStatus == ExposureStatus.shadowed) {
+        statusIcon = Icons.exposure_rounded;
+      } else if (distanceStatus == DistanceCoachingStatus.tooClose) {
         statusIcon = Icons.arrow_downward;
-      } else if (distanceStatus == DistanceCoachingStatus.tooFar) {
-        statusColor = Colors.orange;
-        statusIcon = Icons.arrow_upward;
-      } else if (compStatus != CompositionStatus.wellPositioned) {
-        statusColor = Colors.orange;
-        statusIcon = Icons.grid_view;
       }
-    } else if (compositionResult != null && compStatus != CompositionStatus.wellPositioned) {
+    } else if (distanceStatus == DistanceCoachingStatus.tooFar || 
+               compStatus == CompositionStatus.needsAdjustment ||
+               expStatus == ExposureStatus.underexposed) {
       statusColor = Colors.orange;
-      statusIcon = Icons.grid_view;
+      statusIcon = Icons.info_outline;
+
+      if (distanceStatus == DistanceCoachingStatus.tooFar) {
+        statusIcon = Icons.arrow_upward;
+      } else if (compStatus == CompositionStatus.needsAdjustment) {
+        statusIcon = Icons.grid_view;
+      } else if (expStatus == ExposureStatus.underexposed) {
+        statusIcon = Icons.nightlight_round;
+      }
     }
 
     return _CoachingData(
-      message: combinedMessage,
       color: statusColor,
       icon: statusIcon,
+      message: combinedMessage,
     );
   }
 
