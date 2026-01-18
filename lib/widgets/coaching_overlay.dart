@@ -5,6 +5,7 @@ import '../models/composition_guidance.dart';
 import '../models/orientation_guidance.dart';
 import '../models/exposure_guidance.dart';
 import '../models/blink_detection.dart';
+import '../models/framing_score.dart';
 
 /// Overlay widget for coaching UI
 class CoachingOverlay extends StatelessWidget {
@@ -12,6 +13,7 @@ class CoachingOverlay extends StatelessWidget {
   final CompositionGuidanceResult? compositionResult;
   final FaceExposureResult? exposureResult;
   final BlinkDetectionResult? blinkResult;
+  final FramingScoreResult? framingScore;
   final int significantFaceCount;
   final NativeDeviceOrientation deviceOrientation;
   final bool isOrientationMismatch;
@@ -22,6 +24,7 @@ class CoachingOverlay extends StatelessWidget {
     this.compositionResult,
     this.exposureResult,
     this.blinkResult,
+    this.framingScore,
     this.significantFaceCount = 0,
     required this.deviceOrientation,
     this.isOrientationMismatch = false,
@@ -43,6 +46,11 @@ class CoachingOverlay extends StatelessWidget {
     // 1.1 Blink Status Icon
     if (blinkResult != null) {
       children.add(_buildBlinkIndicator());
+    }
+
+    // 1.2 Framing Score Circular Indicator
+    if (framingScore != null) {
+      children.add(_buildFramingScoreIndicator());
     }
 
     // 2. Main Coaching Content
@@ -102,6 +110,15 @@ class CoachingOverlay extends StatelessWidget {
   }
 
   _CoachingData? _getCoachingData() {
+    // If we have a framing score and it's "Great", we should show a consistent "Perfect" message
+    if (framingScore != null && framingScore!.isGreat) {
+      return const _CoachingData(
+        message: 'Perfect framing',
+        color: Colors.green,
+        icon: Icons.check_circle,
+      );
+    }
+
     // If no coaching results, nothing to show
     if (coachingResult == null && compositionResult == null && exposureResult == null && (blinkResult == null || !blinkResult!.eitherEyeClosed)) return null;
 
@@ -322,6 +339,87 @@ class CoachingOverlay extends StatelessWidget {
       return Positioned(
         top: 80,
         left: 20,
+        child: SafeArea(
+          child: content,
+        ),
+      );
+    }
+  }
+
+  Widget _buildFramingScoreIndicator() {
+    final bool isLandscape = deviceOrientation == NativeDeviceOrientation.landscapeLeft ||
+        deviceOrientation == NativeDeviceOrientation.landscapeRight;
+    
+    final score = framingScore!.totalScore;
+    final color = framingScore!.color;
+    final message = framingScore!.message;
+
+    Widget content = Container(
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.6),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: color.withValues(alpha: 0.5), width: 1.5),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            width: 50,
+            height: 50,
+            child: Stack(
+              children: [
+                Center(
+                  child: CircularProgressIndicator(
+                    value: score / 100,
+                    strokeWidth: 6,
+                    backgroundColor: Colors.white24,
+                    valueColor: AlwaysStoppedAnimation<Color>(color),
+                  ),
+                ),
+                Center(
+                  child: Text(
+                    '${score.toInt()}',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            message.toUpperCase(),
+            style: TextStyle(
+              color: color,
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 0.5,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (isLandscape) {
+      final quarterTurns = deviceOrientation == NativeDeviceOrientation.landscapeLeft ? 1 : 3;
+      return Positioned(
+        bottom: 100,
+        right: 20,
+        child: SafeArea(
+          child: RotatedBox(
+            quarterTurns: quarterTurns,
+            child: content,
+          ),
+        ),
+      );
+    } else {
+      return Positioned(
+        bottom: 140,
+        right: 20,
         child: SafeArea(
           child: content,
         ),

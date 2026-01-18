@@ -131,10 +131,12 @@
 #### Feature 4.2: Framing Score System
 - **Priority: P1**
 - **Complexity: Medium**
+- **Status: ✅ Completed**
 - **Logic - Calculate composite score (0-100):**
-  - Distance score (40 points): optimal = 40, too far/close = 0-30
+  - Distance score (40 points): optimal = 40, non-optimal = 15
   - Position score (30 points): on power point = 30, off = 0-20
-  - Lighting score (30 points): good lighting = 30, backlit/shadow = 0-15
+  - Lighting score (30 points): good lighting = 30, underexposed = 20, backlit/shadow = 5
+  - Blink Penalty: Score capped at 70 if eyes are closed.
   - **Total score shown as color-coded percentage**
 - **UI:** 
   - Large circular progress indicator (like speedometer)
@@ -142,6 +144,7 @@
   - Score 60-80: Yellow, "Good"
   - Score <60: Red, "Needs adjustment"
   - Capture button pulses green when score >80
+  - Synchronized coaching text shows "Perfect framing" when score >80.
 
 #### Feature 4.3: Auto Portrait Mode Toggle
 - **Priority: P1**

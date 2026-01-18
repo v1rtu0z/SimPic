@@ -20,6 +20,7 @@ import '../widgets/composition_grid_overlay.dart';
 import '../models/orientation_guidance.dart';
 import '../models/exposure_guidance.dart';
 import '../models/blink_detection.dart';
+import '../models/framing_score.dart';
 import '../models/app_settings.dart';
 import 'settings_screen.dart';
 
@@ -85,6 +86,9 @@ class _CameraScreenState extends State<CameraScreen>
   // Blink detection
   BlinkDetectionResult? _blinkDetectionResult;
   
+  // Framing score
+  FramingScoreResult? _framingScoreResult;
+  
   // Focus feedback
   Offset? _focusPoint;
   AnimationController? _focusAnimationController;
@@ -108,6 +112,10 @@ class _CameraScreenState extends State<CameraScreen>
   int _goodFrameCount = 0;
   static const int _autoShutterRequiredGoodFrames = 5; // Reduced from 10 for faster response
   static const Duration _autoShutterCooldown = Duration(seconds: 3);
+
+  // Shutter button pulse animation
+  late AnimationController _shutterPulseController;
+  late Animation<double> _shutterPulseAnimation;
 
   @override
   void initState() {
@@ -174,6 +182,18 @@ class _CameraScreenState extends State<CameraScreen>
         curve: Curves.easeOut,
       ),
     );
+
+    // Initialize shutter pulse animation
+    _shutterPulseController = AnimationController(
+      duration: const Duration(milliseconds: 1000),
+      vsync: this,
+    );
+    _shutterPulseAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _shutterPulseController,
+        curve: Curves.easeInOut,
+      ),
+    );
     
     _initializeCamera();
     _loadLatestPhoto();
@@ -188,6 +208,7 @@ class _CameraScreenState extends State<CameraScreen>
     _flashAnimationController.dispose();
     _minimizeAnimationController.dispose();
     _focusAnimationController?.dispose();
+    _shutterPulseController.dispose();
     _focusTimer?.cancel();
     _faceDetector?.close();
     super.dispose();
@@ -607,6 +628,7 @@ class _CameraScreenState extends State<CameraScreen>
         CompositionGuidanceResult? compositionResult;
         FaceExposureResult? exposureResult;
         BlinkDetectionResult? blinkResult;
+        FramingScoreResult? framingScore;
         Offset? displayFaceCenter;
         Size? displayImageSize;
 
@@ -744,6 +766,14 @@ class _CameraScreenState extends State<CameraScreen>
                 bestFace.rightEyeOpenProbability,
               );
 
+              // Calculate Framing Score
+              framingScore = calculateFramingScore(
+                distanceResult: coachingResult,
+                compositionResult: compositionResult,
+                exposureResult: exposureResult,
+                blinkResult: blinkResult,
+              );
+
               // Perform Auto-exposure Lock on Face
               if (appSettings.autoExposureLockEnabled) {
                 _handleFaceExposureLock(bestFace, currentRotation, imageSize);
@@ -775,6 +805,20 @@ class _CameraScreenState extends State<CameraScreen>
             }
             _faceExposureResult = appSettings.lightingIntelligenceEnabled ? exposureResult : null;
             _blinkDetectionResult = blinkResult;
+            _framingScoreResult = framingScore;
+            
+            // Handle shutter pulse animation based on framing score
+            if (_framingScoreResult != null && _framingScoreResult!.isGreat) {
+              if (!_shutterPulseController.isAnimating) {
+                _shutterPulseController.repeat(reverse: true);
+              }
+            } else {
+              if (_shutterPulseController.isAnimating) {
+                _shutterPulseController.stop();
+                _shutterPulseController.reset();
+              }
+            }
+            
             _lastDisplayFaceCenter = displayFaceCenter;
             _lastDisplayImageSize = displayImageSize;
           });
@@ -1525,6 +1569,7 @@ class _CameraScreenState extends State<CameraScreen>
             compositionResult: _compositionGuidanceResult,
             exposureResult: _faceExposureResult,
             blinkResult: _blinkDetectionResult,
+            framingScore: _framingScoreResult,
             significantFaceCount: _significantFaceCount,
             deviceOrientation: _stableLayoutOrientation,
             isOrientationMismatch: isOrientationMismatch && appSettings.orientationSuggestionEnabled,
@@ -1654,42 +1699,56 @@ class _CameraScreenState extends State<CameraScreen>
   Widget _buildShutterButton() {
     return GestureDetector(
       onTap: _isCapturing ? null : _takePicture,
-      child: Container(
-        width: 70,
-        height: 70,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: Colors.white,
-          border: Border.all(
-            color: Colors.white.withValues(alpha: 0.3),
-            width: 4,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.3),
-              blurRadius: 10,
-              spreadRadius: 2,
-            ),
-          ],
-        ),
-        child: _isCapturing
-            ? const Center(
-                child: SizedBox(
-                  width: 30,
-                  height: 30,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 3,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
-                  ),
-                ),
-              )
-            : Container(
-                margin: const EdgeInsets.all(4),
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white,
-                ),
+      child: AnimatedBuilder(
+        animation: _shutterPulseAnimation,
+        builder: (context, child) {
+          final isPulsing = _shutterPulseController.isAnimating;
+          return Container(
+            width: 70,
+            height: 70,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: isPulsing 
+                ? Color.lerp(Colors.white, Colors.greenAccent, _shutterPulseAnimation.value) 
+                : Colors.white,
+              border: Border.all(
+                color: isPulsing
+                  ? Color.lerp(Colors.white30, Colors.green.withValues(alpha: 0.5), _shutterPulseAnimation.value)!
+                  : Colors.white.withValues(alpha: 0.3),
+                width: 4 + (isPulsing ? _shutterPulseAnimation.value * 2 : 0),
               ),
+              boxShadow: [
+                BoxShadow(
+                  color: isPulsing
+                    ? Colors.green.withValues(alpha: 0.3 * _shutterPulseAnimation.value)
+                    : Colors.black.withValues(alpha: 0.3),
+                  blurRadius: 10 + (isPulsing ? _shutterPulseAnimation.value * 5 : 0),
+                  spreadRadius: 2 + (isPulsing ? _shutterPulseAnimation.value * 2 : 0),
+                ),
+              ],
+            ),
+            child: _isCapturing
+                ? const Center(
+                    child: SizedBox(
+                      width: 30,
+                      height: 30,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 3,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                      ),
+                    ),
+                  )
+                : Container(
+                    margin: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: isPulsing 
+                        ? Color.lerp(Colors.white, Colors.greenAccent, _shutterPulseAnimation.value) 
+                        : Colors.white,
+                    ),
+                  ),
+          );
+        },
       ),
     );
   }
