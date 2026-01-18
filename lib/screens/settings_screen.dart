@@ -94,6 +94,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
           enabled: faceEnabled,
           onChanged: (value) => appSettings.lightingIntelligenceEnabled = value,
         ),
+        const Divider(height: 16, indent: 32, endIndent: 16),
+        _buildIndentedToggle(
+          title: 'Auto-Exposure Lock',
+          subtitle: 'Lock exposure and focus on detected face',
+          value: appSettings.isAutoExposureLockSet,
+          enabled: faceEnabled,
+          onChanged: (value) => appSettings.autoExposureLockEnabled = value,
+        ),
       ],
     );
   }
@@ -143,6 +151,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
           value: appSettings.isFrontLightingIntelligenceSet,
           enabled: faceEnabled,
           onChanged: (value) => appSettings.frontLightingIntelligenceEnabled = value,
+        ),
+        const Divider(height: 16, indent: 32, endIndent: 16),
+        _buildIndentedToggle(
+          title: 'Auto-Exposure Lock',
+          subtitle: 'Lock exposure and focus on detected face',
+          value: appSettings.isFrontAutoExposureLockSet,
+          enabled: faceEnabled,
+          onChanged: (value) => appSettings.frontAutoExposureLockEnabled = value,
         ),
       ],
     );

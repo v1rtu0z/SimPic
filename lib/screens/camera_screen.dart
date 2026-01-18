@@ -90,6 +90,11 @@ class _CameraScreenState extends State<CameraScreen>
   // Face tracking for stability in distance coaching (used in _selectBestFace)
   Rect? _lastTrackedFaceBounds;
   
+  // Auto-exposure/focus lock
+  Face? _lockedFace;
+  DateTime? _lastLockTime;
+  static const Duration _lockThreshold = Duration(milliseconds: 500);
+
   // Frame comparison for stability (skip face detection when camera is stationary)
   Uint8List? _previousFrameSample;
   Size? _previousImageSize;
@@ -537,6 +542,7 @@ class _CameraScreenState extends State<CameraScreen>
   Future<void> _processCameraImage(CameraImage image) async {
     // Skip frames for optimization (process every 2nd frame for more real-time feel)
     _frameCounter++;
+    FaceDetectorPainter._frameCounter++;
 
     // Capture current orientation data to ensure consistency throughout processing
     final currentOrientation = _deviceOrientation;
@@ -640,11 +646,58 @@ class _CameraScreenState extends State<CameraScreen>
                 displayImageSize = Size(camW, camH);
               }
 
-              displayFaceCenter = Offset(rawFaceCenterX, rawFaceCenterY);
+              // Transform raw coordinates to display-aligned coordinates based on rotation
+              // This logic must match _scaleRect's rotation mapping to ensure UI consistency
+              final double nx = rawFaceCenterX / displayImageSize.width;
+              final double ny = rawFaceCenterY / displayImageSize.height;
+              
+              double finalNx, finalNy;
+              int degrees = 0;
+              switch (currentOrientation) {
+                case NativeDeviceOrientation.landscapeRight:
+                  degrees = 90;
+                  break;
+                case NativeDeviceOrientation.portraitDown:
+                  degrees = 180;
+                  break;
+                case NativeDeviceOrientation.landscapeLeft:
+                  degrees = 270;
+                  break;
+                default:
+                  degrees = 0;
+              }
 
-              // Mirror X for front camera to match mirrored preview
+              if (degrees == 90) {
+                finalNx = ny;
+                finalNy = 1.0 - nx;
+              } else if (degrees == 180) {
+                finalNx = 1.0 - nx;
+                finalNy = 1.0 - ny;
+              } else if (degrees == 270) {
+                finalNx = 1.0 - ny;
+                finalNy = nx;
+              } else {
+                finalNx = nx;
+                finalNy = ny;
+              }
+
+              // Handle mirroring for front camera (must match _scaleRect)
               if (_currentCamera?.lensDirection == CameraLensDirection.front) {
-                displayFaceCenter = Offset(displayImageSize.width - displayFaceCenter.dx, displayFaceCenter.dy);
+                if (currentOrientation == NativeDeviceOrientation.landscapeLeft || 
+                    currentOrientation == NativeDeviceOrientation.landscapeRight) {
+                  finalNy = 1.0 - finalNy;
+                } else {
+                  finalNx = 1.0 - finalNx;
+                }
+              }
+
+              displayFaceCenter = Offset(
+                finalNx * displayImageSize.width, 
+                finalNy * displayImageSize.height
+              );
+              
+              if (_frameCounter % 30 == 0) {
+                debugPrint('CALCULATED_FACE_CENTER: $displayFaceCenter on display size $displayImageSize');
               }
               
               // Now evaluate composition with display coordinates
@@ -663,7 +716,17 @@ class _CameraScreenState extends State<CameraScreen>
                   _currentCamera?.lensDirection == CameraLensDirection.front,
                 );
               }
+
+              // Perform Auto-exposure Lock on Face
+              if (appSettings.autoExposureLockEnabled) {
+                _handleFaceExposureLock(bestFace, currentRotation, imageSize);
+              } else {
+                _lockedFace = null;
+              }
             }
+          } else {
+            // No face detected or no best face, clear locked face
+            _lockedFace = null;
           }
         }
 
@@ -784,6 +847,88 @@ class _CameraScreenState extends State<CameraScreen>
       }
     } else {
       _goodFrameCount = 0;
+    }
+  }
+
+  void _handleFaceExposureLock(Face face, int rotationDegrees, Size imageSize) {
+    if (_controller == null || !_controller!.value.isInitialized) return;
+
+    // Check if we already locked on this face recently to avoid constant updates
+    if (_lockedFace != null && _lastLockTime != null) {
+      final now = DateTime.now();
+      if (now.difference(_lastLockTime!) < _lockThreshold) {
+        // If face moved significantly, update anyway
+        final prevCenter = Offset(
+          _lockedFace!.boundingBox.left + _lockedFace!.boundingBox.width / 2,
+          _lockedFace!.boundingBox.top + _lockedFace!.boundingBox.height / 2,
+        );
+        final currentCenter = Offset(
+          face.boundingBox.left + face.boundingBox.width / 2,
+          face.boundingBox.top + face.boundingBox.height / 2,
+        );
+        if ((prevCenter - currentCenter).distance < 20) {
+          return;
+        }
+      }
+    }
+
+    _lockedFace = face;
+    _lastLockTime = DateTime.now();
+
+    // ML Kit bounding box is in its "upright" image space (after rotation).
+    // The camera plugin expects (0,0) top-left to (1,1) bottom-right of the sensor.
+    // We need to map ML Kit's upright coordinates back to sensor coordinates.
+    
+    final camW = imageSize.width;
+    final camH = imageSize.height;
+
+    // Upright size as ML Kit sees it
+    Size effectiveSize;
+    if (rotationDegrees == 90 || rotationDegrees == 270) {
+      effectiveSize = Size(camH, camW);
+    } else {
+      effectiveSize = Size(camW, camH);
+    }
+
+    final rawFaceCenterX = face.boundingBox.left + (face.boundingBox.width / 2);
+    final rawFaceCenterY = face.boundingBox.top + (face.boundingBox.height / 2);
+
+    // Normalize in upright space
+    final nx = rawFaceCenterX / effectiveSize.width;
+    final ny = rawFaceCenterY / effectiveSize.height;
+
+    // Map back to sensor coordinates (normalized)
+    double sx, sy;
+    if (rotationDegrees == 90) {
+      // Upright (x, y) = Sensor (H-y, x) -> (nx, ny) = ((H-sy)/H, sx/W)
+      // nx = 1 - sy => sy = 1 - nx
+      // ny = sx => sx = ny
+      sx = ny;
+      sy = 1.0 - nx;
+    } else if (rotationDegrees == 180) {
+      // Upright (x, y) = Sensor (W-x, H-y) -> (nx, ny) = ((W-sx)/W, (H-sy)/H)
+      // nx = 1 - sx => sx = 1 - nx
+      // ny = 1 - sy => sy = 1 - ny
+      sx = 1.0 - nx;
+      sy = 1.0 - ny;
+    } else if (rotationDegrees == 270) {
+      // Upright (x, y) = Sensor (y, W-x) -> (nx, ny) = (sy/H, (W-sx)/W)
+      // nx = sy => sy = nx
+      // ny = 1 - sx => sx = 1 - ny
+      sx = 1.0 - ny;
+      sy = nx;
+    } else {
+      sx = nx;
+      sy = ny;
+    }
+
+    Offset focusPoint = Offset(sx.clamp(0.0, 1.0), sy.clamp(0.0, 1.0));
+
+    try {
+      _controller!.setExposurePoint(focusPoint);
+      _controller!.setFocusPoint(focusPoint);
+    } catch (e) {
+      debugPrint('Error setting exposure/focus point: $e');
     }
   }
 
@@ -1273,6 +1418,35 @@ class _CameraScreenState extends State<CameraScreen>
                               },
                             ),
                           ),
+
+                        // AE/AF Lock Circle feedback (yellow circle)
+                        if (_lockedFace != null && _lastDisplayFaceCenter != null && _lastDisplayImageSize != null)
+                          Positioned(
+                            left: (_lastDisplayFaceCenter!.dx * (portraitPreviewSize.width / _lastDisplayImageSize!.width)) - 25,
+                            top: (_lastDisplayFaceCenter!.dy * (portraitPreviewSize.height / _lastDisplayImageSize!.height)) - 25,
+                            child: Builder(
+                              builder: (context) {
+                                if (_frameCounter % 30 == 0) {
+                                  final double left = (_lastDisplayFaceCenter!.dx * (portraitPreviewSize.width / _lastDisplayImageSize!.width)) - 25;
+                                  final double top = (_lastDisplayFaceCenter!.dy * (portraitPreviewSize.height / _lastDisplayImageSize!.height)) - 25;
+                                  debugPrint('AE_LOCK_CIRCLE_POS: Center (${left + 25}, ${top + 25}) on preview size $portraitPreviewSize');
+                                }
+                                return IgnorePointer(
+                                  child: Container(
+                                    width: 50,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Colors.yellowAccent.withValues(alpha: 0.8),
+                                        width: 2.0,
+                                      ),
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                );
+                              }
+                            ),
+                          ),
                       ],
                     ),
                   );
@@ -1732,11 +1906,18 @@ class FaceDetectorPainter extends CustomPainter {
         imageSize: imageSize!,
         widgetSize: size,
       );
+      
+      if (_frameCounter % 30 == 0) {
+        debugPrint('FACE_DET_RECT: $rect on widget size $size');
+      }
 
       // Draw rectangle around the face
       canvas.drawRect(rect, paint);
     }
   }
+
+  // Use a simple counter to throttle logs
+  static int _frameCounter = 0;
 
   Rect _scaleRect({
     required Rect rect,

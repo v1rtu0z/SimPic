@@ -1,0 +1,420 @@
+Launching lib/main.dart on FP5 in debug mode...
+Running Gradle task 'assembleDebug'...                              9.1s
+✓ Built build/app/outputs/flutter-apk/app-debug.apk
+Installing build/app/outputs/flutter-apk/app-debug.apk...        2,121ms
+D/FlutterJNI(17935): Beginning load of flutter...
+D/FlutterJNI(17935): flutter (null) was loaded normally!
+I/flutter (17935): [IMPORTANT:flutter/shell/platform/android/android_context_vk_impeller.cc(62)] Using the Impeller rendering backend (Vulkan).
+I/flutter (17935): [_loadLatestPhoto] Requesting photo permission...
+Syncing files to device FP5...                                      96ms
+
+Flutter run key commands.
+r Hot reload. 🔥🔥🔥
+R Hot restart.
+h List all available interactive commands.
+d Detach (terminate "flutter run" but leave application running).
+c Clear the screen
+q Quit (terminate the application on the device).
+
+A Dart VM Service on FP5 is available at: http://127.0.0.1:38665/FsbwHdjL7EY=/
+The Flutter DevTools debugger and profiler on FP5 is available at: http://127.0.0.1:38665/FsbwHdjL7EY=/devtools/?uri=ws://127.0.0.1:38665/FsbwHdjL7EY=/ws
+I/Choreographer(17935): Skipped 54 frames!  The application may be doing too much work on its main thread.
+I/HWUI    (17935): Davey! duration=916ms; Flags=1, FrameTimelineVsyncId=2297552, IntendedVsync=10614763317008, Vsync=10615665423134, InputEventId=0, HandleInputStart=10615671604491, AnimationStart=10615671606626, PerformTraversalsStart=10615671607511, DrawStart=10615673016522, FrameDeadline=10614779983674, FrameInterval=10615671188032, FrameStartTime=16705669, SyncQueued=10615673566418, SyncStart=10615673643345, IssueDrawCommandsStart=10615674012355, SwapBuffers=10615677374751, FrameCompleted=10615679405793, DequeueBufferDuration=1824114, QueueBufferDuration=915729, GpuCompleted=10615679405793, SwapBuffersCompleted=10615678917251, DisplayPresentTime=519696849537, CommandSubmissionCompleted=10615677374751, 
+I/NDOP    (17935): listening using sensor listener
+D/permissions_handler(17935): No permissions found in manifest for: []15
+I/flutter (17935): [_loadLatestPhoto] Permission state: PermissionState.authorized
+D/QuirkSettingsLoader(17935): QuirkSettings$MetadataHolderService is not found.
+D/CameraX (17935): QuirkSettings from app metadata: null
+D/CameraX (17935): QuirkSettings by default: QuirkSettings{enabledWhenDeviceHasQuirk=true, forceEnabledQuirks=[], forceDisabledQuirks=[]}
+D/DeviceQuirks(17935): camera2 DeviceQuirks = 
+I/CameraManagerGlobal(17935): Connecting to camera service
+W/CameraManagerGlobal(17935): [soar.cts] ignore the status update of camera: 3
+W/CameraManagerGlobal(17935): [soar.cts] ignore the status update of camera: 4
+W/CameraManagerGlobal(17935): [soar.cts] ignore the status update of camera: 5
+W/CameraManagerGlobal(17935): [soar.cts] ignore the status update of camera: 3
+W/CameraManagerGlobal(17935): [soar.cts] ignore the status update of camera: 4
+W/CameraManagerGlobal(17935): [soar.cts] ignore the status update of camera: 5
+D/Camera2CameraCoordinator(17935): Updated concurrent camera map: {}
+V/CameraManager(17935): overrideTCTCameraCharacteristics pkgName=com.simpic.coach
+D/Camera2CameraFactory(17935): Updated available camera list: [] -> [0, 1, 2]
+V/CameraManager(17935): overrideTCTCameraCharacteristics pkgName=com.simpic.coach
+V/CameraManager(17935): overrideTCTCameraCharacteristics pkgName=com.simpic.coach
+D/CameraRepository(17935): Added camera: 0
+I/flutter (17935): [_loadLatestPhoto] Found 24 albums: Slack, Screenshots, Rise Against - Nowhere Generation (2021) Mp3 320kbps [PMEDIA] ⭐️, Restored, WhatsApp Images, WhatsApp, Photos-001, Velike slike, Google Photos, Viber, Deda, Creative, PhotosEditor, Screenshots, 2025_12_27-0817, vegan memes, Pictures, New folder (2), Telegram, WhatsApp Documents, DCIM, Camera, Download, memes
+I/flutter (17935): [_loadLatestPhoto] Checking album: Slack
+D/CameraQuirks(17935): camera2 CameraQuirks = 
+I/flutter (17935): [_loadLatestPhoto] Checking album: Screenshots
+I/flutter (17935): [_loadLatestPhoto] Checking album: Rise Against - Nowhere Generation (2021) Mp3 320kbps [PMEDIA] ⭐️
+I/Camera2CameraInfo(17935): Device Level: INFO_SUPPORTED_HARDWARE_LEVEL_3
+I/flutter (17935): [_loadLatestPhoto] Checking album: Restored
+I/flutter (17935): [_loadLatestPhoto] Checking album: WhatsApp Images
+I/flutter (17935): [_loadLatestPhoto] Checking album: WhatsApp
+I/flutter (17935): [_loadLatestPhoto] Checking album: Photos-001
+I/flutter (17935): [_loadLatestPhoto] Checking album: Velike slike
+I/flutter (17935): [_loadLatestPhoto] Checking album: Google Photos
+I/flutter (17935): [_loadLatestPhoto] Checking album: Viber
+I/flutter (17935): [_loadLatestPhoto] Checking album: Deda
+I/flutter (17935): [_loadLatestPhoto] Checking album: Creative
+I/flutter (17935): [_loadLatestPhoto] Checking album: PhotosEditor
+I/flutter (17935): [_loadLatestPhoto] Checking album: Screenshots
+I/flutter (17935): [_loadLatestPhoto] Checking album: 2025_12_27-0817
+I/flutter (17935): [_loadLatestPhoto] Checking album: vegan memes
+I/flutter (17935): [_loadLatestPhoto] Checking album: Pictures
+I/flutter (17935): [_loadLatestPhoto] Checking album: New folder (2)
+I/flutter (17935): [_loadLatestPhoto] Checking album: Telegram
+I/flutter (17935): [_loadLatestPhoto] Checking album: WhatsApp Documents
+I/flutter (17935): [_loadLatestPhoto] Checking album: DCIM
+I/flutter (17935): [_loadLatestPhoto] Found DCIM-related album: DCIM
+I/flutter (17935): [_loadLatestPhoto] Checking album: Camera
+I/flutter (17935): [_loadLatestPhoto] Found DCIM-related album: Camera
+I/flutter (17935): [_loadLatestPhoto] Checking album: Download
+I/flutter (17935): [_loadLatestPhoto] Checking album: memes
+D/CameraRepository(17935): Added camera: 1
+D/CameraQuirks(17935): camera2 CameraQuirks = 
+I/Camera2CameraInfo(17935): Device Level: INFO_SUPPORTED_HARDWARE_LEVEL_3
+D/CameraRepository(17935): Added camera: 2
+D/CameraQuirks(17935): camera2 CameraQuirks = 
+I/Camera2CameraInfo(17935): Device Level: INFO_SUPPORTED_HARDWARE_LEVEL_3
+I/CameraPresencePrvdr(17935): Starting CameraPresenceProvider monitoring.
+I/CameraPresenceSrc(17935): First observer added. Starting monitoring.
+I/Camera2PresenceSrc(17935): Starting system availability monitoring.
+D/Camera2PresenceSrc(17935): System onCameraAvailable: 0
+D/Camera2PresenceSrc(17935): System onCameraAvailable: 1
+D/Camera2PresenceSrc(17935): System onCameraAvailable: 2
+D/Camera2PresenceSrc(17935): [FetchData] Refreshed camera list: CameraIdentifier{cameraIds=0}, CameraIdentifier{cameraIds=1}, CameraIdentifier{cameraIds=2}
+D/CameraValidator(17935): Verifying camera lens facing on FP5, lensFacingInteger: null
+D/Camera2PresenceSrc(17935): [FetchData] Refreshed camera list: CameraIdentifier{cameraIds=0}, CameraIdentifier{cameraIds=1}, CameraIdentifier{cameraIds=2}
+D/Camera2PresenceSrc(17935): [FetchData] Refreshed camera list: CameraIdentifier{cameraIds=0}, CameraIdentifier{cameraIds=1}, CameraIdentifier{cameraIds=2}
+D/Camera2PresenceSrc(17935): [FetchData] Refreshed camera list: CameraIdentifier{cameraIds=0}, CameraIdentifier{cameraIds=1}, CameraIdentifier{cameraIds=2}
+I/flutter (17935): [_loadLatestPhoto] Album "DCIM" has 996 photos
+I/flutter (17935): [_loadLatestPhoto] Album "DCIM" latest: 1000052986, created: 2026-01-02 10:37:10.000
+D/DeviceQuirks(17935): video DeviceQuirks = CameraUseInconsistentTimebaseQuirk | MediaCodecDefaultDataSpaceQuirk
+D/Recorder(17935): mRequiredFreeStorageBytes = 50 MB
+I/flutter (17935): [_loadLatestPhoto] Album "Camera" has 1134 photos
+D/DeviceQuirks(17935): core DeviceQuirks = SurfaceOrderQuirk
+D/ResolvedFeatureGroup(17935): resolveFeatureGroup: sessionConfig = androidx.camera.core.LegacySessionConfig@f3b4b41, lensFacing = 1
+D/CameraUseCaseAdapter(17935): addUseCases: appUseCasesToAdd = [Preview:androidx.camera.core.Preview-fe3f4246-ad0c-4d56-8d2a-4093f42f123c, ImageCapture:androidx.camera.core.ImageCapture-abf8c0cb-d1f2-4c17-a197-333aba2c0bbc, ImageAnalysis:androidx.camera.core.ImageAnalysis-9db8e338-7ab8-468f-9fa3-5b0e85abcd25], featureGroup = null
+D/UseCase (17935): applyFeaturesToConfig: mFeatureGroup = null, this = Preview:androidx.camera.core.Preview-fe3f4246-ad0c-4d56-8d2a-4093f42f123c
+D/SupportedOutputSizesCollector(17935): useCaseConfig = androidx.camera.core.impl.PreviewConfig@27308e6, candidateSizes = [4096x3072, 4080x3060, 4000x3000, 4096x2304, 3072x3072, 3060x3060, 4000x2250, 3840x2160, 3264x2448, 3960x1760, 2592x1944, 2700x1200, 2048x1536, 1920x1080, 1600x1200, 1440x1080, 1200x1200, 1280x960, 1080x1080, 1280x720, 1024x768, 800x600, 800x480, 720x480, 640x480, 640x360, 352x288, 320x240, 176x144]
+D/UseCase (17935): applyFeaturesToConfig: mFeatureGroup = null, this = ImageCapture:androidx.camera.core.ImageCapture-abf8c0cb-d1f2-4c17-a197-333aba2c0bbc
+D/SupportedOutputSizesCollector(17935): useCaseConfig = androidx.camera.core.impl.ImageCaptureConfig@ad6cd72, candidateSizes = [4096x3072, 4080x3060, 4000x3000, 4096x2304, 3072x3072, 3060x3060, 4000x2250, 3840x2160, 3264x2448, 3960x1760, 2592x1944, 2700x1200, 2048x1536, 1920x1080, 1600x1200, 1440x1080, 1200x1200, 1280x960, 1080x1080, 1280x720, 1024x768, 800x600, 800x480, 720x480, 640x480, 640x360, 352x288, 320x240, 176x144]
+D/UseCase (17935): applyFeaturesToConfig: mFeatureGroup = null, this = ImageAnalysis:androidx.camera.core.ImageAnalysis-9db8e338-7ab8-468f-9fa3-5b0e85abcd25
+D/SupportedOutputSizesCollector(17935): useCaseConfig = androidx.camera.core.impl.ImageAnalysisConfig@83a65c3, candidateSizes = [4096x3072, 4080x3060, 4000x3000, 4096x2304, 3072x3072, 3060x3060, 4000x2250, 3840x2160, 3264x2448, 3960x1760, 2592x1944, 2700x1200, 2048x1536, 1920x1080, 1600x1200, 1440x1080, 1200x1200, 1280x960, 1080x1080, 1280x720, 1024x768, 800x600, 800x480, 720x480, 640x480, 640x360, 352x288, 320x240, 176x144]
+D/DynamicRangeResolver(17935): Resolved dynamic range for use case androidx.camera.core.Preview-fe3f4246-ad0c-4d56-8d2a-4093f42f123c to no compatible HDR dynamic ranges.
+D/DynamicRangeResolver(17935): DynamicRange@6d2179{encoding=UNSPECIFIED, bitDepth=0}
+D/DynamicRangeResolver(17935): ->
+D/DynamicRangeResolver(17935): DynamicRange@3b0ee40{encoding=SDR, bitDepth=8}
+D/SupportedSurfaceCombination(17935): resolvedDynamicRanges = {androidx.camera.core.impl.ImageCaptureConfig@ad6cd72=DynamicRange@3b0ee40{encoding=SDR, bitDepth=8}, androidx.camera.core.impl.PreviewConfig@27308e6=DynamicRange@3b0ee40{encoding=SDR, bitDepth=8}, androidx.camera.core.impl.ImageAnalysisConfig@83a65c3=DynamicRange@3b0ee40{encoding=SDR, bitDepth=8}}
+D/SupportedSurfaceCombination(17935): getSuggestedStreamSpecifications: isPreviewStabilizationOn = false, mIsPreviewStabilizationSupported = false, isFeatureComboInvocation = false
+D/SupportedSurfaceCombination(17935): resolveSpecsByCheckingMethod: checkingMethod = WITHOUT_FEATURE_COMBO
+D/SupportedSurfaceCombination(17935): resolveSpecsBySettings: featureSettings = FeatureSettings{getCameraMode=0, hasVideoCapture=false, getRequiredMaxBitDepth=8, isPreviewStabilizationOn=false, isUltraHdrOn=false, isHighSpeedOn=false, isFeatureComboInvocation=false, requiresFeatureComboQuery=false, getTargetFpsRange=[0, 0], isStrictFpsRequired=false}
+D/CameraQuirks(17935): camera2 CameraQuirks = 
+D/CameraQuirks(17935): camera2 CameraQuirks = 
+D/CameraQuirks(17935): camera2 CameraQuirks = 
+D/SupportedSurfaceCombination(17935): resolveSpecsBySettings: bestSizesAndFps = BestSizesAndMaxFpsForConfigs{bestSizes=[1280x720, 1280x720, 1280x720], bestSizesForStreamUseCase=null, maxFpsForBestSizes=30, maxFpsForStreamUseCase=2147483647, maxFpsForAllSizes=2147483647}
+D/UseCase (17935): applyFeaturesToConfig: mFeatureGroup = null, this = Preview:androidx.camera.core.Preview-fe3f4246-ad0c-4d56-8d2a-4093f42f123c
+D/Preview (17935): onSuggestedStreamSpecUpdated: primaryStreamSpec = StreamSpec{resolution=1280x720, originalConfiguredResolution=1280x720, dynamicRange=DynamicRange@3b0ee40{encoding=SDR, bitDepth=8}, sessionType=0, expectedFrameRateRange=[0, 0], implementationOptions=androidx.camera.camera2.impl.Camera2ImplConfig@7cc86b1, zslDisabled=false}, secondaryStreamSpec null
+D/DeferrableSurface(17935): Surface created[total_surfaces=1, used_surfaces=0](androidx.camera.core.processing.SurfaceEdge$SettableSurface@1057796}
+D/DeferrableSurface(17935): Surface created[total_surfaces=2, used_surfaces=0](androidx.camera.core.SurfaceRequest$2@f997722}
+D/DeferrableSurface(17935): New surface in use[total_surfaces=2, used_surfaces=1](androidx.camera.core.SurfaceRequest$2@f997722}
+D/DeferrableSurface(17935): use count+1, useCount=1 androidx.camera.core.SurfaceRequest$2@f997722
+D/UseCase (17935): applyFeaturesToConfig: mFeatureGroup = null, this = ImageCapture:androidx.camera.core.ImageCapture-abf8c0cb-d1f2-4c17-a197-333aba2c0bbc
+D/ImageCapture(17935): onSuggestedStreamSpecUpdated: primaryStreamSpec = StreamSpec{resolution=1280x720, originalConfiguredResolution=1280x720, dynamicRange=DynamicRange@3b0ee40{encoding=SDR, bitDepth=8}, sessionType=0, expectedFrameRateRange=[0, 0], implementationOptions=androidx.camera.camera2.impl.Camera2ImplConfig@11f8a0f, zslDisabled=false}, secondaryStreamSpec null
+D/ImageCapture(17935): createPipeline(cameraId: 0, streamSpec: StreamSpec{resolution=1280x720, originalConfiguredResolution=1280x720, dynamicRange=DynamicRange@3b0ee40{encoding=SDR, bitDepth=8}, sessionType=0, expectedFrameRateRange=[0, 0], implementationOptions=androidx.camera.camera2.impl.Camera2ImplConfig@11f8a0f, zslDisabled=false})
+W/libc    (17935): Access denied finding property "vendor.gpp.create_frc_extension"
+D/DeferrableSurface(17935): Surface created[total_surfaces=3, used_surfaces=1](androidx.camera.core.impl.ImmediateSurface@d188a9c}
+D/Camera2CameraImpl(17935): {Camera@2dc3223[id=0]} Use case androidx.camera.core.ImageCapture-abf8c0cb-d1f2-4c17-a197-333aba2c0bbc21495776 ACTIVE
+D/UseCase (17935): applyFeaturesToConfig: mFeatureGroup = null, this = ImageAnalysis:androidx.camera.core.ImageAnalysis-9db8e338-7ab8-468f-9fa3-5b0e85abcd25
+D/UseCaseAttachState(17935): Active and attached use case: [] for camera: 0
+D/ImageAnalysis(17935): onSuggestedStreamSpecUpdated: primaryStreamSpec = StreamSpec{resolution=1280x720, originalConfiguredResolution=1280x720, dynamicRange=DynamicRange@3b0ee40{encoding=SDR, bitDepth=8}, sessionType=0, expectedFrameRateRange=[0, 0], implementationOptions=androidx.camera.camera2.impl.Camera2ImplConfig@506c87a, zslDisabled=false}, secondaryStreamSpec null
+W/libc    (17935): Access denied finding property "vendor.gpp.create_frc_extension"
+D/DeferrableSurface(17935): Surface created[total_surfaces=4, used_surfaces=1](androidx.camera.core.impl.ImmediateSurface@828f246}
+D/Camera2CameraImpl(17935): {Camera@2dc3223[id=0]} Use case androidx.camera.core.Preview-fe3f4246-ad0c-4d56-8d2a-4093f42f123c209473652 ACTIVE
+D/ImageCapture(17935): onCameraControlReady
+D/Camera2CameraControlImp(17935): setFlashMode: mFlashMode = 2
+D/UseCaseAttachState(17935): Active and attached use case: [] for camera: 0
+D/Camera2CameraImpl(17935): {Camera@2dc3223[id=0]} Use case androidx.camera.core.ImageCapture-abf8c0cb-d1f2-4c17-a197-333aba2c0bbc21495776 ACTIVE
+D/UseCaseAttachState(17935): Active and attached use case: [] for camera: 0
+D/Camera2CameraImpl(17935): {Camera@2dc3223[id=0]} Use case androidx.camera.core.ImageAnalysis-9db8e338-7ab8-468f-9fa3-5b0e85abcd25128552789 INACTIVE
+D/UseCaseAttachState(17935): Active and attached use case: [] for camera: 0
+D/UseCaseAttachState(17935): Active and attached use case: [] for camera: 0
+D/Camera2CameraImpl(17935): {Camera@2dc3223[id=0]} Use cases [androidx.camera.core.Preview-fe3f4246-ad0c-4d56-8d2a-4093f42f123c209473652, androidx.camera.core.ImageCapture-abf8c0cb-d1f2-4c17-a197-333aba2c0bbc21495776, androidx.camera.core.ImageAnalysis-9db8e338-7ab8-468f-9fa3-5b0e85abcd25128552789] now ATTACHED
+D/Camera2CameraControlImp(17935): setActive: isActive = true
+D/UseCaseAttachState(17935): All use case: [androidx.camera.core.ImageCapture-abf8c0cb-d1f2-4c17-a197-333aba2c0bbc21495776, androidx.camera.core.Preview-fe3f4246-ad0c-4d56-8d2a-4093f42f123c209473652, androidx.camera.core.ImageAnalysis-9db8e338-7ab8-468f-9fa3-5b0e85abcd25128552789] for camera: 0
+D/UseCaseAttachState(17935): Active and attached use case: [androidx.camera.core.ImageCapture-abf8c0cb-d1f2-4c17-a197-333aba2c0bbc21495776, androidx.camera.core.Preview-fe3f4246-ad0c-4d56-8d2a-4093f42f123c209473652] for camera: 0
+D/Camera2CameraImpl(17935): {Camera@2dc3223[id=0]} Resetting Capture Session
+D/Camera2CameraImpl(17935): {Camera@2dc3223[id=0]} Skipping Capture Session state check due to current camera state: INITIALIZED and previous session status: false
+D/Camera2CameraImpl(17935): {Camera@2dc3223[id=0]} Releasing session in state INITIALIZED
+D/Camera2CameraImpl(17935): {Camera@2dc3223[id=0]} Attempting to force open the camera.
+D/CameraStateRegistry(17935): tryOpenCamera(Camera@2dc3223[id=0]) [Available Cameras: 1, Already Open: false (Previous state: null)] --> SUCCESS
+D/CameraStateRegistry(17935): Recalculating open cameras:
+D/CameraStateRegistry(17935): Camera                                       State                 
+D/CameraStateRegistry(17935): -------------------------------------------------------------------
+D/CameraStateRegistry(17935): Camera@33f614c[id=1]                         UNKNOWN               
+D/CameraStateRegistry(17935): Camera@431ed77[id=2]                         UNKNOWN               
+D/CameraStateRegistry(17935): Camera@2dc3223[id=0]                         OPENING               
+D/CameraStateRegistry(17935): -------------------------------------------------------------------
+D/CameraStateRegistry(17935): Open count: 1 (Max allowed: 1)
+D/Camera2CameraImpl(17935): {Camera@2dc3223[id=0]} Opening camera.
+D/Camera2CameraImpl(17935): {Camera@2dc3223[id=0]} Transitioning camera internal state: INITIALIZED --> OPENING
+D/CameraStateMachine(17935): New public camera state CameraState{type=OPENING, error=null} from OPENING and null
+D/CameraStateMachine(17935): Publishing new public camera state CameraState{type=OPENING, error=null}
+D/UseCaseAttachState(17935): All use case: [androidx.camera.core.ImageCapture-abf8c0cb-d1f2-4c17-a197-333aba2c0bbc21495776, androidx.camera.core.Preview-fe3f4246-ad0c-4d56-8d2a-4093f42f123c209473652, androidx.camera.core.ImageAnalysis-9db8e338-7ab8-468f-9fa3-5b0e85abcd25128552789] for camera: 0
+V/CameraManager(17935): overrideTCTCameraCharacteristics pkgName=com.simpic.coach
+W/libc    (17935): Access denied finding property "vendor.gpp.create_frc_extension"
+E/CameraManagerGlobal(17935): Camera 3 is not present. Ignore physical camera status change
+E/CameraManagerGlobal(17935): Camera 4 is not present. Ignore physical camera status change
+W/CameraManagerGlobal(17935): [soar.cts] ignore the status update of camera: 5
+D/Camera2PresenceSrc(17935): System onCameraUnavailable: 0
+D/Camera2PresenceSrc(17935): [FetchData] Refreshed camera list: CameraIdentifier{cameraIds=0}, CameraIdentifier{cameraIds=1}, CameraIdentifier{cameraIds=2}
+D/Camera2CameraImpl(17935): {Camera@2dc3223[id=0]} Use case androidx.camera.core.Preview-fe3f4246-ad0c-4d56-8d2a-4093f42f123c209473652 ACTIVE
+D/UseCaseAttachState(17935): Active and attached use case: [androidx.camera.core.ImageCapture-abf8c0cb-d1f2-4c17-a197-333aba2c0bbc21495776, androidx.camera.core.Preview-fe3f4246-ad0c-4d56-8d2a-4093f42f123c209473652] for camera: 0
+D/Camera2CameraImpl(17935): {Camera@2dc3223[id=0]} Use case androidx.camera.core.ImageCapture-abf8c0cb-d1f2-4c17-a197-333aba2c0bbc21495776 ACTIVE
+D/UseCaseAttachState(17935): Active and attached use case: [androidx.camera.core.ImageCapture-abf8c0cb-d1f2-4c17-a197-333aba2c0bbc21495776, androidx.camera.core.Preview-fe3f4246-ad0c-4d56-8d2a-4093f42f123c209473652] for camera: 0
+D/Camera2CameraImpl(17935): {Camera@2dc3223[id=0]} Use case androidx.camera.core.ImageAnalysis-9db8e338-7ab8-468f-9fa3-5b0e85abcd25128552789 INACTIVE
+D/UseCaseAttachState(17935): Active and attached use case: [androidx.camera.core.ImageCapture-abf8c0cb-d1f2-4c17-a197-333aba2c0bbc21495776, androidx.camera.core.Preview-fe3f4246-ad0c-4d56-8d2a-4093f42f123c209473652] for camera: 0
+D/Camera2CameraImpl(17935): {Camera@2dc3223[id=0]} CameraDevice.onOpened()
+D/Camera2CameraImpl(17935): {Camera@2dc3223[id=0]} Transitioning camera internal state: OPENING --> OPENED
+D/CameraStateRegistry(17935): Recalculating open cameras:
+D/CameraStateRegistry(17935): Camera                                       State                 
+D/CameraStateRegistry(17935): -------------------------------------------------------------------
+D/CameraStateRegistry(17935): Camera@33f614c[id=1]                         UNKNOWN               
+D/CameraStateRegistry(17935): Camera@431ed77[id=2]                         UNKNOWN               
+D/CameraStateRegistry(17935): Camera@2dc3223[id=0]                         OPEN                  
+D/CameraStateRegistry(17935): -------------------------------------------------------------------
+D/CameraStateRegistry(17935): Open count: 1 (Max allowed: 1)
+D/CameraStateMachine(17935): New public camera state CameraState{type=OPEN, error=null} from OPEN and null
+D/CameraStateMachine(17935): Publishing new public camera state CameraState{type=OPEN, error=null}
+D/UseCaseAttachState(17935): All use case: [androidx.camera.core.ImageCapture-abf8c0cb-d1f2-4c17-a197-333aba2c0bbc21495776, androidx.camera.core.Preview-fe3f4246-ad0c-4d56-8d2a-4093f42f123c209473652, androidx.camera.core.ImageAnalysis-9db8e338-7ab8-468f-9fa3-5b0e85abcd25128552789] for camera: 0
+D/StreamUseCaseUtil(17935): populateSurfaceToStreamUseCaseMapping() - streamUseCaseMap = {}
+D/UseCaseAttachState(17935): Active and attached use case: [androidx.camera.core.ImageCapture-abf8c0cb-d1f2-4c17-a197-333aba2c0bbc21495776, androidx.camera.core.Preview-fe3f4246-ad0c-4d56-8d2a-4093f42f123c209473652] for camera: 0
+D/SyncCaptureSessionBase(17935): [androidx.camera.camera2.internal.SynchronizedCaptureSessionImpl@e9edb00] getSurface done with results: [Surface(name=null mNativeObject=-5476376611190695232)/@0xb8f3191, Surface(name=null mNativeObject=-5476376611190869632)/@0xa503c32, Surface(name=null mNativeObject=-5476376611190834752)/@0x72d0d83]
+D/CaptureSession(17935): Opening capture session.
+D/Camera2CaptureRequestBuilder(17935): template type = 1
+I/flutter (17935): =============================================
+D/Camera2CaptureRequestBuilder(17935): applyAeFpsRange: expectedFrameRateRange = [0, 0]
+I/flutter (17935): CAMERA SENSOR ORIENTATION: 90°
+I/flutter (17935): =============================================
+D/SyncCaptureSessionImpl(17935): [androidx.camera.camera2.internal.SynchronizedCaptureSessionImpl@e9edb00] start openCaptureSession
+D/DeferrableSurface(17935): use count+1, useCount=2 androidx.camera.core.SurfaceRequest$2@f997722
+D/DeferrableSurface(17935): New surface in use[total_surfaces=4, used_surfaces=2](androidx.camera.core.impl.ImmediateSurface@d188a9c}
+D/DeferrableSurface(17935): use count+1, useCount=1 androidx.camera.core.impl.ImmediateSurface@d188a9c
+D/DeferrableSurface(17935): New surface in use[total_surfaces=4, used_surfaces=3](androidx.camera.core.impl.ImmediateSurface@828f246}
+D/DeferrableSurface(17935): use count+1, useCount=1 androidx.camera.core.impl.ImmediateSurface@828f246
+I/flutter (17935): [_loadLatestPhoto] Album "Camera" latest: 1000054088, created: 2026-01-18 19:36:05.000
+I/flutter (17935): [_loadLatestPhoto] Selected newest photo ID: 1000054088, created: 2026-01-18 19:36:05.000
+D/SyncCaptureSessionImpl(17935): [androidx.camera.camera2.internal.SynchronizedCaptureSessionImpl@e9edb00] Session onConfigured()
+D/CaptureSession(17935): Attempting to send capture request onConfigured
+D/CaptureSession(17935): Issuing request for session.
+D/Camera2CaptureRequestBuilder(17935): createCaptureRequest
+D/Camera2CaptureRequestBuilder(17935): applyAeFpsRange: expectedFrameRateRange = [0, 0]
+D/Camera2CaptureRequestBuilder(17935): applyVideoStabilization: mode = null
+D/CaptureSession(17935): CameraCaptureSession.onConfigured() mState=OPENED
+D/CaptureSession(17935): CameraCaptureSession.onReady() OPENED
+D/Camera2CameraImpl(17935): {Camera@2dc3223[id=0]} Use case androidx.camera.core.ImageAnalysis-9db8e338-7ab8-468f-9fa3-5b0e85abcd25128552789 ACTIVE
+D/UseCaseAttachState(17935): Active and attached use case: [androidx.camera.core.ImageCapture-abf8c0cb-d1f2-4c17-a197-333aba2c0bbc21495776, androidx.camera.core.Preview-fe3f4246-ad0c-4d56-8d2a-4093f42f123c209473652, androidx.camera.core.ImageAnalysis-9db8e338-7ab8-468f-9fa3-5b0e85abcd25128552789] for camera: 0
+D/CaptureSession(17935): Attempting to submit CaptureRequest after setting
+D/CaptureSession(17935): Issuing request for session.
+D/Camera2CaptureRequestBuilder(17935): createCaptureRequest
+D/Camera2CaptureRequestBuilder(17935): applyAeFpsRange: expectedFrameRateRange = [0, 0]
+D/Camera2CaptureRequestBuilder(17935): applyVideoStabilization: mode = null
+I/flutter (17935): [_loadLatestPhoto] Loaded latest photo from DCIM: /storage/emulated/0/DCIM/Camera/1768761365470.jpg
+D/nativeloader(17935): Load /data/app/~~JlB74mfACnoh8jwcZG-5Pg==/com.simpic.coach-Jv03-JXyOX0XqN_dFt05kQ==/base.apk!/lib/arm64-v8a/libimage_processing_util_jni.so using class loader ns clns-7 (caller=/data/app/~~JlB74mfACnoh8jwcZG-5Pg==/com.simpic.coach-Jv03-JXyOX0XqN_dFt05kQ==/base.apk): ok
+D/TransportRuntime.JobInfoScheduler(17935): Scheduling upload for context TransportContext(cct, DEFAULT, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) with jobId=-1450040444 in 165770ms(Backend next call timestamp 1768762731462). Attempt 1
+D/TransportRuntime.JobInfoScheduler(17935): Scheduling upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) with jobId=-1445059707 in 86400000ms(Backend next call timestamp 0). Attempt 1
+I/DynamiteModule(17935): Considering local module com.google.mlkit.dynamite.face:10000 and remote module com.google.mlkit.dynamite.face:0
+I/DynamiteModule(17935): Selected local version of com.google.mlkit.dynamite.face
+D/nativeloader(17935): Load /data/app/~~JlB74mfACnoh8jwcZG-5Pg==/com.simpic.coach-Jv03-JXyOX0XqN_dFt05kQ==/base.apk!/lib/arm64-v8a/libface_detector_v2_jni.so using class loader ns clns-7 (caller=/data/app/~~JlB74mfACnoh8jwcZG-5Pg==/com.simpic.coach-Jv03-JXyOX0XqN_dFt05kQ==/base.apk!classes17.dex): ok
+D/TransportRuntime.SQLiteEventStore(17935): Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+D/TransportRuntime.JobInfoScheduler(17935): Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+V/FaceDetectorV2Jni(17935): initialize.start()
+D/TransportRuntime.SQLiteEventStore(17935): Storing event with priority=DEFAULT, name=FIREBASE_ML_SDK for destination cct
+I/native  (17935): I0000 00:00:1768762565.776542   18156 face_detector_v2_jni.cc:34] Loading models_bundled/fssd_medium_8bit_v5.tflite
+I/native  (17935): I0000 00:00:1768762565.777168   18156 face_detector_v2_jni.cc:34] Loading models_bundled/fssd_medium_8bit_gray_v5.tflite
+I/native  (17935): I0000 00:00:1768762565.778015   18156 face_detector_v2_jni.cc:34] Loading models_bundled/fssd_anchors_v5.pb
+I/native  (17935): I0000 00:00:1768762565.778370   18156 face_detector_v2_jni.cc:34] Loading models_bundled/LMprec_600.emd
+D/TransportRuntime.JobInfoScheduler(17935): Upload for context TransportContext(cct, DEFAULT, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+I/native  (17935): I0000 00:00:1768762565.791457   18156 face_detector_v2_jni.cc:34] Loading models_bundled/BCLlefteyeclosed_200.emd
+I/native  (17935): I0000 00:00:1768762565.791680   18156 face_detector_v2_jni.cc:34] Loading models_bundled/BCLrighteyeclosed_200.emd
+I/native  (17935): I0000 00:00:1768762565.791817   18156 face_detector_v2_jni.cc:34] Loading models_bundled/BCLjoy_200.emd
+I/native  (17935): I0000 00:00:1768762565.791975   18156 face_detector_v2_jni.cc:34] Loading models_bundled/MFT_fssd_accgray.pb
+I/native  (17935): I0000 00:00:1768762565.792042   18156 face_detector_v2_jni.cc:34] Loading models_bundled/contours.tfl
+D/TransportRuntime.SQLiteEventStore(17935): Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+I/native  (17935): I0000 00:00:1768762565.800628   18156 face_detector_v2_jni.cc:34] Loading models_bundled/blazeface.tfl
+I/tflite  (17935): Initialized TensorFlow Lite runtime.
+W/libc    (17935): Access denied finding property "ro.hardware.chipname"
+I/tflite  (17935): Created TensorFlow Lite XNNPACK delegate for CPU.
+W/tflite  (17935): Attempting to use a delegate that only supports static-sized tensors with a graph that has dynamic-sized tensors (tensor#137 is a dynamic-sized tensor).
+V/FaceDetectorV2Jni(17935): initialize.end()
+D/TransportRuntime.JobInfoScheduler(17935): Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+V/FaceDetectorV2Jni(17935): detectFacesImageByteArray.start()
+I/om.simpic.coach(17935): Background concurrent copying GC freed 6772KB AllocSpace bytes, 68(51MB) LOS objects, 69% free, 42MB/138MB, paused 204us,44us total 146.053ms
+V/FaceDetectorV2Jni(17935): detectFacesImageByteArray.end()
+D/TransportRuntime.SQLiteEventStore(17935): Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+D/TransportRuntime.JobInfoScheduler(17935): Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+D/TransportRuntime.SQLiteEventStore(17935): Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+D/TransportRuntime.JobInfoScheduler(17935): Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+I/flutter (17935): 
+I/flutter (17935): 🎨 PAINT DEBUG 🎨
+I/flutter (17935): Canvas size (display): Size(480.0, 853.3)
+I/flutter (17935): Image size (from camera): Size(1280.0, 720.0)
+I/flutter (17935): Rotation degrees: 90°
+I/flutter (17935): Camera preview size: Size(480.0, 853.3)
+I/flutter (17935): Lens direction: CameraLensDirection.back
+I/flutter (17935): First face bounds (raw): Rect.fromLTRB(54.0, 334.0, 122.0, 423.0)
+I/flutter (17935): First face bounds (transformed): Rect.fromLTRB(36.0, 222.7, 81.3, 282.0)
+I/flutter (17935): 
+V/FaceDetectorV2Jni(17935): detectFacesImageByteArray.start()
+D/UseCaseAttachState(17935): Active and attached use case: [androidx.camera.core.ImageCapture-abf8c0cb-d1f2-4c17-a197-333aba2c0bbc21495776, androidx.camera.core.Preview-fe3f4246-ad0c-4d56-8d2a-4093f42f123c209473652, androidx.camera.core.ImageAnalysis-9db8e338-7ab8-468f-9fa3-5b0e85abcd25128552789] for camera: 0
+D/CaptureSession(17935): Attempting to submit CaptureRequest after setting
+D/CaptureSession(17935): Issuing request for session.
+D/Camera2CaptureRequestBuilder(17935): createCaptureRequest
+D/Camera2CaptureRequestBuilder(17935): applyAeFpsRange: expectedFrameRateRange = [0, 0]
+D/Camera2CaptureRequestBuilder(17935): applyVideoStabilization: mode = null
+D/UseCaseAttachState(17935): Active and attached use case: [androidx.camera.core.ImageCapture-abf8c0cb-d1f2-4c17-a197-333aba2c0bbc21495776, androidx.camera.core.Preview-fe3f4246-ad0c-4d56-8d2a-4093f42f123c209473652, androidx.camera.core.ImageAnalysis-9db8e338-7ab8-468f-9fa3-5b0e85abcd25128552789] for camera: 0
+D/CaptureSession(17935): Attempting to submit CaptureRequest after setting
+D/CaptureSession(17935): Issuing request for session.
+D/Camera2CaptureRequestBuilder(17935): createCaptureRequest
+D/Camera2CaptureRequestBuilder(17935): applyAeFpsRange: expectedFrameRateRange = [0, 0]
+D/Camera2CaptureRequestBuilder(17935): applyVideoStabilization: mode = null
+D/Camera2CameraImpl(17935): {Camera@2dc3223[id=0]} Issue capture request
+D/CaptureSession(17935): Issuing capture request.
+D/Camera2CaptureRequestBuilder(17935): createCaptureRequest
+D/Camera2CaptureRequestBuilder(17935): applyAeFpsRange: expectedFrameRateRange = [0, 0]
+D/Camera2CaptureRequestBuilder(17935): applyVideoStabilization: mode = null
+V/FaceDetectorV2Jni(17935): detectFacesImageByteArray.end()
+I/om.simpic.coach(17935): Background concurrent copying GC freed 278KB AllocSpace bytes, 50(44MB) LOS objects, 75% free, 14MB/57MB, paused 6.428ms,55us total 39.048ms
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+D/ProfileInstaller(17935): Installing profile for com.simpic.coach
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+D/Camera2CameraImpl(17935): {Camera@2dc3223[id=0]} Issue capture request
+D/CaptureSession(17935): Issuing capture request.
+D/Camera2CaptureRequestBuilder(17935): createCaptureRequest
+D/Camera2CaptureRequestBuilder(17935): applyAeFpsRange: expectedFrameRateRange = [0, 0]
+D/Camera2CaptureRequestBuilder(17935): applyVideoStabilization: mode = null
+D/UseCaseAttachState(17935): Active and attached use case: [androidx.camera.core.ImageCapture-abf8c0cb-d1f2-4c17-a197-333aba2c0bbc21495776, androidx.camera.core.Preview-fe3f4246-ad0c-4d56-8d2a-4093f42f123c209473652, androidx.camera.core.ImageAnalysis-9db8e338-7ab8-468f-9fa3-5b0e85abcd25128552789] for camera: 0
+D/CaptureSession(17935): Attempting to submit CaptureRequest after setting
+D/CaptureSession(17935): Issuing request for session.
+D/Camera2CaptureRequestBuilder(17935): createCaptureRequest
+D/Camera2CaptureRequestBuilder(17935): applyAeFpsRange: expectedFrameRateRange = [0, 0]
+D/Camera2CaptureRequestBuilder(17935): applyVideoStabilization: mode = null
+D/Camera2PresenceSrc(17935): System onCameraAccessPrioritiesChanged.
+D/Camera2PresenceSrc(17935): [FetchData] Refreshed camera list: CameraIdentifier{cameraIds=0}, CameraIdentifier{cameraIds=1}, CameraIdentifier{cameraIds=2}
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/om.simpic.coach(17935): Background concurrent copying GC freed 583KB AllocSpace bytes, 82(71MB) LOS objects, 75% free, 23MB/93MB, paused 170us,55us total 105.636ms
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+D/Camera2PresenceSrc(17935): System onCameraAccessPrioritiesChanged.
+D/Camera2PresenceSrc(17935): [FetchData] Refreshed camera list: CameraIdentifier{cameraIds=0}, CameraIdentifier{cameraIds=1}, CameraIdentifier{cameraIds=2}
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+D/Camera2PresenceSrc(17935): System onCameraAccessPrioritiesChanged.
+D/Camera2PresenceSrc(17935): [FetchData] Refreshed camera list: CameraIdentifier{cameraIds=0}, CameraIdentifier{cameraIds=1}, CameraIdentifier{cameraIds=2}
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(34.7, 218.7, 80.0, 279.3) on widget size Size(480.0, 853.3)
+V/FaceDetectorV2Jni(17935): detectFacesImageByteArray.start()
+V/FaceDetectorV2Jni(17935): detectFacesImageByteArray.end()
+D/UseCaseAttachState(17935): Active and attached use case: [androidx.camera.core.ImageCapture-abf8c0cb-d1f2-4c17-a197-333aba2c0bbc21495776, androidx.camera.core.Preview-fe3f4246-ad0c-4d56-8d2a-4093f42f123c209473652, androidx.camera.core.ImageAnalysis-9db8e338-7ab8-468f-9fa3-5b0e85abcd25128552789] for camera: 0
+D/CaptureSession(17935): Attempting to submit CaptureRequest after setting
+D/CaptureSession(17935): Issuing request for session.
+D/Camera2CaptureRequestBuilder(17935): createCaptureRequest
+D/Camera2CaptureRequestBuilder(17935): applyAeFpsRange: expectedFrameRateRange = [0, 0]
+D/Camera2CaptureRequestBuilder(17935): applyVideoStabilization: mode = null
+D/Camera2CameraImpl(17935): {Camera@2dc3223[id=0]} Issue capture request
+D/CaptureSession(17935): Issuing capture request.
+D/Camera2CaptureRequestBuilder(17935): createCaptureRequest
+D/Camera2CaptureRequestBuilder(17935): applyAeFpsRange: expectedFrameRateRange = [0, 0]
+D/Camera2CaptureRequestBuilder(17935): applyVideoStabilization: mode = null
+D/UseCaseAttachState(17935): Active and attached use case: [androidx.camera.core.ImageCapture-abf8c0cb-d1f2-4c17-a197-333aba2c0bbc21495776, androidx.camera.core.Preview-fe3f4246-ad0c-4d56-8d2a-4093f42f123c209473652, androidx.camera.core.ImageAnalysis-9db8e338-7ab8-468f-9fa3-5b0e85abcd25128552789] for camera: 0
+D/CaptureSession(17935): Attempting to submit CaptureRequest after setting
+D/CaptureSession(17935): Issuing request for session.
+D/Camera2CaptureRequestBuilder(17935): createCaptureRequest
+D/Camera2CaptureRequestBuilder(17935): applyAeFpsRange: expectedFrameRateRange = [0, 0]
+D/Camera2CaptureRequestBuilder(17935): applyVideoStabilization: mode = null
+D/Camera2CameraImpl(17935): {Camera@2dc3223[id=0]} Issue capture request
+D/CaptureSession(17935): Issuing capture request.
+D/Camera2CaptureRequestBuilder(17935): createCaptureRequest
+D/Camera2CaptureRequestBuilder(17935): applyAeFpsRange: expectedFrameRateRange = [0, 0]
+D/Camera2CaptureRequestBuilder(17935): applyVideoStabilization: mode = null
+D/Camera2PresenceSrc(17935): System onCameraAccessPrioritiesChanged.
+D/Camera2PresenceSrc(17935): [FetchData] Refreshed camera list: CameraIdentifier{cameraIds=0}, CameraIdentifier{cameraIds=1}, CameraIdentifier{cameraIds=2}
+D/Camera2PresenceSrc(17935): System onCameraAccessPrioritiesChanged.
+D/Camera2PresenceSrc(17935): [FetchData] Refreshed camera list: CameraIdentifier{cameraIds=0}, CameraIdentifier{cameraIds=1}, CameraIdentifier{cameraIds=2}
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(32.7, 222.0, 80.0, 284.0) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(32.7, 222.0, 80.0, 284.0) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(32.7, 222.0, 80.0, 284.0) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(32.7, 222.0, 80.0, 284.0) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(32.7, 222.0, 80.0, 284.0) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(32.7, 222.0, 80.0, 284.0) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(32.7, 222.0, 80.0, 284.0) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(32.7, 222.0, 80.0, 284.0) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(32.7, 222.0, 80.0, 284.0) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(32.7, 222.0, 80.0, 284.0) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(32.7, 222.0, 80.0, 284.0) on widget size Size(480.0, 853.3)
+D/Camera2CameraImpl(17935): {Camera@2dc3223[id=0]} Issue capture request
+D/CaptureSession(17935): Issuing capture request.
+D/Camera2CaptureRequestBuilder(17935): createCaptureRequest
+D/Camera2CaptureRequestBuilder(17935): applyAeFpsRange: expectedFrameRateRange = [0, 0]
+D/Camera2CaptureRequestBuilder(17935): applyVideoStabilization: mode = null
+D/UseCaseAttachState(17935): Active and attached use case: [androidx.camera.core.ImageCapture-abf8c0cb-d1f2-4c17-a197-333aba2c0bbc21495776, androidx.camera.core.Preview-fe3f4246-ad0c-4d56-8d2a-4093f42f123c209473652, androidx.camera.core.ImageAnalysis-9db8e338-7ab8-468f-9fa3-5b0e85abcd25128552789] for camera: 0
+D/CaptureSession(17935): Attempting to submit CaptureRequest after setting
+D/CaptureSession(17935): Issuing request for session.
+D/Camera2CaptureRequestBuilder(17935): createCaptureRequest
+D/Camera2CaptureRequestBuilder(17935): applyAeFpsRange: expectedFrameRateRange = [0, 0]
+D/Camera2CaptureRequestBuilder(17935): applyVideoStabilization: mode = null
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(32.7, 222.0, 80.0, 284.0) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(32.7, 222.0, 80.0, 284.0) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(32.7, 222.0, 80.0, 284.0) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(32.7, 222.0, 80.0, 284.0) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(32.7, 222.0, 80.0, 284.0) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(32.7, 222.0, 80.0, 284.0) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(32.7, 222.0, 80.0, 284.0) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(32.7, 222.0, 80.0, 284.0) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(32.7, 222.0, 80.0, 284.0) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(32.7, 222.0, 80.0, 284.0) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(32.7, 222.0, 80.0, 284.0) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(32.7, 222.0, 80.0, 284.0) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(32.7, 222.0, 80.0, 284.0) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(32.7, 222.0, 80.0, 284.0) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(32.7, 222.0, 80.0, 284.0) on widget size Size(480.0, 853.3)
+I/flutter (17935): FACE_DET_RECT: Rect.fromLTRB(32.7, 222.0, 80.0, 284.0) on widget size Size(480.0, 853.3)
+Lost connection to device.

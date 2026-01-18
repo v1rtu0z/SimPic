@@ -1,0 +1,879 @@
+Launching lib/main.dart on FP5 in debug mode...
+Running Gradle task 'assembleDebug'...                              9.0s
+✓ Built build/app/outputs/flutter-apk/app-debug.apk
+Installing build/app/outputs/flutter-apk/app-debug.apk...        2,843ms
+D/FlutterJNI(17580): Beginning load of flutter...
+D/FlutterJNI(17580): flutter (null) was loaded normally!
+I/flutter (17580): [IMPORTANT:flutter/shell/platform/android/android_context_vk_impeller.cc(62)] Using the Impeller rendering backend (Vulkan).
+Syncing files to device FP5...                                  
+I/flutter (17580): [_loadLatestPhoto] Requesting photo permission...
+Syncing files to device FP5...                                      98ms
+
+Flutter run key commands.
+r Hot reload. 🔥🔥🔥
+R Hot restart.
+h List all available interactive commands.
+d Detach (terminate "flutter run" but leave application running).
+c Clear the screen
+q Quit (terminate the application on the device).
+
+A Dart VM Service on FP5 is available at: http://127.0.0.1:42493/ll0cz9BgClI=/
+The Flutter DevTools debugger and profiler on FP5 is available at: http://127.0.0.1:42493/ll0cz9BgClI=/devtools/?uri=ws://127.0.0.1:42493/ll0cz9BgClI=/ws
+I/Choreographer(17580): Skipped 50 frames!  The application may be doing too much work on its main thread.
+I/NDOP    (17580): listening using sensor listener
+D/permissions_handler(17580): No permissions found in manifest for: []15
+I/flutter (17580): [_loadLatestPhoto] Permission state: PermissionState.authorized
+D/QuirkSettingsLoader(17580): QuirkSettings$MetadataHolderService is not found.
+D/CameraX (17580): QuirkSettings from app metadata: null
+D/CameraX (17580): QuirkSettings by default: QuirkSettings{enabledWhenDeviceHasQuirk=true, forceEnabledQuirks=[], forceDisabledQuirks=[]}
+D/DeviceQuirks(17580): camera2 DeviceQuirks = 
+I/CameraManagerGlobal(17580): Connecting to camera service
+W/CameraManagerGlobal(17580): [soar.cts] ignore the status update of camera: 3
+W/CameraManagerGlobal(17580): [soar.cts] ignore the status update of camera: 4
+W/CameraManagerGlobal(17580): [soar.cts] ignore the status update of camera: 5
+D/Camera2CameraCoordinator(17580): Updated concurrent camera map: {}
+W/CameraManagerGlobal(17580): [soar.cts] ignore the status update of camera: 3
+W/CameraManagerGlobal(17580): [soar.cts] ignore the status update of camera: 4
+W/CameraManagerGlobal(17580): [soar.cts] ignore the status update of camera: 5
+V/CameraManager(17580): overrideTCTCameraCharacteristics pkgName=com.simpic.coach
+D/Camera2CameraFactory(17580): Updated available camera list: [] -> [0, 1, 2]
+V/CameraManager(17580): overrideTCTCameraCharacteristics pkgName=com.simpic.coach
+V/CameraManager(17580): overrideTCTCameraCharacteristics pkgName=com.simpic.coach
+D/CameraRepository(17580): Added camera: 0
+D/CameraQuirks(17580): camera2 CameraQuirks = 
+I/Camera2CameraInfo(17580): Device Level: INFO_SUPPORTED_HARDWARE_LEVEL_3
+D/CameraRepository(17580): Added camera: 1
+D/CameraQuirks(17580): camera2 CameraQuirks = 
+I/Camera2CameraInfo(17580): Device Level: INFO_SUPPORTED_HARDWARE_LEVEL_3
+I/flutter (17580): [_loadLatestPhoto] Found 24 albums: Slack, Screenshots, Rise Against - Nowhere Generation (2021) Mp3 320kbps [PMEDIA] ⭐️, Restored, WhatsApp Images, WhatsApp, Photos-001, Velike slike, Google Photos, Viber, Deda, Creative, PhotosEditor, Screenshots, 2025_12_27-0817, vegan memes, Pictures, New folder (2), Telegram, WhatsApp Documents, DCIM, Camera, Download, memes
+D/CameraRepository(17580): Added camera: 2
+D/CameraQuirks(17580): camera2 CameraQuirks = 
+I/Camera2CameraInfo(17580): Device Level: INFO_SUPPORTED_HARDWARE_LEVEL_3
+I/flutter (17580): [_loadLatestPhoto] Checking album: Slack
+I/flutter (17580): [_loadLatestPhoto] Checking album: Screenshots
+I/flutter (17580): [_loadLatestPhoto] Checking album: Rise Against - Nowhere Generation (2021) Mp3 320kbps [PMEDIA] ⭐️
+I/CameraPresencePrvdr(17580): Starting CameraPresenceProvider monitoring.
+I/flutter (17580): [_loadLatestPhoto] Checking album: Restored
+I/CameraPresenceSrc(17580): First observer added. Starting monitoring.
+I/Camera2PresenceSrc(17580): Starting system availability monitoring.
+I/flutter (17580): [_loadLatestPhoto] Checking album: WhatsApp Images
+I/flutter (17580): [_loadLatestPhoto] Checking album: WhatsApp
+I/flutter (17580): [_loadLatestPhoto] Checking album: Photos-001
+I/flutter (17580): [_loadLatestPhoto] Checking album: Velike slike
+I/flutter (17580): [_loadLatestPhoto] Checking album: Google Photos
+I/flutter (17580): [_loadLatestPhoto] Checking album: Viber
+I/flutter (17580): [_loadLatestPhoto] Checking album: Deda
+I/flutter (17580): [_loadLatestPhoto] Checking album: Creative
+I/flutter (17580): [_loadLatestPhoto] Checking album: PhotosEditor
+I/flutter (17580): [_loadLatestPhoto] Checking album: Screenshots
+I/flutter (17580): [_loadLatestPhoto] Checking album: 2025_12_27-0817
+I/flutter (17580): [_loadLatestPhoto] Checking album: vegan memes
+D/CameraValidator(17580): Verifying camera lens facing on FP5, lensFacingInteger: null
+I/flutter (17580): [_loadLatestPhoto] Checking album: Pictures
+I/flutter (17580): [_loadLatestPhoto] Checking album: New folder (2)
+I/flutter (17580): [_loadLatestPhoto] Checking album: Telegram
+I/flutter (17580): [_loadLatestPhoto] Checking album: WhatsApp Documents
+I/flutter (17580): [_loadLatestPhoto] Checking album: DCIM
+I/flutter (17580): [_loadLatestPhoto] Found DCIM-related album: DCIM
+I/flutter (17580): [_loadLatestPhoto] Checking album: Camera
+I/flutter (17580): [_loadLatestPhoto] Found DCIM-related album: Camera
+I/flutter (17580): [_loadLatestPhoto] Checking album: Download
+I/flutter (17580): [_loadLatestPhoto] Checking album: memes
+D/Camera2PresenceSrc(17580): System onCameraAvailable: 0
+D/Camera2PresenceSrc(17580): System onCameraAvailable: 1
+D/Camera2PresenceSrc(17580): System onCameraAvailable: 2
+D/Camera2PresenceSrc(17580): [FetchData] Refreshed camera list: CameraIdentifier{cameraIds=0}, CameraIdentifier{cameraIds=1}, CameraIdentifier{cameraIds=2}
+D/Camera2PresenceSrc(17580): [FetchData] Refreshed camera list: CameraIdentifier{cameraIds=0}, CameraIdentifier{cameraIds=1}, CameraIdentifier{cameraIds=2}
+D/Camera2PresenceSrc(17580): [FetchData] Refreshed camera list: CameraIdentifier{cameraIds=0}, CameraIdentifier{cameraIds=1}, CameraIdentifier{cameraIds=2}
+D/Camera2PresenceSrc(17580): [FetchData] Refreshed camera list: CameraIdentifier{cameraIds=0}, CameraIdentifier{cameraIds=1}, CameraIdentifier{cameraIds=2}
+I/flutter (17580): [_loadLatestPhoto] Album "DCIM" has 996 photos
+I/flutter (17580): [_loadLatestPhoto] Album "DCIM" latest: 1000052986, created: 2026-01-02 10:37:10.000
+D/DeviceQuirks(17580): video DeviceQuirks = CameraUseInconsistentTimebaseQuirk | MediaCodecDefaultDataSpaceQuirk
+D/Recorder(17580): mRequiredFreeStorageBytes = 50 MB
+I/flutter (17580): [_loadLatestPhoto] Album "Camera" has 1134 photos
+D/DeviceQuirks(17580): core DeviceQuirks = SurfaceOrderQuirk
+D/ResolvedFeatureGroup(17580): resolveFeatureGroup: sessionConfig = androidx.camera.core.LegacySessionConfig@f3b4b41, lensFacing = 1
+D/CameraUseCaseAdapter(17580): addUseCases: appUseCasesToAdd = [Preview:androidx.camera.core.Preview-fa546073-2458-4755-a0b5-da62414890bf, ImageCapture:androidx.camera.core.ImageCapture-a4d92d4f-9ff8-481d-b42d-75a0e903248b, ImageAnalysis:androidx.camera.core.ImageAnalysis-ae67c452-46ee-4a19-8307-847a58e7cdab], featureGroup = null
+D/UseCase (17580): applyFeaturesToConfig: mFeatureGroup = null, this = Preview:androidx.camera.core.Preview-fa546073-2458-4755-a0b5-da62414890bf
+D/SupportedOutputSizesCollector(17580): useCaseConfig = androidx.camera.core.impl.PreviewConfig@27308e6, candidateSizes = [4096x3072, 4080x3060, 4000x3000, 4096x2304, 3072x3072, 3060x3060, 4000x2250, 3840x2160, 3264x2448, 3960x1760, 2592x1944, 2700x1200, 2048x1536, 1920x1080, 1600x1200, 1440x1080, 1200x1200, 1280x960, 1080x1080, 1280x720, 1024x768, 800x600, 800x480, 720x480, 640x480, 640x360, 352x288, 320x240, 176x144]
+D/UseCase (17580): applyFeaturesToConfig: mFeatureGroup = null, this = ImageCapture:androidx.camera.core.ImageCapture-a4d92d4f-9ff8-481d-b42d-75a0e903248b
+D/SupportedOutputSizesCollector(17580): useCaseConfig = androidx.camera.core.impl.ImageCaptureConfig@ad6cd72, candidateSizes = [4096x3072, 4080x3060, 4000x3000, 4096x2304, 3072x3072, 3060x3060, 4000x2250, 3840x2160, 3264x2448, 3960x1760, 2592x1944, 2700x1200, 2048x1536, 1920x1080, 1600x1200, 1440x1080, 1200x1200, 1280x960, 1080x1080, 1280x720, 1024x768, 800x600, 800x480, 720x480, 640x480, 640x360, 352x288, 320x240, 176x144]
+D/UseCase (17580): applyFeaturesToConfig: mFeatureGroup = null, this = ImageAnalysis:androidx.camera.core.ImageAnalysis-ae67c452-46ee-4a19-8307-847a58e7cdab
+D/SupportedOutputSizesCollector(17580): useCaseConfig = androidx.camera.core.impl.ImageAnalysisConfig@83a65c3, candidateSizes = [4096x3072, 4080x3060, 4000x3000, 4096x2304, 3072x3072, 3060x3060, 4000x2250, 3840x2160, 3264x2448, 3960x1760, 2592x1944, 2700x1200, 2048x1536, 1920x1080, 1600x1200, 1440x1080, 1200x1200, 1280x960, 1080x1080, 1280x720, 1024x768, 800x600, 800x480, 720x480, 640x480, 640x360, 352x288, 320x240, 176x144]
+D/DynamicRangeResolver(17580): Resolved dynamic range for use case androidx.camera.core.Preview-fa546073-2458-4755-a0b5-da62414890bf to no compatible HDR dynamic ranges.
+D/DynamicRangeResolver(17580): DynamicRange@6d2179{encoding=UNSPECIFIED, bitDepth=0}
+D/DynamicRangeResolver(17580): ->
+D/DynamicRangeResolver(17580): DynamicRange@3b0ee40{encoding=SDR, bitDepth=8}
+D/SupportedSurfaceCombination(17580): resolvedDynamicRanges = {androidx.camera.core.impl.ImageCaptureConfig@ad6cd72=DynamicRange@3b0ee40{encoding=SDR, bitDepth=8}, androidx.camera.core.impl.PreviewConfig@27308e6=DynamicRange@3b0ee40{encoding=SDR, bitDepth=8}, androidx.camera.core.impl.ImageAnalysisConfig@83a65c3=DynamicRange@3b0ee40{encoding=SDR, bitDepth=8}}
+D/SupportedSurfaceCombination(17580): getSuggestedStreamSpecifications: isPreviewStabilizationOn = false, mIsPreviewStabilizationSupported = false, isFeatureComboInvocation = false
+D/SupportedSurfaceCombination(17580): resolveSpecsByCheckingMethod: checkingMethod = WITHOUT_FEATURE_COMBO
+D/SupportedSurfaceCombination(17580): resolveSpecsBySettings: featureSettings = FeatureSettings{getCameraMode=0, hasVideoCapture=false, getRequiredMaxBitDepth=8, isPreviewStabilizationOn=false, isUltraHdrOn=false, isHighSpeedOn=false, isFeatureComboInvocation=false, requiresFeatureComboQuery=false, getTargetFpsRange=[0, 0], isStrictFpsRequired=false}
+D/CameraQuirks(17580): camera2 CameraQuirks = 
+D/CameraQuirks(17580): camera2 CameraQuirks = 
+D/CameraQuirks(17580): camera2 CameraQuirks = 
+D/SupportedSurfaceCombination(17580): resolveSpecsBySettings: bestSizesAndFps = BestSizesAndMaxFpsForConfigs{bestSizes=[1280x720, 1280x720, 1280x720], bestSizesForStreamUseCase=null, maxFpsForBestSizes=30, maxFpsForStreamUseCase=2147483647, maxFpsForAllSizes=2147483647}
+D/UseCase (17580): applyFeaturesToConfig: mFeatureGroup = null, this = Preview:androidx.camera.core.Preview-fa546073-2458-4755-a0b5-da62414890bf
+D/Preview (17580): onSuggestedStreamSpecUpdated: primaryStreamSpec = StreamSpec{resolution=1280x720, originalConfiguredResolution=1280x720, dynamicRange=DynamicRange@3b0ee40{encoding=SDR, bitDepth=8}, sessionType=0, expectedFrameRateRange=[0, 0], implementationOptions=androidx.camera.camera2.impl.Camera2ImplConfig@7cc86b1, zslDisabled=false}, secondaryStreamSpec null
+D/DeferrableSurface(17580): Surface created[total_surfaces=1, used_surfaces=0](androidx.camera.core.processing.SurfaceEdge$SettableSurface@1057796}
+D/DeferrableSurface(17580): Surface created[total_surfaces=2, used_surfaces=0](androidx.camera.core.SurfaceRequest$2@f997722}
+D/DeferrableSurface(17580): New surface in use[total_surfaces=2, used_surfaces=1](androidx.camera.core.SurfaceRequest$2@f997722}
+D/DeferrableSurface(17580): use count+1, useCount=1 androidx.camera.core.SurfaceRequest$2@f997722
+D/UseCase (17580): applyFeaturesToConfig: mFeatureGroup = null, this = ImageCapture:androidx.camera.core.ImageCapture-a4d92d4f-9ff8-481d-b42d-75a0e903248b
+D/ImageCapture(17580): onSuggestedStreamSpecUpdated: primaryStreamSpec = StreamSpec{resolution=1280x720, originalConfiguredResolution=1280x720, dynamicRange=DynamicRange@3b0ee40{encoding=SDR, bitDepth=8}, sessionType=0, expectedFrameRateRange=[0, 0], implementationOptions=androidx.camera.camera2.impl.Camera2ImplConfig@11f8a0f, zslDisabled=false}, secondaryStreamSpec null
+D/ImageCapture(17580): createPipeline(cameraId: 0, streamSpec: StreamSpec{resolution=1280x720, originalConfiguredResolution=1280x720, dynamicRange=DynamicRange@3b0ee40{encoding=SDR, bitDepth=8}, sessionType=0, expectedFrameRateRange=[0, 0], implementationOptions=androidx.camera.camera2.impl.Camera2ImplConfig@11f8a0f, zslDisabled=false})
+W/libc    (17580): Access denied finding property "vendor.gpp.create_frc_extension"
+D/DeferrableSurface(17580): Surface created[total_surfaces=3, used_surfaces=1](androidx.camera.core.impl.ImmediateSurface@d188a9c}
+D/Camera2CameraImpl(17580): {Camera@2dc3223[id=0]} Use case androidx.camera.core.ImageCapture-a4d92d4f-9ff8-481d-b42d-75a0e903248b21495776 ACTIVE
+D/UseCase (17580): applyFeaturesToConfig: mFeatureGroup = null, this = ImageAnalysis:androidx.camera.core.ImageAnalysis-ae67c452-46ee-4a19-8307-847a58e7cdab
+D/ImageAnalysis(17580): onSuggestedStreamSpecUpdated: primaryStreamSpec = StreamSpec{resolution=1280x720, originalConfiguredResolution=1280x720, dynamicRange=DynamicRange@3b0ee40{encoding=SDR, bitDepth=8}, sessionType=0, expectedFrameRateRange=[0, 0], implementationOptions=androidx.camera.camera2.impl.Camera2ImplConfig@506c87a, zslDisabled=false}, secondaryStreamSpec null
+D/UseCaseAttachState(17580): Active and attached use case: [] for camera: 0
+W/libc    (17580): Access denied finding property "vendor.gpp.create_frc_extension"
+D/DeferrableSurface(17580): Surface created[total_surfaces=4, used_surfaces=1](androidx.camera.core.impl.ImmediateSurface@828f246}
+D/Camera2CameraImpl(17580): {Camera@2dc3223[id=0]} Use case androidx.camera.core.Preview-fa546073-2458-4755-a0b5-da62414890bf209473652 ACTIVE
+D/ImageCapture(17580): onCameraControlReady
+D/Camera2CameraControlImp(17580): setFlashMode: mFlashMode = 2
+D/UseCaseAttachState(17580): Active and attached use case: [] for camera: 0
+D/Camera2CameraImpl(17580): {Camera@2dc3223[id=0]} Use case androidx.camera.core.ImageCapture-a4d92d4f-9ff8-481d-b42d-75a0e903248b21495776 ACTIVE
+D/UseCaseAttachState(17580): Active and attached use case: [] for camera: 0
+D/Camera2CameraImpl(17580): {Camera@2dc3223[id=0]} Use case androidx.camera.core.ImageAnalysis-ae67c452-46ee-4a19-8307-847a58e7cdab128552789 INACTIVE
+D/UseCaseAttachState(17580): Active and attached use case: [] for camera: 0
+D/UseCaseAttachState(17580): Active and attached use case: [] for camera: 0
+D/Camera2CameraImpl(17580): {Camera@2dc3223[id=0]} Use cases [androidx.camera.core.Preview-fa546073-2458-4755-a0b5-da62414890bf209473652, androidx.camera.core.ImageCapture-a4d92d4f-9ff8-481d-b42d-75a0e903248b21495776, androidx.camera.core.ImageAnalysis-ae67c452-46ee-4a19-8307-847a58e7cdab128552789] now ATTACHED
+D/Camera2CameraControlImp(17580): setActive: isActive = true
+D/UseCaseAttachState(17580): All use case: [androidx.camera.core.ImageCapture-a4d92d4f-9ff8-481d-b42d-75a0e903248b21495776, androidx.camera.core.Preview-fa546073-2458-4755-a0b5-da62414890bf209473652, androidx.camera.core.ImageAnalysis-ae67c452-46ee-4a19-8307-847a58e7cdab128552789] for camera: 0
+D/UseCaseAttachState(17580): Active and attached use case: [androidx.camera.core.ImageCapture-a4d92d4f-9ff8-481d-b42d-75a0e903248b21495776, androidx.camera.core.Preview-fa546073-2458-4755-a0b5-da62414890bf209473652] for camera: 0
+D/Camera2CameraImpl(17580): {Camera@2dc3223[id=0]} Resetting Capture Session
+D/Camera2CameraImpl(17580): {Camera@2dc3223[id=0]} Skipping Capture Session state check due to current camera state: INITIALIZED and previous session status: false
+D/Camera2CameraImpl(17580): {Camera@2dc3223[id=0]} Releasing session in state INITIALIZED
+D/Camera2CameraImpl(17580): {Camera@2dc3223[id=0]} Attempting to force open the camera.
+D/CameraStateRegistry(17580): tryOpenCamera(Camera@2dc3223[id=0]) [Available Cameras: 1, Already Open: false (Previous state: null)] --> SUCCESS
+D/CameraStateRegistry(17580): Recalculating open cameras:
+D/CameraStateRegistry(17580): Camera                                       State                 
+D/CameraStateRegistry(17580): -------------------------------------------------------------------
+D/CameraStateRegistry(17580): Camera@33f614c[id=1]                         UNKNOWN               
+D/CameraStateRegistry(17580): Camera@2dc3223[id=0]                         OPENING               
+D/CameraStateRegistry(17580): Camera@bee2611[id=2]                         UNKNOWN               
+D/CameraStateRegistry(17580): -------------------------------------------------------------------
+D/CameraStateRegistry(17580): Open count: 1 (Max allowed: 1)
+D/Camera2CameraImpl(17580): {Camera@2dc3223[id=0]} Opening camera.
+D/Camera2CameraImpl(17580): {Camera@2dc3223[id=0]} Transitioning camera internal state: INITIALIZED --> OPENING
+D/CameraStateMachine(17580): New public camera state CameraState{type=OPENING, error=null} from OPENING and null
+D/CameraStateMachine(17580): Publishing new public camera state CameraState{type=OPENING, error=null}
+D/UseCaseAttachState(17580): All use case: [androidx.camera.core.ImageCapture-a4d92d4f-9ff8-481d-b42d-75a0e903248b21495776, androidx.camera.core.Preview-fa546073-2458-4755-a0b5-da62414890bf209473652, androidx.camera.core.ImageAnalysis-ae67c452-46ee-4a19-8307-847a58e7cdab128552789] for camera: 0
+V/CameraManager(17580): overrideTCTCameraCharacteristics pkgName=com.simpic.coach
+W/libc    (17580): Access denied finding property "vendor.gpp.create_frc_extension"
+E/CameraManagerGlobal(17580): Camera 3 is not present. Ignore physical camera status change
+E/CameraManagerGlobal(17580): Camera 4 is not present. Ignore physical camera status change
+D/Camera2PresenceSrc(17580): System onCameraUnavailable: 0
+W/CameraManagerGlobal(17580): [soar.cts] ignore the status update of camera: 5
+D/Camera2PresenceSrc(17580): [FetchData] Refreshed camera list: CameraIdentifier{cameraIds=0}, CameraIdentifier{cameraIds=1}, CameraIdentifier{cameraIds=2}
+D/Camera2CameraImpl(17580): {Camera@2dc3223[id=0]} Use case androidx.camera.core.Preview-fa546073-2458-4755-a0b5-da62414890bf209473652 ACTIVE
+D/UseCaseAttachState(17580): Active and attached use case: [androidx.camera.core.ImageCapture-a4d92d4f-9ff8-481d-b42d-75a0e903248b21495776, androidx.camera.core.Preview-fa546073-2458-4755-a0b5-da62414890bf209473652] for camera: 0
+D/Camera2CameraImpl(17580): {Camera@2dc3223[id=0]} Use case androidx.camera.core.ImageCapture-a4d92d4f-9ff8-481d-b42d-75a0e903248b21495776 ACTIVE
+D/UseCaseAttachState(17580): Active and attached use case: [androidx.camera.core.ImageCapture-a4d92d4f-9ff8-481d-b42d-75a0e903248b21495776, androidx.camera.core.Preview-fa546073-2458-4755-a0b5-da62414890bf209473652] for camera: 0
+D/Camera2CameraImpl(17580): {Camera@2dc3223[id=0]} Use case androidx.camera.core.ImageAnalysis-ae67c452-46ee-4a19-8307-847a58e7cdab128552789 INACTIVE
+D/UseCaseAttachState(17580): Active and attached use case: [androidx.camera.core.ImageCapture-a4d92d4f-9ff8-481d-b42d-75a0e903248b21495776, androidx.camera.core.Preview-fa546073-2458-4755-a0b5-da62414890bf209473652] for camera: 0
+D/Camera2CameraImpl(17580): {Camera@2dc3223[id=0]} CameraDevice.onOpened()
+D/Camera2CameraImpl(17580): {Camera@2dc3223[id=0]} Transitioning camera internal state: OPENING --> OPENED
+D/CameraStateRegistry(17580): Recalculating open cameras:
+D/CameraStateRegistry(17580): Camera                                       State                 
+D/CameraStateRegistry(17580): -------------------------------------------------------------------
+D/CameraStateRegistry(17580): Camera@33f614c[id=1]                         UNKNOWN               
+D/CameraStateRegistry(17580): Camera@2dc3223[id=0]                         OPEN                  
+D/CameraStateRegistry(17580): Camera@bee2611[id=2]                         UNKNOWN               
+D/CameraStateRegistry(17580): -------------------------------------------------------------------
+D/CameraStateRegistry(17580): Open count: 1 (Max allowed: 1)
+D/CameraStateMachine(17580): New public camera state CameraState{type=OPEN, error=null} from OPEN and null
+D/CameraStateMachine(17580): Publishing new public camera state CameraState{type=OPEN, error=null}
+D/UseCaseAttachState(17580): All use case: [androidx.camera.core.ImageCapture-a4d92d4f-9ff8-481d-b42d-75a0e903248b21495776, androidx.camera.core.Preview-fa546073-2458-4755-a0b5-da62414890bf209473652, androidx.camera.core.ImageAnalysis-ae67c452-46ee-4a19-8307-847a58e7cdab128552789] for camera: 0
+D/StreamUseCaseUtil(17580): populateSurfaceToStreamUseCaseMapping() - streamUseCaseMap = {}
+D/UseCaseAttachState(17580): Active and attached use case: [androidx.camera.core.ImageCapture-a4d92d4f-9ff8-481d-b42d-75a0e903248b21495776, androidx.camera.core.Preview-fa546073-2458-4755-a0b5-da62414890bf209473652] for camera: 0
+D/SyncCaptureSessionBase(17580): [androidx.camera.camera2.internal.SynchronizedCaptureSessionImpl@72d0d83] getSurface done with results: [Surface(name=null mNativeObject=-5476376611190764992)/@0x43878f6, Surface(name=null mNativeObject=-5476376611190616752)/@0x1834c3d, Surface(name=null mNativeObject=-5476376611190913232)/@0xa503c32]
+D/CaptureSession(17580): Opening capture session.
+D/Camera2CaptureRequestBuilder(17580): template type = 1
+D/Camera2CaptureRequestBuilder(17580): applyAeFpsRange: expectedFrameRateRange = [0, 0]
+D/SyncCaptureSessionImpl(17580): [androidx.camera.camera2.internal.SynchronizedCaptureSessionImpl@72d0d83] start openCaptureSession
+D/DeferrableSurface(17580): use count+1, useCount=2 androidx.camera.core.SurfaceRequest$2@f997722
+D/DeferrableSurface(17580): New surface in use[total_surfaces=4, used_surfaces=2](androidx.camera.core.impl.ImmediateSurface@d188a9c}
+D/DeferrableSurface(17580): use count+1, useCount=1 androidx.camera.core.impl.ImmediateSurface@d188a9c
+D/DeferrableSurface(17580): New surface in use[total_surfaces=4, used_surfaces=3](androidx.camera.core.impl.ImmediateSurface@828f246}
+D/DeferrableSurface(17580): use count+1, useCount=1 androidx.camera.core.impl.ImmediateSurface@828f246
+I/flutter (17580): =============================================
+I/flutter (17580): CAMERA SENSOR ORIENTATION: 90°
+I/flutter (17580): =============================================
+I/flutter (17580): [_loadLatestPhoto] Album "Camera" latest: 1000054088, created: 2026-01-18 19:36:05.000
+I/flutter (17580): [_loadLatestPhoto] Selected newest photo ID: 1000054088, created: 2026-01-18 19:36:05.000
+D/Camera2CameraImpl(17580): {Camera@2dc3223[id=0]} Use case androidx.camera.core.ImageAnalysis-ae67c452-46ee-4a19-8307-847a58e7cdab128552789 ACTIVE
+D/UseCaseAttachState(17580): Active and attached use case: [androidx.camera.core.ImageCapture-a4d92d4f-9ff8-481d-b42d-75a0e903248b21495776, androidx.camera.core.Preview-fa546073-2458-4755-a0b5-da62414890bf209473652, androidx.camera.core.ImageAnalysis-ae67c452-46ee-4a19-8307-847a58e7cdab128552789] for camera: 0
+D/SyncCaptureSessionImpl(17580): [androidx.camera.camera2.internal.SynchronizedCaptureSessionImpl@72d0d83] Session onConfigured()
+D/CaptureSession(17580): Attempting to send capture request onConfigured
+D/CaptureSession(17580): Issuing request for session.
+D/Camera2CaptureRequestBuilder(17580): createCaptureRequest
+D/Camera2CaptureRequestBuilder(17580): applyAeFpsRange: expectedFrameRateRange = [0, 0]
+D/Camera2CaptureRequestBuilder(17580): applyVideoStabilization: mode = null
+D/CaptureSession(17580): CameraCaptureSession.onConfigured() mState=OPENED
+D/CaptureSession(17580): CameraCaptureSession.onReady() OPENED
+I/flutter (17580): [_loadLatestPhoto] Loaded latest photo from DCIM: /storage/emulated/0/DCIM/Camera/1768761365470.jpg
+D/nativeloader(17580): Load /data/app/~~BUCO_nqBTOB7HEsqVM-PmA==/com.simpic.coach-bfEuWyDbZITL1TYPiuEyWA==/base.apk!/lib/arm64-v8a/libimage_processing_util_jni.so using class loader ns clns-7 (caller=/data/app/~~BUCO_nqBTOB7HEsqVM-PmA==/com.simpic.coach-bfEuWyDbZITL1TYPiuEyWA==/base.apk): ok
+D/TransportRuntime.JobInfoScheduler(17580): Scheduling upload for context TransportContext(cct, DEFAULT, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) with jobId=-1450040444 in 281436ms(Backend next call timestamp 1768762731462). Attempt 1
+D/TransportRuntime.JobInfoScheduler(17580): Scheduling upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) with jobId=-1445059707 in 86400000ms(Backend next call timestamp 0). Attempt 1
+I/DynamiteModule(17580): Considering local module com.google.mlkit.dynamite.face:10000 and remote module com.google.mlkit.dynamite.face:0
+I/DynamiteModule(17580): Selected local version of com.google.mlkit.dynamite.face
+D/nativeloader(17580): Load /data/app/~~BUCO_nqBTOB7HEsqVM-PmA==/com.simpic.coach-bfEuWyDbZITL1TYPiuEyWA==/base.apk!/lib/arm64-v8a/libface_detector_v2_jni.so using class loader ns clns-7 (caller=/data/app/~~BUCO_nqBTOB7HEsqVM-PmA==/com.simpic.coach-bfEuWyDbZITL1TYPiuEyWA==/base.apk!classes17.dex): ok
+D/TransportRuntime.SQLiteEventStore(17580): Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+V/FaceDetectorV2Jni(17580): initialize.start()
+I/native  (17580): I0000 00:00:1768762450.084131   17812 face_detector_v2_jni.cc:34] Loading models_bundled/fssd_medium_8bit_v5.tflite
+I/native  (17580): I0000 00:00:1768762450.084774   17812 face_detector_v2_jni.cc:34] Loading models_bundled/fssd_medium_8bit_gray_v5.tflite
+I/native  (17580): I0000 00:00:1768762450.086903   17812 face_detector_v2_jni.cc:34] Loading models_bundled/fssd_anchors_v5.pb
+I/native  (17580): I0000 00:00:1768762450.089786   17812 face_detector_v2_jni.cc:34] Loading models_bundled/LMprec_600.emd
+D/TransportRuntime.JobInfoScheduler(17580): Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+I/native  (17580): I0000 00:00:1768762450.106139   17812 face_detector_v2_jni.cc:34] Loading models_bundled/BCLlefteyeclosed_200.emd
+I/native  (17580): I0000 00:00:1768762450.106674   17812 face_detector_v2_jni.cc:34] Loading models_bundled/BCLrighteyeclosed_200.emd
+I/native  (17580): I0000 00:00:1768762450.107060   17812 face_detector_v2_jni.cc:34] Loading models_bundled/BCLjoy_200.emd
+I/native  (17580): I0000 00:00:1768762450.108071   17812 face_detector_v2_jni.cc:34] Loading models_bundled/MFT_fssd_accgray.pb
+D/TransportRuntime.SQLiteEventStore(17580): Storing event with priority=DEFAULT, name=FIREBASE_ML_SDK for destination cct
+I/native  (17580): I0000 00:00:1768762450.108344   17812 face_detector_v2_jni.cc:34] Loading models_bundled/contours.tfl
+D/TransportRuntime.JobInfoScheduler(17580): Upload for context TransportContext(cct, DEFAULT, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+I/native  (17580): I0000 00:00:1768762450.125132   17812 face_detector_v2_jni.cc:34] Loading models_bundled/blazeface.tfl
+D/TransportRuntime.SQLiteEventStore(17580): Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+D/TransportRuntime.JobInfoScheduler(17580): Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+I/tflite  (17580): Initialized TensorFlow Lite runtime.
+W/libc    (17580): Access denied finding property "ro.hardware.chipname"
+I/tflite  (17580): Created TensorFlow Lite XNNPACK delegate for CPU.
+W/tflite  (17580): Attempting to use a delegate that only supports static-sized tensors with a graph that has dynamic-sized tensors (tensor#137 is a dynamic-sized tensor).
+V/FaceDetectorV2Jni(17580): initialize.end()
+V/FaceDetectorV2Jni(17580): detectFacesImageByteArray.start()
+I/om.simpic.coach(17580): Background concurrent copying GC freed 6827KB AllocSpace bytes, 84(67MB) LOS objects, 75% free, 26MB/105MB, paused 486us,117us total 176.252ms
+V/FaceDetectorV2Jni(17580): detectFacesImageByteArray.end()
+D/TransportRuntime.SQLiteEventStore(17580): Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+D/TransportRuntime.JobInfoScheduler(17580): Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+D/TransportRuntime.SQLiteEventStore(17580): Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+D/TransportRuntime.JobInfoScheduler(17580): Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+V/FaceDetectorV2Jni(17580): detectFacesImageByteArray.start()
+V/FaceDetectorV2Jni(17580): detectFacesImageByteArray.end()
+I/flutter (17580): AE_LOCK_POS: dx=375.0, x=225.0000046748742, prevW=480.0000089757584, imgW=720.0
+I/flutter (17580): AE_LOCK_POS: dy=1188.5, y=767.3333481495679, prevH=853.3333492902372, imgH=1280.0
+I/flutter (17580): 
+I/flutter (17580): 🎨 PAINT DEBUG 🎨
+I/flutter (17580): Canvas size (display): Size(480.0, 853.3)
+I/flutter (17580): Image size (from camera): Size(1280.0, 720.0)
+I/flutter (17580): Rotation degrees: 90°
+I/flutter (17580): Camera preview size: Size(480.0, 853.3)
+I/flutter (17580): Lens direction: CameraLensDirection.back
+I/flutter (17580): First face bounds (raw): Rect.fromLTRB(57.0, 329.0, 126.0, 421.0)
+I/flutter (17580): First face bounds (transformed): Rect.fromLTRB(38.0, 219.3, 84.0, 280.7)
+I/flutter (17580): 
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(38.0, 219.3, 84.0, 280.7), raw=Rect.fromLTRB(57.0, 329.0, 126.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(38.0, 219.3, 84.0, 280.7), raw=Rect.fromLTRB(57.0, 329.0, 126.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(38.0, 219.3, 84.0, 280.7), raw=Rect.fromLTRB(57.0, 329.0, 126.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+D/UseCaseAttachState(17580): Active and attached use case: [androidx.camera.core.ImageCapture-a4d92d4f-9ff8-481d-b42d-75a0e903248b21495776, androidx.camera.core.Preview-fa546073-2458-4755-a0b5-da62414890bf209473652, androidx.camera.core.ImageAnalysis-ae67c452-46ee-4a19-8307-847a58e7cdab128552789] for camera: 0
+D/CaptureSession(17580): Attempting to submit CaptureRequest after setting
+D/CaptureSession(17580): Issuing request for session.
+D/Camera2CaptureRequestBuilder(17580): createCaptureRequest
+D/Camera2CaptureRequestBuilder(17580): applyAeFpsRange: expectedFrameRateRange = [0, 0]
+D/Camera2CaptureRequestBuilder(17580): applyVideoStabilization: mode = null
+D/UseCaseAttachState(17580): Active and attached use case: [androidx.camera.core.ImageCapture-a4d92d4f-9ff8-481d-b42d-75a0e903248b21495776, androidx.camera.core.Preview-fa546073-2458-4755-a0b5-da62414890bf209473652, androidx.camera.core.ImageAnalysis-ae67c452-46ee-4a19-8307-847a58e7cdab128552789] for camera: 0
+D/CaptureSession(17580): Attempting to submit CaptureRequest after setting
+D/CaptureSession(17580): Issuing request for session.
+D/Camera2CaptureRequestBuilder(17580): createCaptureRequest
+D/Camera2CaptureRequestBuilder(17580): applyAeFpsRange: expectedFrameRateRange = [0, 0]
+D/Camera2CaptureRequestBuilder(17580): applyVideoStabilization: mode = null
+D/Camera2CameraImpl(17580): {Camera@2dc3223[id=0]} Issue capture request
+D/CaptureSession(17580): Issuing capture request.
+D/Camera2CaptureRequestBuilder(17580): createCaptureRequest
+D/Camera2CaptureRequestBuilder(17580): applyAeFpsRange: expectedFrameRateRange = [0, 0]
+D/Camera2CaptureRequestBuilder(17580): applyVideoStabilization: mode = null
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(38.0, 219.3, 84.0, 280.7), raw=Rect.fromLTRB(57.0, 329.0, 126.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(38.0, 219.3, 84.0, 280.7), raw=Rect.fromLTRB(57.0, 329.0, 126.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(38.0, 219.3, 84.0, 280.7), raw=Rect.fromLTRB(57.0, 329.0, 126.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+V/FaceDetectorV2Jni(17580): detectFacesImageByteArray.start()
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(38.0, 219.3, 84.0, 280.7), raw=Rect.fromLTRB(57.0, 329.0, 126.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(38.0, 219.3, 84.0, 280.7), raw=Rect.fromLTRB(57.0, 329.0, 126.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(38.0, 219.3, 84.0, 280.7), raw=Rect.fromLTRB(57.0, 329.0, 126.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(38.0, 219.3, 84.0, 280.7), raw=Rect.fromLTRB(57.0, 329.0, 126.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(38.0, 219.3, 84.0, 280.7), raw=Rect.fromLTRB(57.0, 329.0, 126.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+V/FaceDetectorV2Jni(17580): detectFacesImageByteArray.end()
+I/flutter (17580): AE_LOCK_POS: dx=375.0, x=225.0000046748742, prevW=480.0000089757584, imgW=720.0
+I/flutter (17580): AE_LOCK_POS: dy=1189.5, y=768.000014828701, prevH=853.3333492902372, imgH=1280.0
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+D/ProfileInstaller(17580): Installing profile for com.simpic.coach
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+D/Camera2CameraImpl(17580): {Camera@2dc3223[id=0]} Issue capture request
+D/CaptureSession(17580): Issuing capture request.
+D/Camera2CaptureRequestBuilder(17580): createCaptureRequest
+D/Camera2CaptureRequestBuilder(17580): applyAeFpsRange: expectedFrameRateRange = [0, 0]
+D/Camera2CaptureRequestBuilder(17580): applyVideoStabilization: mode = null
+D/UseCaseAttachState(17580): Active and attached use case: [androidx.camera.core.ImageCapture-a4d92d4f-9ff8-481d-b42d-75a0e903248b21495776, androidx.camera.core.Preview-fa546073-2458-4755-a0b5-da62414890bf209473652, androidx.camera.core.ImageAnalysis-ae67c452-46ee-4a19-8307-847a58e7cdab128552789] for camera: 0
+D/CaptureSession(17580): Attempting to submit CaptureRequest after setting
+D/CaptureSession(17580): Issuing request for session.
+D/Camera2CaptureRequestBuilder(17580): createCaptureRequest
+D/Camera2CaptureRequestBuilder(17580): applyAeFpsRange: expectedFrameRateRange = [0, 0]
+D/Camera2CaptureRequestBuilder(17580): applyVideoStabilization: mode = null
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+D/Camera2PresenceSrc(17580): System onCameraAccessPrioritiesChanged.
+D/Camera2PresenceSrc(17580): [FetchData] Refreshed camera list: CameraIdentifier{cameraIds=0}, CameraIdentifier{cameraIds=1}, CameraIdentifier{cameraIds=2}
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/om.simpic.coach(17580): Background young concurrent copying GC freed 324KB AllocSpace bytes, 69(59MB) LOS objects, 82% free, 13MB/75MB, paused 18.467ms,29us total 35.244ms
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+I/flutter (17580): FACE_DET_POS: rect=Rect.fromLTRB(37.3, 219.3, 83.3, 280.7), raw=Rect.fromLTRB(56.0, 329.0, 125.0, 421.0), imgSize=Size(1280.0, 720.0), canvasSize=Size(480.0, 853.3)
+Lost connection to device.
