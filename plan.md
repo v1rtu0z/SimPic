@@ -149,11 +149,23 @@
 #### Feature 4.3: Auto Portrait Mode Toggle
 - **Priority: P1**
 - **Complexity: Low**
+- **Status: ✅ Completed**
 - **Logic:**
-  - When single face detected AND face size >25% of frame
+  - When single significant face detected AND face size > 15% of frame (further lowered from 20% for reliability)
   - Automatically enable portrait mode (background blur)
-  - Disable when no face or multiple faces
+  - Disable when no significant face or multiple significant faces
 - **UI:** Portrait mode icon indicator when active
+- **Verification:** Updated logic to use `significantFaceCount` instead of raw `faces.length` and lowered threshold to 15% for better reliability.
+
+#### Feature 4.4: Flashlight Control
+- **Priority: P1**
+- **Complexity: Low**
+- **Logic:**
+  - UI button to toggle between ON, OFF, and AUTO.
+  - AUTO mode: Uses lighting intelligence to turn on flash (Torch mode) in real-time if underexposed or shadowed conditions are detected during preview. Requires 10 frames of consistent signal to prevent flickering.
+  - ON mode: Forces flashlight (Torch mode) on during preview to assist with lighting.
+- **UI:** Icon button in top control bar (flash_on, flash_off, flash_auto).
+- **Status: ✅ Completed**
 
 ---
 

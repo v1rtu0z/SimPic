@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+enum FlashModeSetting { off, on, auto }
+
 class AppSettings extends ChangeNotifier {
   static const String _keyFaceDetection = 'faceDetectionEnabled';
   static const String _keyAutoShutter = 'autoShutterEnabled';
@@ -9,6 +11,7 @@ class AppSettings extends ChangeNotifier {
   static const String _keyOrientationSuggestion = 'orientationSuggestionEnabled';
   static const String _keyLightingIntelligence = 'lightingIntelligenceEnabled';
   static const String _keyAutoExposureLock = 'autoExposureLockEnabled';
+  static const String _keyFlashMode = 'flashMode';
 
   static const String _keyFrontFaceDetection = 'frontFaceDetectionEnabled';
   static const String _keyFrontAutoShutter = 'frontAutoShutterEnabled';
@@ -17,6 +20,7 @@ class AppSettings extends ChangeNotifier {
   static const String _keyFrontOrientationSuggestion = 'frontOrientationSuggestionEnabled';
   static const String _keyFrontLightingIntelligence = 'frontLightingIntelligenceEnabled';
   static const String _keyFrontAutoExposureLock = 'frontAutoExposureLockEnabled';
+  static const String _keyFrontFlashMode = 'frontFlashMode';
 
   bool _faceDetectionEnabled = true;
   bool _autoShutterEnabled = true;
@@ -25,6 +29,7 @@ class AppSettings extends ChangeNotifier {
   bool _orientationSuggestionEnabled = true;
   bool _lightingIntelligenceEnabled = true;
   bool _autoExposureLockEnabled = true;
+  FlashModeSetting _flashMode = FlashModeSetting.auto;
 
   bool _frontFaceDetectionEnabled = true;
   bool _frontAutoShutterEnabled = true; // Default to true for selfie
@@ -33,6 +38,7 @@ class AppSettings extends ChangeNotifier {
   bool _frontOrientationSuggestionEnabled = true;
   bool _frontLightingIntelligenceEnabled = true;
   bool _frontAutoExposureLockEnabled = true;
+  FlashModeSetting _frontFlashMode = FlashModeSetting.auto;
 
   bool _isFrontCamera = false;
 
@@ -51,6 +57,7 @@ class AppSettings extends ChangeNotifier {
   bool get orientationSuggestionEnabled => faceDetectionEnabled && (_isFrontCamera ? _frontOrientationSuggestionEnabled : _orientationSuggestionEnabled);
   bool get lightingIntelligenceEnabled => faceDetectionEnabled && (_isFrontCamera ? _frontLightingIntelligenceEnabled : _lightingIntelligenceEnabled);
   bool get autoExposureLockEnabled => faceDetectionEnabled && (_isFrontCamera ? _frontAutoExposureLockEnabled : _autoExposureLockEnabled);
+  FlashModeSetting get flashMode => _isFrontCamera ? _frontFlashMode : _flashMode;
 
   // Internal getters for actual state
   bool get isFaceDetectionSet => _faceDetectionEnabled;
@@ -86,6 +93,7 @@ class AppSettings extends ChangeNotifier {
     _orientationSuggestionEnabled = prefs.getBool(_keyOrientationSuggestion) ?? true;
     _lightingIntelligenceEnabled = prefs.getBool(_keyLightingIntelligence) ?? true;
     _autoExposureLockEnabled = prefs.getBool(_keyAutoExposureLock) ?? true;
+    _flashMode = FlashModeSetting.values[prefs.getInt(_keyFlashMode) ?? FlashModeSetting.auto.index];
 
     // Front camera
     _frontFaceDetectionEnabled = prefs.getBool(_keyFrontFaceDetection) ?? true;
@@ -95,6 +103,7 @@ class AppSettings extends ChangeNotifier {
     _frontOrientationSuggestionEnabled = prefs.getBool(_keyFrontOrientationSuggestion) ?? true;
     _frontLightingIntelligenceEnabled = prefs.getBool(_keyFrontLightingIntelligence) ?? true;
     _frontAutoExposureLockEnabled = prefs.getBool(_keyFrontAutoExposureLock) ?? true;
+    _frontFlashMode = FlashModeSetting.values[prefs.getInt(_keyFrontFlashMode) ?? FlashModeSetting.auto.index];
     
     notifyListeners();
   }
@@ -150,6 +159,19 @@ class AppSettings extends ChangeNotifier {
     if (_autoExposureLockEnabled == value) return;
     _autoExposureLockEnabled = value;
     _save(_keyAutoExposureLock, value);
+    notifyListeners();
+  }
+
+  set flashMode(FlashModeSetting value) {
+    if (_isFrontCamera) {
+      if (_frontFlashMode == value) return;
+      _frontFlashMode = value;
+      _saveInt(_keyFrontFlashMode, value.index);
+    } else {
+      if (_flashMode == value) return;
+      _flashMode = value;
+      _saveInt(_keyFlashMode, value.index);
+    }
     notifyListeners();
   }
 
@@ -239,6 +261,11 @@ class AppSettings extends ChangeNotifier {
   Future<void> _save(String key, bool value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(key, value);
+  }
+
+  Future<void> _saveInt(String key, int value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(key, value);
   }
 }
 

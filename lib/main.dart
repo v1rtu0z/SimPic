@@ -9,13 +9,15 @@ void main() async {
   // Initialize settings
   await appSettings.init();
   
-  // Lock app to portrait orientation
+  // Lock app to portrait orientation and hide status bar
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
-  ]).then((_) {
-    runApp(const SimPicApp());
-  });
+  ]);
+  
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  
+  runApp(const SimPicApp());
 }
 
 class SimPicApp extends StatelessWidget {

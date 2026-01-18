@@ -274,16 +274,12 @@ class CompositionGridPainter extends CustomPainter {
       return;
     }
 
-    final arrowPaint = Paint()
-      ..color = Colors.cyan.withValues(alpha: 0.7)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3.0
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round;
-
     // Arrow size and position
     const arrowSize = 30.0;
     const margin = 40.0;
+
+    // Get normalized pulse value (0.0 to 1.0)
+    final pulseValue = (pulseAnimation.value - 1.0) / 0.2;
 
     // Rotate directional guidance from upright space to portrait screen space
     bool moveLeft = guidance.moveLeft;
@@ -336,59 +332,74 @@ class CompositionGridPainter extends CustomPainter {
 
     // Draw arrows at edges based on rotated guidance
     if (fLeft) {
-      _drawArrow(canvas, Offset(margin, size.height / 2), arrowSize, ArrowDirection.left, arrowPaint);
+      _drawArrow(canvas, Offset(margin, size.height / 2), arrowSize, ArrowDirection.left, pulseValue);
     }
     if (fRight) {
-      _drawArrow(canvas, Offset(size.width - margin, size.height / 2), arrowSize, ArrowDirection.right, arrowPaint);
+      _drawArrow(canvas, Offset(size.width - margin, size.height / 2), arrowSize, ArrowDirection.right, pulseValue);
     }
     if (fUp) {
-      _drawArrow(canvas, Offset(size.width / 2, margin), arrowSize, ArrowDirection.up, arrowPaint);
+      _drawArrow(canvas, Offset(size.width / 2, margin), arrowSize, ArrowDirection.up, pulseValue);
     }
     if (fDown) {
-      _drawArrow(canvas, Offset(size.width / 2, size.height - margin), arrowSize, ArrowDirection.down, arrowPaint);
+      _drawArrow(canvas, Offset(size.width / 2, size.height - margin), arrowSize, ArrowDirection.down, pulseValue);
     }
   }
 
-  /// Draw a single arrow
-  void _drawArrow(Canvas canvas, Offset center, double size, ArrowDirection direction, Paint paint) {
+  /// Draw a single arrow with outline for better visibility
+  void _drawArrow(Canvas canvas, Offset center, double size, ArrowDirection direction, double pulseValue) {
     final path = Path();
+    
+    // Scale arrow size slightly with pulse
+    final currentSize = size * (0.9 + 0.2 * pulseValue);
     
     switch (direction) {
       case ArrowDirection.left:
-        path.moveTo(center.dx + size / 2, center.dy);
-        path.lineTo(center.dx - size / 2, center.dy - size / 2);
-        path.moveTo(center.dx - size / 2, center.dy - size / 2);
-        path.lineTo(center.dx - size / 2, center.dy + size / 2);
-        path.moveTo(center.dx - size / 2, center.dy + size / 2);
-        path.lineTo(center.dx + size / 2, center.dy);
+        path.moveTo(center.dx + currentSize / 2, center.dy);
+        path.lineTo(center.dx - currentSize / 2, center.dy - currentSize / 2);
+        path.lineTo(center.dx - currentSize / 2, center.dy + currentSize / 2);
+        path.close();
         break;
       case ArrowDirection.right:
-        path.moveTo(center.dx - size / 2, center.dy);
-        path.lineTo(center.dx + size / 2, center.dy - size / 2);
-        path.moveTo(center.dx + size / 2, center.dy - size / 2);
-        path.lineTo(center.dx + size / 2, center.dy + size / 2);
-        path.moveTo(center.dx + size / 2, center.dy + size / 2);
-        path.lineTo(center.dx - size / 2, center.dy);
+        path.moveTo(center.dx - currentSize / 2, center.dy);
+        path.lineTo(center.dx + currentSize / 2, center.dy - currentSize / 2);
+        path.lineTo(center.dx + currentSize / 2, center.dy + currentSize / 2);
+        path.close();
         break;
       case ArrowDirection.up:
-        path.moveTo(center.dx, center.dy + size / 2);
-        path.lineTo(center.dx - size / 2, center.dy - size / 2);
-        path.moveTo(center.dx - size / 2, center.dy - size / 2);
-        path.lineTo(center.dx + size / 2, center.dy - size / 2);
-        path.moveTo(center.dx + size / 2, center.dy - size / 2);
-        path.lineTo(center.dx, center.dy + size / 2);
+        path.moveTo(center.dx, center.dy + currentSize / 2);
+        path.lineTo(center.dx - currentSize / 2, center.dy - currentSize / 2);
+        path.lineTo(center.dx + currentSize / 2, center.dy - currentSize / 2);
+        path.close();
         break;
       case ArrowDirection.down:
-        path.moveTo(center.dx, center.dy - size / 2);
-        path.lineTo(center.dx - size / 2, center.dy + size / 2);
-        path.moveTo(center.dx - size / 2, center.dy + size / 2);
-        path.lineTo(center.dx + size / 2, center.dy + size / 2);
-        path.moveTo(center.dx + size / 2, center.dy + size / 2);
-        path.lineTo(center.dx, center.dy - size / 2);
+        path.moveTo(center.dx, center.dy - currentSize / 2);
+        path.lineTo(center.dx - currentSize / 2, center.dy + currentSize / 2);
+        path.lineTo(center.dx + currentSize / 2, center.dy + currentSize / 2);
+        path.close();
         break;
     }
     
-    canvas.drawPath(path, paint);
+    // Draw black outline
+    final outlinePaint = Paint()
+      ..color = Colors.black.withValues(alpha: 0.8)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3.0
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+    canvas.drawPath(path, outlinePaint);
+    
+    // Draw cyan fill (matching composition circle)
+    final fillPaint = Paint()
+      ..color = Colors.cyan.withValues(alpha: 0.8)
+      ..style = PaintingStyle.fill;
+    canvas.drawPath(path, fillPaint);
+    
+    // Draw a subtle inner glow based on pulse to enhance animation
+    final glowPaint = Paint()
+      ..color = Colors.cyan.withValues(alpha: 0.4 * pulseValue)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+    canvas.drawPath(path, glowPaint);
   }
 
 

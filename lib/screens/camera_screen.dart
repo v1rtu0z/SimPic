@@ -103,6 +103,10 @@ class _CameraScreenState extends State<CameraScreen>
   DateTime? _lastLockTime;
   static const Duration _lockThreshold = Duration(milliseconds: 500);
 
+  // Flashlight hysteresis
+  int _flashConsistencyCounter = 0;
+  static const int _flashConsistencyThreshold = 10;
+
   // Frame comparison for stability (skip face detection when camera is stationary)
   Uint8List? _previousFrameSample;
   Size? _previousImageSize;
@@ -122,6 +126,7 @@ class _CameraScreenState extends State<CameraScreen>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     appSettings.addListener(_onSettingsChanged);
+    appSettings.addListener(_updateFlashMode);
     
     // Listen to physical device orientation changes using sensors
     _orientationSubscription = NativeDeviceOrientationCommunicator()
@@ -202,6 +207,7 @@ class _CameraScreenState extends State<CameraScreen>
   @override
   void dispose() {
     appSettings.removeListener(_onSettingsChanged);
+    appSettings.removeListener(_updateFlashMode);
     WidgetsBinding.instance.removeObserver(this);
     _orientationSubscription?.cancel();
     _controller?.dispose();
@@ -232,6 +238,29 @@ class _CameraScreenState extends State<CameraScreen>
         }
       });
     }
+  }
+
+  void _updateFlashMode() {
+    if (_controller == null || !_controller!.value.isInitialized) return;
+    
+    FlashMode cameraFlashMode;
+    switch (appSettings.flashMode) {
+      case FlashModeSetting.off:
+        cameraFlashMode = FlashMode.off;
+        break;
+      case FlashModeSetting.on:
+        cameraFlashMode = FlashMode.torch; // Use torch for "on" as well to assist preview
+        break;
+      case FlashModeSetting.auto:
+        // We handle this dynamically in _processCameraImage
+        // But we set it to off initially to avoid confusion
+        cameraFlashMode = FlashMode.off;
+        break;
+    }
+    
+    _controller!.setFlashMode(cameraFlashMode).catchError((e) {
+      debugPrint('Error setting flash mode: $e');
+    });
   }
 
   /// Updates the layout orientation for UI elements (icons, text)
@@ -300,6 +329,9 @@ class _CameraScreenState extends State<CameraScreen>
       );
 
       await _controller!.initialize();
+      
+      // Set initial flash mode from settings
+      _updateFlashMode();
       
       // Enable continuous autofocus
       await _controller!.setFocusMode(FocusMode.auto);
@@ -806,6 +838,46 @@ class _CameraScreenState extends State<CameraScreen>
             _faceExposureResult = appSettings.lightingIntelligenceEnabled ? exposureResult : null;
             _blinkDetectionResult = blinkResult;
             _framingScoreResult = framingScore;
+
+            // Handle Flashlight Auto-toggle based on light detection
+            if (appSettings.flashMode == FlashModeSetting.auto && exposureResult != null) {
+              final needsFlash = exposureResult.status == ExposureStatus.underexposed || 
+                                exposureResult.status == ExposureStatus.shadowed;
+              
+              // Frame-based hysteresis to prevent flickering
+              if (needsFlash) {
+                // If we need flash, increment counter (capped at threshold)
+                if (_flashConsistencyCounter < 0) _flashConsistencyCounter = 0; // Reset if it was negative
+                _flashConsistencyCounter++;
+              } else {
+                // If we don't need flash, decrement counter (or use separate counter, 
+                // but a single signed counter works well for toggling)
+                if (_flashConsistencyCounter > 0) _flashConsistencyCounter = 0; // Reset if it was positive
+                _flashConsistencyCounter--;
+              }
+
+              final currentFlashMode = _controller?.value.flashMode;
+              
+              // Only turn ON after threshold frames of "needs flash"
+              if (_flashConsistencyCounter >= _flashConsistencyThreshold) {
+                if (currentFlashMode != FlashMode.torch) {
+                  _controller?.setFlashMode(FlashMode.torch).catchError((e) => debugPrint('AutoFlash (Torch) error: $e'));
+                }
+                // Keep at threshold to avoid overflow and allow immediate decrement if signal changes
+                _flashConsistencyCounter = _flashConsistencyThreshold;
+              } 
+              // Only turn OFF after threshold frames of "doesn't need flash"
+              else if (_flashConsistencyCounter <= -_flashConsistencyThreshold) {
+                if (currentFlashMode != FlashMode.off) {
+                  _controller?.setFlashMode(FlashMode.off).catchError((e) => debugPrint('AutoFlash (Off) error: $e'));
+                }
+                // Keep at -threshold
+                _flashConsistencyCounter = -_flashConsistencyThreshold;
+              }
+            } else {
+              // Reset counter if not in auto mode or no exposure result
+              _flashConsistencyCounter = 0;
+            }
             
             // Handle shutter pulse animation based on framing score
             if (_framingScoreResult != null && _framingScoreResult!.isGreat) {
@@ -1271,6 +1343,60 @@ class _CameraScreenState extends State<CameraScreen>
     return _getPreviewRotationTurns();
   }
 
+  Widget _buildFlashButton() {
+    IconData icon;
+    Color color = Colors.white;
+    switch (appSettings.flashMode) {
+      case FlashModeSetting.off:
+        icon = Icons.flash_off;
+        color = Colors.white54;
+        break;
+      case FlashModeSetting.on:
+        icon = Icons.flash_on;
+        color = Colors.yellow;
+        break;
+      case FlashModeSetting.auto:
+        icon = Icons.flash_auto;
+        color = Colors.blueAccent;
+        break;
+    }
+
+    return GestureDetector(
+      onTap: () {
+        final current = appSettings.flashMode;
+        FlashModeSetting next;
+        if (current == FlashModeSetting.auto) {
+          next = FlashModeSetting.on;
+        } else if (current == FlashModeSetting.on) {
+          next = FlashModeSetting.off;
+        } else {
+          next = FlashModeSetting.auto;
+        }
+        appSettings.flashMode = next;
+      },
+      child: RotatedBox(
+        quarterTurns: _getIconRotationQuarterTurns(),
+        child: Container(
+          width: 50,
+          height: 50,
+          decoration: BoxDecoration(
+            color: Colors.black.withValues(alpha: 0.5),
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: Colors.white.withValues(alpha: 0.2),
+              width: 1,
+            ),
+          ),
+          child: Icon(
+            icon,
+            color: color,
+            size: 24,
+          ),
+        ),
+      ),
+    );
+  }
+
   Future<void> _switchCamera() async {
     if (_cameras == null || _cameras!.length < 2 || _isProcessing || _isCapturing) return;
 
@@ -1534,20 +1660,28 @@ class _CameraScreenState extends State<CameraScreen>
           ),
           
           // Settings Button
+          // Top row controls (Settings, Flash)
           Positioned(
             top: MediaQuery.of(context).padding.top + 16,
             left: 16,
-            child: IconButton(
-              icon: const Icon(
-                Icons.settings,
-                color: Colors.white,
-                size: 32,
-              ),
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const SettingsScreen()),
-                );
-              },
+            right: 16,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  icon: const Icon(
+                    Icons.settings,
+                    color: Colors.white,
+                    size: 32,
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                    );
+                  },
+                ),
+                _buildFlashButton(),
+              ],
             ),
           ),
           
