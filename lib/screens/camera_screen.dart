@@ -19,6 +19,7 @@ import '../models/composition_guidance.dart';
 import '../widgets/composition_grid_overlay.dart';
 import '../models/orientation_guidance.dart';
 import '../models/exposure_guidance.dart';
+import '../models/blink_detection.dart';
 import '../models/app_settings.dart';
 import 'settings_screen.dart';
 
@@ -80,6 +81,9 @@ class _CameraScreenState extends State<CameraScreen>
   
   // Exposure analysis
   FaceExposureResult? _faceExposureResult;
+  
+  // Blink detection
+  BlinkDetectionResult? _blinkDetectionResult;
   
   // Focus feedback
   Offset? _focusPoint;
@@ -152,7 +156,7 @@ class _CameraScreenState extends State<CameraScreen>
     // Initialize face detector
     _faceDetector = FaceDetector(
       options: FaceDetectorOptions(
-        enableClassification: false,
+        enableClassification: true,
         enableLandmarks: false,
         enableTracking: false,
         performanceMode: FaceDetectorMode.accurate,
@@ -415,6 +419,22 @@ class _CameraScreenState extends State<CameraScreen>
       return;
     }
 
+    // Blink detection: wait up to 500ms for eyes to open
+    if (_blinkDetectionResult != null && _blinkDetectionResult!.eitherEyeClosed) {
+      debugPrint('[_takePicture] Eyes closed detected, waiting up to 500ms...');
+      final startTime = DateTime.now();
+      while (DateTime.now().difference(startTime).inMilliseconds < 500) {
+        await Future.delayed(const Duration(milliseconds: 50));
+        if (_blinkDetectionResult == null || _blinkDetectionResult!.canShoot) {
+          debugPrint('[_takePicture] Eyes opened! Proceeding with capture.');
+          break;
+        }
+      }
+      if (_blinkDetectionResult != null && _blinkDetectionResult!.eitherEyeClosed) {
+        debugPrint('[_takePicture] Eyes still closed after 500ms, capturing anyway.');
+      }
+    }
+
     setState(() {
       _isCapturing = true;
     });
@@ -586,6 +606,7 @@ class _CameraScreenState extends State<CameraScreen>
         DistanceCoachingResult? coachingResult;
         CompositionGuidanceResult? compositionResult;
         FaceExposureResult? exposureResult;
+        BlinkDetectionResult? blinkResult;
         Offset? displayFaceCenter;
         Size? displayImageSize;
 
@@ -717,6 +738,12 @@ class _CameraScreenState extends State<CameraScreen>
                 );
               }
 
+              // Perform Blink Detection
+              blinkResult = evaluateBlink(
+                bestFace.leftEyeOpenProbability,
+                bestFace.rightEyeOpenProbability,
+              );
+
               // Perform Auto-exposure Lock on Face
               if (appSettings.autoExposureLockEnabled) {
                 _handleFaceExposureLock(bestFace, currentRotation, imageSize);
@@ -747,6 +774,7 @@ class _CameraScreenState extends State<CameraScreen>
               _previousPowerPoint = compositionResult.nearestPowerPoint;
             }
             _faceExposureResult = appSettings.lightingIntelligenceEnabled ? exposureResult : null;
+            _blinkDetectionResult = blinkResult;
             _lastDisplayFaceCenter = displayFaceCenter;
             _lastDisplayImageSize = displayImageSize;
           });
@@ -757,6 +785,7 @@ class _CameraScreenState extends State<CameraScreen>
           appSettings.distanceCoachingEnabled ? coachingResult : null,
           appSettings.compositionGridEnabled ? compositionResult : null,
           appSettings.lightingIntelligenceEnabled ? exposureResult : null,
+          blinkResult,
         );
         
         // Debug logging
@@ -779,6 +808,7 @@ class _CameraScreenState extends State<CameraScreen>
     DistanceCoachingResult? coaching,
     CompositionGuidanceResult? composition,
     FaceExposureResult? exposure,
+    BlinkDetectionResult? blink,
   ) {
     if (!appSettings.autoShutterEnabled || _isCapturing) {
       _goodFrameCount = 0;
@@ -811,6 +841,7 @@ class _CameraScreenState extends State<CameraScreen>
     // 1. If distance coaching is enabled, status must be optimal.
     // 2. If composition guidance is enabled, status must be wellPositioned.
     // 3. If orientation suggestion is enabled, there must be no mismatch.
+    // 4. If blink detection is active, eyes must be open.
     
     bool isDistanceGood = !distanceEnabled || (coaching != null && coaching.status == DistanceCoachingStatus.optimal);
     
@@ -828,6 +859,9 @@ class _CameraScreenState extends State<CameraScreen>
     
     bool isLightingGood = !lightingEnabled || (exposure != null && exposure.status == ExposureStatus.good);
     
+    // Blink detection requirement
+    bool isBlinkGood = blink == null || blink.canShoot;
+
     // For orientation, we still use it if enabled
     bool isOrientationGood = true;
     if (appSettings.orientationSuggestionEnabled) {
@@ -838,7 +872,7 @@ class _CameraScreenState extends State<CameraScreen>
       isOrientationGood = !orientationGuidance.isMismatch;
     }
 
-    if (isDistanceGood && isCompositionGood && isOrientationGood && isLightingGood) {
+    if (isDistanceGood && isCompositionGood && isOrientationGood && isLightingGood && isBlinkGood) {
       _goodFrameCount++;
       if (_goodFrameCount >= _autoShutterRequiredGoodFrames) {
         _goodFrameCount = 0;
@@ -1490,6 +1524,7 @@ class _CameraScreenState extends State<CameraScreen>
             coachingResult: _distanceCoachingResult,
             compositionResult: _compositionGuidanceResult,
             exposureResult: _faceExposureResult,
+            blinkResult: _blinkDetectionResult,
             significantFaceCount: _significantFaceCount,
             deviceOrientation: _stableLayoutOrientation,
             isOrientationMismatch: isOrientationMismatch && appSettings.orientationSuggestionEnabled,
@@ -1913,6 +1948,17 @@ class FaceDetectorPainter extends CustomPainter {
 
       // Draw rectangle around the face
       canvas.drawRect(rect, paint);
+
+      // Draw eye status markers if available
+      if (face.leftEyeOpenProbability != null || face.rightEyeOpenProbability != null) {
+        final eyePaint = Paint()..style = PaintingStyle.fill;
+        const double eyeRadius = 3.0;
+        const double threshold = 0.8;
+
+        // Note: Landmarks are NOT enabled in options, so we can't get exact eye positions.
+        // We'll draw small markers at top of bounding box as a fallback if landmarks are added later.
+        // For now, since landmarks are disabled, we don't draw on the face itself.
+      }
     }
   }
 

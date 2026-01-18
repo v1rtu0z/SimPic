@@ -4,12 +4,14 @@ import '../models/distance_coaching_scenario.dart';
 import '../models/composition_guidance.dart';
 import '../models/orientation_guidance.dart';
 import '../models/exposure_guidance.dart';
+import '../models/blink_detection.dart';
 
 /// Overlay widget for coaching UI
 class CoachingOverlay extends StatelessWidget {
   final DistanceCoachingResult? coachingResult;
   final CompositionGuidanceResult? compositionResult;
   final FaceExposureResult? exposureResult;
+  final BlinkDetectionResult? blinkResult;
   final int significantFaceCount;
   final NativeDeviceOrientation deviceOrientation;
   final bool isOrientationMismatch;
@@ -19,6 +21,7 @@ class CoachingOverlay extends StatelessWidget {
     this.coachingResult,
     this.compositionResult,
     this.exposureResult,
+    this.blinkResult,
     this.significantFaceCount = 0,
     required this.deviceOrientation,
     this.isOrientationMismatch = false,
@@ -35,6 +38,11 @@ class CoachingOverlay extends StatelessWidget {
         currentOrientation: deviceOrientation,
       );
       children.add(_buildOrientationSuggestion(orientationGuidance.suggestedOrientation));
+    }
+
+    // 1.1 Blink Status Icon
+    if (blinkResult != null) {
+      children.add(_buildBlinkIndicator());
     }
 
     // 2. Main Coaching Content
@@ -95,7 +103,7 @@ class CoachingOverlay extends StatelessWidget {
 
   _CoachingData? _getCoachingData() {
     // If no coaching results, nothing to show
-    if (coachingResult == null && compositionResult == null && exposureResult == null) return null;
+    if (coachingResult == null && compositionResult == null && exposureResult == null && (blinkResult == null || !blinkResult!.eitherEyeClosed)) return null;
 
     final List<String> messages = [];
     DistanceCoachingStatus distanceStatus = DistanceCoachingStatus.optimal;
@@ -114,6 +122,10 @@ class CoachingOverlay extends StatelessWidget {
       if (expStatus != ExposureStatus.good && exposureResult!.message.isNotEmpty) {
         messages.add(exposureResult!.message);
       }
+    }
+
+    if (blinkResult != null && blinkResult!.eitherEyeClosed) {
+      messages.add(blinkResult!.message);
     }
 
     if (compositionResult != null) {
@@ -152,6 +164,12 @@ class CoachingOverlay extends StatelessWidget {
           color: Colors.green,
           icon: Icons.check_circle,
         );
+      } else if (blinkResult != null && !blinkResult!.eitherEyeClosed) {
+        return const _CoachingData(
+          message: 'Eyes open',
+          color: Colors.green,
+          icon: Icons.remove_red_eye,
+        );
       }
       return null;
     }
@@ -165,11 +183,14 @@ class CoachingOverlay extends StatelessWidget {
 
     if (expStatus == ExposureStatus.backlit || 
         expStatus == ExposureStatus.shadowed ||
-        distanceStatus == DistanceCoachingStatus.tooClose) {
+        distanceStatus == DistanceCoachingStatus.tooClose ||
+        (blinkResult != null && blinkResult!.eitherEyeClosed)) {
       statusColor = Colors.red;
       statusIcon = Icons.warning_amber_rounded;
       
-      if (expStatus == ExposureStatus.backlit) {
+      if (blinkResult != null && blinkResult!.eitherEyeClosed) {
+        statusIcon = Icons.remove_red_eye_outlined;
+      } else if (expStatus == ExposureStatus.backlit) {
         statusIcon = Icons.wb_sunny_rounded;
       } else if (expStatus == ExposureStatus.shadowed) {
         statusIcon = Icons.exposure_rounded;
@@ -265,6 +286,47 @@ class CoachingOverlay extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Widget _buildBlinkIndicator() {
+    final bool isLandscape = deviceOrientation == NativeDeviceOrientation.landscapeLeft ||
+        deviceOrientation == NativeDeviceOrientation.landscapeRight;
+    
+    final bool eyesClosed = blinkResult!.eitherEyeClosed;
+    final Color color = eyesClosed ? Colors.red : Colors.green;
+    final IconData icon = eyesClosed ? Icons.remove_red_eye_outlined : Icons.remove_red_eye;
+    
+    Widget content = Container(
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.5),
+        shape: BoxShape.circle,
+        border: Border.all(color: color.withValues(alpha: 0.5), width: 2),
+      ),
+      child: Icon(icon, color: color, size: 24),
+    );
+
+    if (isLandscape) {
+      final quarterTurns = deviceOrientation == NativeDeviceOrientation.landscapeLeft ? 1 : 3;
+      return Positioned(
+        top: 20,
+        left: 20,
+        child: SafeArea(
+          child: RotatedBox(
+            quarterTurns: quarterTurns,
+            child: content,
+          ),
+        ),
+      );
+    } else {
+      return Positioned(
+        top: 80,
+        left: 20,
+        child: SafeArea(
+          child: content,
+        ),
+      );
+    }
   }
 
   Widget _buildOverlayContent(Color statusColor, IconData statusIcon, String message) {

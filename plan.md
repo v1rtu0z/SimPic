@@ -120,6 +120,7 @@
 #### Feature 4.1: Blink Detection
 - **Priority: P1**
 - **Complexity: Low (ML Kit provides eye open probability)**
+- **Status: ✅ Completed**
 - **Logic:**
   - Check ML Kit's `leftEyeOpenProbability` and `rightEyeOpenProbability`
   - Both eyes open (>0.8): ready to shoot
