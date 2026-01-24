@@ -9,20 +9,32 @@ This guide will help you build and distribute the SimPic app for iOS testing.
 3. **Apple Developer Account** (free account works for device testing, paid account needed for App Store/TestFlight)
 4. **iOS device** for testing (iPhone/iPad)
 
-## Setup Steps
+## Quick Setup (Recommended)
 
-### 1. Install Flutter iOS Dependencies
+If you are on a Mac, you can use the automated setup script to install dependencies and configure the project:
 
 ```bash
-cd ios
-pod install
-cd ..
+chmod +x setup_ios.sh
+./setup_ios.sh
 ```
 
-If you get errors, try:
+This script will:
+1. Verify you are on macOS.
+2. Check for Flutter, Xcode, and CocoaPods.
+3. Install missing dependencies (if possible).
+4. Run `flutter pub get`.
+5. Run `pod install`.
+6. Open the Xcode workspace for you.
+
+---
+
+## Manual Setup Steps
+
+### 1. Install Dependencies
+
 ```bash
+flutter pub get
 cd ios
-rm -rf Pods Podfile.lock
 pod install
 cd ..
 ```
@@ -30,17 +42,15 @@ cd ..
 ### 2. Open Xcode Project
 
 ```bash
-open ios/SimPicAIPhotoCoach.xcworkspace
+open ios/Runner.xcworkspace
 ```
-
-**Important**: Open the `.xcworkspace` file, NOT the `.xcodeproj` file!
 
 ### 3. Configure Signing & Capabilities
 
 In Xcode:
 
-1. Select the **SimPicAIPhotoCoach** project in the left sidebar
-2. Select the **SimPicAIPhotoCoach** target
+1. Select the **Runner** project in the left sidebar
+2. Select the **Runner** target
 3. Go to **Signing & Capabilities** tab
 4. Check **"Automatically manage signing"**
 5. Select your **Team** (your Apple Developer account)
@@ -57,7 +67,20 @@ In Xcode:
 2. Trust the computer on your device if prompted
 3. In Xcode, select your device from the device dropdown (top toolbar)
 
-## Building for Testing
+### 6. Summary of Configured Settings
+
+The following settings have already been configured in `ios/Runner/Info.plist`:
+
+*   **Permissions**:
+    *   `NSCameraUsageDescription`: Required for real-time coaching.
+    *   `NSPhotoLibraryUsageDescription`: Required to save and view photos.
+    *   `NSPhotoLibraryAddUsageDescription`: Required to save photos.
+    *   `NSMicrophoneUsageDescription`: Included for compatibility with camera plugins.
+*   **Orientations**: Locked to Portrait for a consistent coaching experience.
+*   **App Name**: Set to "SimPic".
+*   **Deep Links**: Added `photos-redirect` and `photos` schemes for opening the Photos app.
+
+### 7. Building for Testing
 
 ### Option 1: Build and Run Directly (Quick Testing)
 
@@ -144,7 +167,7 @@ flutter clean
 flutter pub get
 ```
 
-### "Signing for SimPicAIPhotoCoach requires a development team"
+### "Signing for Runner requires a development team"
 
 - Make sure you're signed in to Xcode with your Apple ID
 - Go to **Xcode → Settings → Accounts**
