@@ -108,6 +108,26 @@ class _CameraScreenState extends State<CameraScreen>
   int _flashConsistencyCounter = 0;
   static const int _flashConsistencyThreshold = 10;
 
+  // Coaching consistency counters
+  int _distanceConsistencyCounter = 0;
+  DistanceCoachingStatus? _lastStableDistanceStatus;
+  
+  int _compositionConsistencyCounter = 0;
+  CompositionStatus? _lastStableCompositionStatus;
+  
+  int _exposureConsistencyCounter = 0;
+  ExposureStatus? _lastStableExposureStatus;
+  
+  int _blinkConsistencyCounter = 0;
+  bool? _lastStableBlinkStatus;
+
+  int _faceCountConsistencyCounter = 0;
+  int? _lastStableFaceCountRaw;
+
+  static const int _coachingConsistencyThreshold = 10;
+  static const int _blinkConsistencyThreshold = 20;
+  static const int _faceCountConsistencyThreshold = 5; // Half of coaching threshold for faster face count/orientation updates
+
   // Frame comparison for stability (skip face detection when camera is stationary)
   Uint8List? _previousFrameSample;
   Size? _previousImageSize;
@@ -641,23 +661,19 @@ class _CameraScreenState extends State<CameraScreen>
     try {
       final imageSize = Size(image.width.toDouble(), image.height.toDouble());
       
-      // Check if frame changed significantly before running face detection
-      final shouldRunFaceDetection = _shouldProcessFrame(image, imageSize);
+      // Run face detection on every frame (no throttling)
+      final currentRotation = _calculateRotationDegrees();
+      final inputImage = _convertCameraImage(image, currentRotation);
+      if (inputImage == null) {
+        _isProcessing = false;
+        return;
+      }
       
-      if (shouldRunFaceDetection) {
-        // Frame changed significantly, run face detection
-        final currentRotation = _calculateRotationDegrees();
-        final inputImage = _convertCameraImage(image, currentRotation);
-        if (inputImage == null) {
-          _isProcessing = false;
-          return;
-        }
-        
-        final List<Face> faces = await _faceDetector!.processImage(inputImage);
-        
-        // Store frame sample for next comparison
-        _previousFrameSample = _sampleFrame(image);
-        _previousImageSize = imageSize;
+      final List<Face> faces = await _faceDetector!.processImage(inputImage);
+      
+      // Store frame sample for potential future optimization
+      _previousFrameSample = _sampleFrame(image);
+      _previousImageSize = imageSize;
         
         int significantFaceCount = 0;
         DistanceCoachingResult? coachingResult;
@@ -802,14 +818,6 @@ class _CameraScreenState extends State<CameraScreen>
                 bestFace.rightEyeOpenProbability,
               );
 
-              // Calculate Framing Score
-              framingScore = calculateFramingScore(
-                distanceResult: coachingResult,
-                compositionResult: compositionResult,
-                exposureResult: exposureResult,
-                blinkResult: blinkResult,
-              );
-
               // Perform Auto-exposure Lock on Face
               if (appSettings.autoExposureLockEnabled) {
                 _handleFaceExposureLock(bestFace, currentRotation, imageSize);
@@ -831,17 +839,100 @@ class _CameraScreenState extends State<CameraScreen>
             _detectedFacesRotation = currentRotation;
             _detectedFacesOrientation = currentOrientation;
             
-            _distanceCoachingResult = appSettings.distanceCoachingEnabled ? coachingResult : null;
-            _currentDistanceScenario = coachingResult?.scenario;
-            _significantFaceCount = significantFaceCount;
+            // --- Stability Logic for Coaching Guides ---
+            // Most guides require 10 frames of consistent conditions to update UI
+            // Face count uses 5 frames for faster orientation overlay updates
             
-            _compositionGuidanceResult = appSettings.compositionGridEnabled ? compositionResult : null;
-            if (compositionResult != null) {
-              _previousPowerPoint = compositionResult.nearestPowerPoint;
+            // 0. Significant Face Count Stability (affects Orientation Suggestion)
+            if (significantFaceCount == _lastStableFaceCountRaw) {
+              _faceCountConsistencyCounter++;
+            } else {
+              _faceCountConsistencyCounter = 1;
+              _lastStableFaceCountRaw = significantFaceCount;
             }
-            _faceExposureResult = appSettings.lightingIntelligenceEnabled ? exposureResult : null;
-            _blinkDetectionResult = blinkResult;
-            _framingScoreResult = framingScore;
+            if (_faceCountConsistencyCounter >= _faceCountConsistencyThreshold) {
+              _significantFaceCount = significantFaceCount;
+            }
+
+            // 1. Distance Coaching Stability
+            if (coachingResult != null) {
+              if (coachingResult.status == _lastStableDistanceStatus) {
+                _distanceConsistencyCounter++;
+              } else {
+                _distanceConsistencyCounter = 1;
+                _lastStableDistanceStatus = coachingResult.status;
+              }
+              if (_distanceConsistencyCounter >= _coachingConsistencyThreshold) {
+                _distanceCoachingResult = appSettings.distanceCoachingEnabled ? coachingResult : null;
+                _currentDistanceScenario = coachingResult.scenario;
+              }
+            } else {
+              _distanceConsistencyCounter = 0;
+              _lastStableDistanceStatus = null;
+              _distanceCoachingResult = null;
+              _currentDistanceScenario = null;
+            }
+
+            // 2. Composition Guidance Stability
+            if (compositionResult != null) {
+              if (compositionResult.status == _lastStableCompositionStatus) {
+                _compositionConsistencyCounter++;
+              } else {
+                _compositionConsistencyCounter = 1;
+                _lastStableCompositionStatus = compositionResult.status;
+              }
+              if (_compositionConsistencyCounter >= _coachingConsistencyThreshold) {
+                _compositionGuidanceResult = appSettings.compositionGridEnabled ? compositionResult : null;
+                _previousPowerPoint = compositionResult.nearestPowerPoint;
+              }
+            } else {
+              _compositionConsistencyCounter = 0;
+              _lastStableCompositionStatus = null;
+              _compositionGuidanceResult = null;
+            }
+
+            // 3. Exposure Analysis Stability
+            if (exposureResult != null) {
+              if (exposureResult.status == _lastStableExposureStatus) {
+                _exposureConsistencyCounter++;
+              } else {
+                _exposureConsistencyCounter = 1;
+                _lastStableExposureStatus = exposureResult.status;
+              }
+              if (_exposureConsistencyCounter >= _coachingConsistencyThreshold) {
+                _faceExposureResult = appSettings.lightingIntelligenceEnabled ? exposureResult : null;
+              }
+            } else {
+              _exposureConsistencyCounter = 0;
+              _lastStableExposureStatus = null;
+              _faceExposureResult = null;
+            }
+
+            // 4. Blink Detection Stability
+            if (blinkResult != null) {
+              final isBlinking = blinkResult.eitherEyeClosed;
+              if (isBlinking == _lastStableBlinkStatus) {
+                _blinkConsistencyCounter++;
+              } else {
+                _blinkConsistencyCounter = 1;
+                _lastStableBlinkStatus = isBlinking;
+              }
+              if (_blinkConsistencyCounter >= _blinkConsistencyThreshold) {
+                _blinkDetectionResult = blinkResult;
+              }
+            } else {
+              _blinkConsistencyCounter = 0;
+              _lastStableBlinkStatus = null;
+              _blinkDetectionResult = null;
+            }
+
+            // Update Framing Score using STABILIZED results for UI consistency
+            _framingScoreResult = calculateFramingScore(
+              distanceResult: _distanceCoachingResult,
+              compositionResult: _compositionGuidanceResult,
+              exposureResult: _faceExposureResult,
+              blinkResult: _blinkDetectionResult,
+            );
 
             // Handle Flashlight Auto-toggle based on light detection
             if (appSettings.flashMode == FlashModeSetting.auto && exposureResult != null) {
@@ -902,10 +993,10 @@ class _CameraScreenState extends State<CameraScreen>
         
         // Auto-shutter logic
         _handleAutoShutter(
-          appSettings.distanceCoachingEnabled ? coachingResult : null,
-          appSettings.compositionGridEnabled ? compositionResult : null,
-          appSettings.lightingIntelligenceEnabled ? exposureResult : null,
-          blinkResult,
+          _distanceCoachingResult,
+          _compositionGuidanceResult,
+          _faceExposureResult,
+          _blinkDetectionResult,
         );
         
         // Debug logging
@@ -914,7 +1005,6 @@ class _CameraScreenState extends State<CameraScreen>
             debugPrint('COMPOSITION DEBUG: Face center ($_lastDisplayFaceCenter) | Size ($_lastDisplayImageSize) | Nearest PP: (${_compositionGuidanceResult!.nearestPowerPoint.x.toStringAsFixed(3)}, ${_compositionGuidanceResult!.nearestPowerPoint.y.toStringAsFixed(3)}) | Distance: ${_compositionGuidanceResult!.distancePercentage.toStringAsFixed(3)} | Status: ${_compositionGuidanceResult!.status}');
           }
         }
-      }
     } catch (e) {
       if (_frameCounter % 50 == 0) {
         debugPrint('Error processing image for face detection: $e');
@@ -2146,16 +2236,8 @@ class FaceDetectorPainter extends CustomPainter {
       // Draw rectangle around the face
       canvas.drawRect(rect, paint);
 
-      // Draw eye status markers if available
-      if (face.leftEyeOpenProbability != null || face.rightEyeOpenProbability != null) {
-        final eyePaint = Paint()..style = PaintingStyle.fill;
-        const double eyeRadius = 3.0;
-        const double threshold = 0.8;
-
-        // Note: Landmarks are NOT enabled in options, so we can't get exact eye positions.
-        // We'll draw small markers at top of bounding box as a fallback if landmarks are added later.
-        // For now, since landmarks are disabled, we don't draw on the face itself.
-      }
+      // Note: Landmarks are NOT enabled in options, so we can't get exact eye positions.
+      // Eye status markers could be added here if landmarks are enabled in the future.
     }
   }
 

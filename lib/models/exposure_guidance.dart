@@ -111,15 +111,15 @@ FaceExposureResult analyzeFaceExposure(
   final double stdDev = sqrt(variance / faceLuminances.length);
 
   // Logic from requirements:
-  // Backlit detection: Face much darker than background (ratio < 0.6)
+  // Backlit detection: Face much darker than background (ratio < threshold)
   // Harsh shadow detection: Significant brightness variance within face region (std dev > threshold)
-  // Good lighting: Face slightly brighter than background (ratio 1.1-1.3)
+  // Good lighting: Face slightly brighter than background (ratio range)
   
-  // P0 Thresholds
-  const double backlitThreshold = 0.6;
-  const double harshShadowThreshold = 0.15; // Tuned value for normalized brightness (0-1)
-  const double minGoodRatio = 1.0; // Adjusted from 1.1 to be more lenient in practice
-  const double maxGoodRatio = 1.5; // Adjusted from 1.3
+  // More forgiving thresholds to avoid flagging well-lit photos
+  const double backlitThreshold = 0.5; // Lowered from 0.6 - only flag more extreme backlit situations
+  const double harshShadowThreshold = 0.20; // Raised from 0.15 - allow more variance before flagging as shadowed
+  const double minGoodRatio = 0.9; // Lowered from 1.0 - accept wider range of lighting conditions
+  const double maxGoodRatio = 1.8; // Raised from 1.5 - accept wider range of lighting conditions
 
   if (ratio < backlitThreshold) {
     return FaceExposureResult(
@@ -143,7 +143,7 @@ FaceExposureResult analyzeFaceExposure(
     );
   }
 
-  if (avgFace < 0.25) {
+  if (avgFace < 0.20) {
      return FaceExposureResult(
       status: ExposureStatus.underexposed,
       faceBrightness: avgFace,

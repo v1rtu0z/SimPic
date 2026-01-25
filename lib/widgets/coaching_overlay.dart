@@ -87,10 +87,13 @@ class CoachingOverlay extends StatelessWidget {
             left: 0,
             right: 0,
             child: SafeArea(
-              child: _buildOverlayContent(
-                coachingData.color,
-                coachingData.icon,
-                coachingData.message,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 80), // Push below settings/flash buttons
+                child: _buildOverlayContent(
+                  coachingData.color,
+                  coachingData.icon,
+                  coachingData.message,
+                ),
               ),
             ),
           ));
