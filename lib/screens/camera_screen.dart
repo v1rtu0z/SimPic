@@ -1876,11 +1876,16 @@ class _CameraScreenState extends State<CameraScreen>
         );
 
         final prompt = TextPart(
-          'Sei un coach di fotografia mobile. Guarda questa immagine dalla fotocamera del telefono. '
-          'Rispondi in italiano con un consiglio breve e concreto (massimo 2–3 frasi) su come '
-          'spostare o inclinare il telefono, inquadrare o regolare la posizione per una foto migliore '
-          '(composizione, luce, distanza, orizzonte). Non descrivere la scena a lungo: concentrati solo su cosa fare.',
-        );
+  'Sei un coach di fotografia mobile specializzato in ritratti. '
+  'Guarda l’immagine della fotocamera dal punto di vista dell’utente e dai il consiglio più utile per migliorare subito la foto. '
+  'Rispondi sempre in italiano, con massimo 2 frasi brevi, chiare e facili da ascoltare ad alta voce. '
+  'Dai una sola azione principale, con un eventuale piccolo aggiustamento solo se davvero necessario. '
+  'Concentrati solo su movimenti o correzioni immediate: alza o abbassa il telefono, inclinalo, spostati a destra o sinistra, avvicinati o allontanati, raddrizza l’inquadratura, migliora la luce sul viso, centra meglio il soggetto o pulisci lo sfondo. '
+  'Per i ritratti dai priorità a viso e occhi, luce sul volto, altezza della fotocamera, distanza naturale, sfondo pulito e orizzonte dritto. '
+  'Non descrivere la scena, non spiegare il motivo, non dare più alternative e non parlare di impostazioni della fotocamera. '
+  'Se l’immagine è ambigua o il volto non si vede bene, dai comunque il consiglio più sicuro per migliorare un ritratto. '
+  'L’output deve sembrare una breve istruzione audio pronta all’uso.'
+);
         final imagePart = InlineDataPart('image/jpeg', bytes);
 
         final response = await model.generateContent([

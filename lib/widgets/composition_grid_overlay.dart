@@ -196,32 +196,11 @@ class CompositionGridPainter extends CustomPainter {
       return;
     }
 
-    // Get the target power point from composition result (normalized in upright space)
+    // Composition guidance is already calculated in portrait preview space.
+    // Do not rotate it again here or the highlighted target point drifts.
     final targetUpright = compositionResult!.nearestPowerPoint;
-    
-    // Map target power point to portrait space
-    double targetX, targetY;
-    int degrees = 0;
-    switch (deviceOrientation) {
-      case NativeDeviceOrientation.landscapeRight: degrees = 90; break;
-      case NativeDeviceOrientation.portraitDown: degrees = 180; break;
-      case NativeDeviceOrientation.landscapeLeft: degrees = 270; break;
-      default: degrees = 0;
-    }
-
-    if (degrees == 90) {
-      targetX = targetUpright.y;
-      targetY = 1.0 - targetUpright.x;
-    } else if (degrees == 180) {
-      targetX = 1.0 - targetUpright.x;
-      targetY = 1.0 - targetUpright.y;
-    } else if (degrees == 270) {
-      targetX = 1.0 - targetUpright.y;
-      targetY = targetUpright.x;
-    } else {
-      targetX = targetUpright.x;
-      targetY = targetUpright.y;
-    }
+    final targetX = targetUpright.x;
+    final targetY = targetUpright.y;
     
     // Draw all power points
     for (final point in powerPoints) {
@@ -281,66 +260,17 @@ class CompositionGridPainter extends CustomPainter {
     // Get normalized pulse value (0.0 to 1.0)
     final pulseValue = (pulseAnimation.value - 1.0) / 0.2;
 
-    // Rotate directional guidance from upright space to portrait screen space
-    bool moveLeft = guidance.moveLeft;
-    bool moveRight = guidance.moveRight;
-    bool moveUp = guidance.moveUp;
-    bool moveDown = guidance.moveDown;
-
-    bool fLeft = false, fRight = false, fUp = false, fDown = false;
-
-    int degrees = 0;
-    switch (deviceOrientation) {
-      case NativeDeviceOrientation.landscapeRight: degrees = 90; break;
-      case NativeDeviceOrientation.portraitDown: degrees = 180; break;
-      case NativeDeviceOrientation.landscapeLeft: degrees = 270; break;
-      default: degrees = 0;
-    }
-
-    if (degrees == 90) {
-      // Upright -> Portrait (+90 rotation)
-      // Upright Left (ux=0) -> Portrait Bottom (py=1)
-      // Upright Right (ux=1) -> Portrait Top (py=0)
-      // Upright Top (uy=0) -> Portrait Left (px=0)
-      // Upright Bottom (uy=1) -> Portrait Right (px=1)
-      fDown = moveLeft;
-      fUp = moveRight;
-      fLeft = moveUp;
-      fRight = moveDown;
-    } else if (degrees == 180) {
-      // Upright -> Portrait (+180 rotation)
-      fRight = moveLeft;
-      fLeft = moveRight;
-      fDown = moveUp;
-      fUp = moveDown;
-    } else if (degrees == 270) {
-      // Upright -> Portrait (+270 rotation)
-      // Upright Left (ux=0) -> Portrait Top (py=0)
-      // Upright Right (ux=1) -> Portrait Bottom (py=1)
-      // Upright Top (uy=0) -> Portrait Right (px=1)
-      // Upright Bottom (uy=1) -> Portrait Left (px=0)
-      fUp = moveLeft;
-      fDown = moveRight;
-      fRight = moveUp;
-      fLeft = moveDown;
-    } else {
-      fLeft = moveLeft;
-      fRight = moveRight;
-      fUp = moveUp;
-      fDown = moveDown;
-    }
-
-    // Draw arrows at edges based on rotated guidance
-    if (fLeft) {
+    // Directional guidance is already expressed in portrait preview space.
+    if (guidance.moveLeft) {
       _drawArrow(canvas, Offset(margin, size.height / 2), arrowSize, ArrowDirection.left, pulseValue);
     }
-    if (fRight) {
+    if (guidance.moveRight) {
       _drawArrow(canvas, Offset(size.width - margin, size.height / 2), arrowSize, ArrowDirection.right, pulseValue);
     }
-    if (fUp) {
+    if (guidance.moveUp) {
       _drawArrow(canvas, Offset(size.width / 2, margin), arrowSize, ArrowDirection.up, pulseValue);
     }
-    if (fDown) {
+    if (guidance.moveDown) {
       _drawArrow(canvas, Offset(size.width / 2, size.height - margin), arrowSize, ArrowDirection.down, pulseValue);
     }
   }
