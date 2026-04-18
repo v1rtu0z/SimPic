@@ -16,6 +16,7 @@ import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'package:google_mlkit_selfie_segmentation/google_mlkit_selfie_segmentation.dart';
 import 'package:native_device_orientation/native_device_orientation.dart';
 import 'package:image/image.dart' as img;
+import 'package:flutter_tts/flutter_tts.dart';
 import 'dart:typed_data';
 import '../models/distance_coaching_scenario.dart';
 import '../widgets/coaching_overlay.dart';
@@ -46,6 +47,9 @@ class _CameraScreenState extends State<CameraScreen>
   bool _hasPermission = false;
   bool _isCapturing = false;
   bool _isAiAdviceLoading = false;
+  String? _aiAdviceBannerText;
+  Timer? _aiAdviceBannerTimer;
+  static const Duration _aiAdviceBannerAutoDismiss = Duration(minutes: 2);
   File? _lastImageFile;
   String? _lastImagePath;
   String? _lastImageUri; // Content URI for opening in gallery
@@ -150,12 +154,17 @@ class _CameraScreenState extends State<CameraScreen>
   static const int _autoShutterRequiredGoodFrames = 5; // Reduced from 10 for faster response
   static const Duration _autoShutterCooldown = Duration(seconds: 3);
 
+  // Prevent overlapping camera switch operations
+  bool _isSwitchingCamera = false;
+
   // Shutter button pulse animation
   late AnimationController _shutterPulseController;
   late Animation<double> _shutterPulseAnimation;
 
   final model =
       FirebaseAI.googleAI().generativeModel(model: 'gemini-2.5-flash-lite');
+
+  final FlutterTts _flutterTts = FlutterTts();
 
   @override
   void initState() {
@@ -242,8 +251,69 @@ class _CameraScreenState extends State<CameraScreen>
       ),
     );
     
+    unawaited(_configureTts());
+
     _initializeCamera();
     _loadLatestPhoto();
+  }
+
+  Future<void> _configureTts() async {
+    try {
+      if (Platform.isIOS) {
+        await _flutterTts.setSharedInstance(true);
+        await _flutterTts.setIosAudioCategory(
+          IosTextToSpeechAudioCategory.ambient,
+          const [
+            IosTextToSpeechAudioCategoryOptions.allowBluetooth,
+            IosTextToSpeechAudioCategoryOptions.allowBluetoothA2DP,
+            IosTextToSpeechAudioCategoryOptions.mixWithOthers,
+          ],
+          IosTextToSpeechAudioMode.voicePrompt,
+        );
+      }
+      await _flutterTts.awaitSpeakCompletion(true);
+      await _flutterTts.setSpeechRate(Platform.isIOS ? 0.5 : 0.45);
+      await _flutterTts.setVolume(1.0);
+      await _flutterTts.setPitch(1.0);
+      final dynamic itOk = await _flutterTts.isLanguageAvailable('it-IT');
+      if (itOk == true) {
+        await _flutterTts.setLanguage('it-IT');
+      } else {
+        await _flutterTts.setLanguage('it');
+      }
+    } catch (e) {
+      debugPrint('[_configureTts] $e');
+    }
+  }
+
+  Future<void> _speakAiAdvice(String text) async {
+    final trimmed = text.trim();
+    if (trimmed.isEmpty) return;
+    try {
+      await _flutterTts.stop();
+      await _flutterTts.speak(trimmed);
+    } catch (e) {
+      debugPrint('[_speakAiAdvice] $e');
+    }
+  }
+
+  void _dismissAiAdviceBanner() {
+    _aiAdviceBannerTimer?.cancel();
+    _aiAdviceBannerTimer = null;
+    unawaited(_flutterTts.stop());
+    if (!mounted) return;
+    if (_aiAdviceBannerText != null) {
+      setState(() => _aiAdviceBannerText = null);
+    }
+  }
+
+  void _showAiAdviceBanner(String advice) {
+    _aiAdviceBannerTimer?.cancel();
+    if (!mounted) return;
+    setState(() => _aiAdviceBannerText = advice);
+    _aiAdviceBannerTimer = Timer(_aiAdviceBannerAutoDismiss, () {
+      if (mounted) _dismissAiAdviceBanner();
+    });
   }
 
   @override
@@ -258,8 +328,10 @@ class _CameraScreenState extends State<CameraScreen>
     _focusAnimationController?.dispose();
     _shutterPulseController.dispose();
     _focusTimer?.cancel();
+    _aiAdviceBannerTimer?.cancel();
     _faceDetector?.close();
     _selfieSegmenter?.close();
+    unawaited(_flutterTts.stop());
     super.dispose();
   }
 
@@ -1923,21 +1995,9 @@ class _CameraScreenState extends State<CameraScreen>
       return;
     }
 
-    await showDialog<void>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('AI advice'),
-        content: SingleChildScrollView(
-          child: Text(adviceText ?? ''),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
+    final String advice = adviceText!;
+    _showAiAdviceBanner(advice);
+    unawaited(_speakAiAdvice(advice));
   }
 
   Widget _buildAiAdviceButton() {
@@ -2039,7 +2099,8 @@ class _CameraScreenState extends State<CameraScreen>
   }
 
   Future<void> _switchCamera() async {
-    if (_cameras == null || _cameras!.length < 2 || _isProcessing || _isCapturing) return;
+    if (_cameras == null || _cameras!.length < 2 || _isCapturing || _isSwitchingCamera) return;
+    _isSwitchingCamera = true;
 
     final lensDirection = _currentCamera?.lensDirection == CameraLensDirection.back
         ? CameraLensDirection.front
@@ -2050,42 +2111,45 @@ class _CameraScreenState extends State<CameraScreen>
       orElse: () => _cameras!.first,
     );
 
-    if (newCamera == _currentCamera) return;
+    if (newCamera == _currentCamera) {
+      _isSwitchingCamera = false;
+      return;
+    }
 
     // Show a quick fade to black to hide the transition "blink"
     setState(() {
       _isInitialized = false;
     });
 
-    // Stop current stream before switching
-    if (_controller != null && _controller!.value.isStreamingImages) {
-      try {
-        await _controller!.stopImageStream();
-      } catch (e) {
-        debugPrint('Error stopping image stream: $e');
-      }
-    }
-
-    // Dispose old controller
-    final oldController = _controller;
-    _controller = null;
-    await oldController?.dispose();
-
-    _currentCamera = newCamera;
-    
-    // Update app settings with lens direction
-    appSettings.setCameraLens(_currentCamera!.lensDirection == CameraLensDirection.front);
-    
-    _controller = CameraController(
-      _currentCamera!,
-      ResolutionPreset.high,
-      enableAudio: false,
-      imageFormatGroup: Platform.isAndroid 
-          ? ImageFormatGroup.nv21 
-          : ImageFormatGroup.yuv420,
-    );
-
     try {
+      // Stop current stream before switching
+      if (_controller != null && _controller!.value.isStreamingImages) {
+        try {
+          await _controller!.stopImageStream();
+        } catch (e) {
+          debugPrint('Error stopping image stream: $e');
+        }
+      }
+
+      // Dispose old controller
+      final oldController = _controller;
+      _controller = null;
+      await oldController?.dispose();
+
+      _currentCamera = newCamera;
+      
+      // Update app settings with lens direction
+      appSettings.setCameraLens(_currentCamera!.lensDirection == CameraLensDirection.front);
+      
+      _controller = CameraController(
+        _currentCamera!,
+        ResolutionPreset.high,
+        enableAudio: false,
+        imageFormatGroup: Platform.isAndroid 
+            ? ImageFormatGroup.nv21 
+            : ImageFormatGroup.yuv420,
+      );
+
       await _controller!.initialize();
       await _controller!.setFocusMode(FocusMode.auto);
       
@@ -2108,6 +2172,8 @@ class _CameraScreenState extends State<CameraScreen>
           _isInitialized = true;
         });
       }
+    } finally {
+      _isSwitchingCamera = false;
     }
   }
 
@@ -2372,6 +2438,71 @@ class _CameraScreenState extends State<CameraScreen>
             portraitResult: _portraitAnalysisResult,
             showDebugOverlay: appSettings.portraitDebugEnabled,
           ),
+
+          // AI framing advice (non-modal; preview and controls stay usable)
+          if (_aiAdviceBannerText != null)
+            Positioned(
+              left: 14,
+              right: 14,
+              bottom: MediaQuery.of(context).padding.bottom + 168,
+              child: Material(
+                color: const Color(0xFF2A2A2A),
+                elevation: 6,
+                borderRadius: BorderRadius.circular(12),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 8, 4, 8),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(top: 2),
+                            child: Icon(Icons.auto_awesome, color: Colors.amberAccent, size: 20),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'AI advice',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            visualDensity: VisualDensity.compact,
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                            icon: const Icon(Icons.close, color: Colors.white70, size: 22),
+                            onPressed: _dismissAiAdviceBanner,
+                          ),
+                        ],
+                      ),
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(maxHeight: 200),
+                        child: Scrollbar(
+                          thumbVisibility: true,
+                          child: SingleChildScrollView(
+                            child: Text(
+                              _aiAdviceBannerText!,
+                              style: const TextStyle(
+                                color: Colors.white70,
+                                fontSize: 14,
+                                height: 1.35,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           
           // Bottom controls
           Positioned(
