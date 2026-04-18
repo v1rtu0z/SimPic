@@ -2311,13 +2311,13 @@ class _CameraScreenState extends State<CameraScreen>
             ),
           ),
           
-          // Settings Button
           // Top row controls (Settings, Flash)
           Positioned(
             top: MediaQuery.of(context).padding.top + 16,
             left: 16,
             right: 16,
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
                   icon: const Icon(
@@ -2330,9 +2330,6 @@ class _CameraScreenState extends State<CameraScreen>
                       MaterialPageRoute(builder: (context) => const SettingsScreen()),
                     );
                   },
-                ),
-                Expanded(
-                  child: Center(child: _buildAiAdviceButton()),
                 ),
                 _buildFlashButton(),
               ],
@@ -2394,7 +2391,14 @@ class _CameraScreenState extends State<CameraScreen>
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     _buildThumbnailButton(),
-                    _buildShutterButton(),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _buildAiAdviceButton(),
+                        const SizedBox(height: 8),
+                        _buildShutterButton(),
+                      ],
+                    ),
                     _buildCameraSwitchButton(),
                   ],
                 ),
