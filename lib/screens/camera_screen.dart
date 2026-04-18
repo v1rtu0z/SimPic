@@ -344,15 +344,6 @@ class _CameraScreenState extends State<CameraScreen>
       return;
     }
 
-    // Request storage permission for saving photos
-    if (Platform.isAndroid) {
-      final storageStatus = await Permission.storage.request();
-      if (storageStatus.isDenied) {
-        // Try photos permission for Android 13+
-        await Permission.photos.request();
-      }
-    }
-
     setState(() {
       _hasPermission = true;
     });
@@ -410,8 +401,9 @@ class _CameraScreenState extends State<CameraScreen>
 
   Future<void> _loadLatestPhoto() async {
     try {
-      debugPrint('[_loadLatestPhoto] Requesting photo permission...');
-      final PermissionState permission = await PhotoManager.requestPermissionExtend();
+      // Do not trigger a system prompt at app start.
+      // We only read gallery if permission was already granted.
+      final PermissionState permission = await PhotoManager.getPermissionState();
       debugPrint('[_loadLatestPhoto] Permission state: $permission');
       
       if (!permission.hasAccess) {
@@ -665,6 +657,7 @@ class _CameraScreenState extends State<CameraScreen>
         
         // Use photo_manager to save and get the asset ID directly
         // This is more reliable than gallery_saver_plus + querying
+        // Ask for photo permission only when user actually takes a picture.
         final PermissionState permission = await PhotoManager.requestPermissionExtend();
         if (!permission.hasAccess) {
           throw Exception('Photo permission not granted');
