@@ -45,6 +45,7 @@ class _CameraScreenState extends State<CameraScreen>
   bool _isInitialized = false;
   bool _hasPermission = false;
   bool _isCapturing = false;
+  bool _isAiAdviceLoading = false;
   File? _lastImageFile;
   String? _lastImagePath;
   String? _lastImageUri; // Content URI for opening in gallery
@@ -403,7 +404,14 @@ class _CameraScreenState extends State<CameraScreen>
     try {
       // Do not trigger a system prompt at app start.
       // We only read gallery if permission was already granted.
-      final PermissionState permission = await PhotoManager.getPermissionState();
+      final PermissionState permission = await PhotoManager.getPermissionState(
+        requestOption: const PermissionRequestOption(
+          androidPermission: AndroidPermission(
+            type: RequestType.image,
+            mediaLocation: false,
+          ),
+        ),
+      );
       debugPrint('[_loadLatestPhoto] Permission state: $permission');
       
       if (!permission.hasAccess) {
@@ -1786,6 +1794,191 @@ class _CameraScreenState extends State<CameraScreen>
     return outputBytes;
   }
 
+  /// JPEG snapshot for AI (no gallery save). Restores the image stream when it was active.
+  Future<Uint8List?> _capturePreviewJpegBytes() async {
+    final controller = _controller;
+    if (controller == null || !controller.value.isInitialized) {
+      return null;
+    }
+
+    final wasStreaming = controller.value.isStreamingImages;
+    if (wasStreaming) {
+      try {
+        await controller.stopImageStream();
+      } catch (e) {
+        debugPrint('[_capturePreviewJpegBytes] stopImageStream: $e');
+      }
+    }
+
+    try {
+      final XFile shot = await controller.takePicture();
+      final Uint8List raw = await File(shot.path).readAsBytes();
+      try {
+        await File(shot.path).delete();
+      } catch (_) {}
+      return _downscaleJpegForAi(raw);
+    } catch (e) {
+      debugPrint('[_capturePreviewJpegBytes] takePicture: $e');
+      return null;
+    } finally {
+      if (controller.value.isInitialized &&
+          wasStreaming &&
+          !controller.value.isStreamingImages) {
+        try {
+          await controller.startImageStream(_processCameraImage);
+        } catch (e) {
+          debugPrint('[_capturePreviewJpegBytes] restart stream: $e');
+        }
+      }
+    }
+  }
+
+  Uint8List? _downscaleJpegForAi(Uint8List raw) {
+    try {
+      final decoded = img.decodeImage(raw);
+      if (decoded == null) return raw;
+      const int maxSide = 1024;
+      if (decoded.width <= maxSide && decoded.height <= maxSide) return raw;
+      final img.Image resized = decoded.width >= decoded.height
+          ? img.copyResize(decoded, width: maxSide)
+          : img.copyResize(decoded, height: maxSide);
+      return Uint8List.fromList(img.encodeJpg(resized, quality: 88));
+    } catch (e) {
+      debugPrint('[_downscaleJpegForAi] $e');
+      return raw;
+    }
+  }
+
+  Future<void> _requestAiFramingAdvice() async {
+    if (_isAiAdviceLoading ||
+        _isCapturing ||
+        _controller == null ||
+        !_controller!.value.isInitialized) {
+      return;
+    }
+
+    setState(() => _isAiAdviceLoading = true);
+
+    String? adviceText;
+    String? errorMessage;
+
+    try {
+      final bytes = await _capturePreviewJpegBytes();
+      if (bytes == null || bytes.isEmpty) {
+        errorMessage = 'Impossibile acquisire l\'immagine. Riprova.';
+      } else {
+        final model = FirebaseAI.googleAI().generativeModel(
+          model: 'gemini-2.5-flash-lite',
+          generationConfig: GenerationConfig(
+            maxOutputTokens: 220,
+            temperature: 0.35,
+          ),
+        );
+
+        final prompt = TextPart(
+          'Sei un coach di fotografia mobile. Guarda questa immagine dalla fotocamera del telefono. '
+          'Rispondi in italiano con un consiglio breve e concreto (massimo 2–3 frasi) su come '
+          'spostare o inclinare il telefono, inquadrare o regolare la posizione per una foto migliore '
+          '(composizione, luce, distanza, orizzonte). Non descrivere la scena a lungo: concentrati solo su cosa fare.',
+        );
+        final imagePart = InlineDataPart('image/jpeg', bytes);
+
+        final response = await model.generateContent([
+          Content.multi([prompt, imagePart]),
+        ]);
+
+        try {
+          adviceText = response.text?.trim();
+        } on FirebaseAIException catch (e) {
+          errorMessage = e.message;
+        }
+
+        if (errorMessage == null &&
+            (adviceText == null || adviceText.isEmpty)) {
+          errorMessage = 'Nessuna risposta dal modello. Riprova.';
+        }
+      }
+    } on FirebaseAIException catch (e) {
+      errorMessage = e.message;
+    } catch (e) {
+      debugPrint('[_requestAiFramingAdvice] $e');
+      errorMessage = 'Errore di rete o del servizio. Riprova tra poco.';
+    } finally {
+      if (mounted) {
+        setState(() => _isAiAdviceLoading = false);
+      }
+    }
+
+    if (!mounted) return;
+
+    if (errorMessage != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMessage)),
+      );
+      return;
+    }
+
+    await showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('AI advice'),
+        content: SingleChildScrollView(
+          child: Text(adviceText ?? ''),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAiAdviceButton() {
+    return GestureDetector(
+      onTap: _isAiAdviceLoading ? null : _requestAiFramingAdvice,
+      child: RotatedBox(
+        quarterTurns: _getIconRotationQuarterTurns(),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: Colors.black.withValues(alpha: 0.55),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: Colors.white.withValues(alpha: 0.25),
+              width: 1,
+            ),
+          ),
+          child: _isAiAdviceLoading
+              ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.white,
+                  ),
+                )
+              : const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.auto_awesome, color: Colors.amberAccent, size: 18),
+                    SizedBox(width: 6),
+                    Text(
+                      'AI advice',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildFlashButton() {
     IconData icon;
     Color color = Colors.white;
@@ -2125,7 +2318,6 @@ class _CameraScreenState extends State<CameraScreen>
             left: 16,
             right: 16,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
                   icon: const Icon(
@@ -2138,6 +2330,9 @@ class _CameraScreenState extends State<CameraScreen>
                       MaterialPageRoute(builder: (context) => const SettingsScreen()),
                     );
                   },
+                ),
+                Expanded(
+                  child: Center(child: _buildAiAdviceButton()),
                 ),
                 _buildFlashButton(),
               ],

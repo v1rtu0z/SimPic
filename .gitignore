@@ -88,3 +88,12 @@ macos/Flutter/ephemeral/Flutter-Generated.xcconfig
 macos/Flutter/ephemeral/flutter_export_environment.sh
 macos/Flutter/GeneratedPluginRegistrant.swift
 macos/Podfile
+linux/flutter/ephemeral/.plugin_symlinks/jni
+linux/flutter/ephemeral/.plugin_symlinks/open_file_linux
+linux/flutter/ephemeral/.plugin_symlinks/path_provider_linux
+linux/flutter/ephemeral/.plugin_symlinks/shared_preferences_linux
+linux/flutter/ephemeral/.plugin_symlinks/url_launcher_linux
+linux/flutter/ephemeral/.plugin_symlinks/open_file_linux
+linux/flutter/ephemeral/.plugin_symlinks/path_provider_linux
+linux/flutter/ephemeral/.plugin_symlinks/shared_preferences_linux
+linux/flutter/ephemeral/.plugin_symlinks/url_launcher_linux

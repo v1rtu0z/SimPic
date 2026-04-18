@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'screens/camera_screen.dart';
 import 'models/app_settings.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_ai/firebase_ai.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -23,8 +22,6 @@ void main() async {
   ]);
   
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-  final model =
-      FirebaseAI.googleAI().generativeModel(model: 'gemini-2.5-flash-lite');
   
   runApp(const SimPicApp());
 }
