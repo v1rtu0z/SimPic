@@ -29,7 +29,10 @@ class BlinkDetectionResult {
 }
 
 BlinkDetectionResult evaluateBlink(double? leftProb, double? rightProb) {
-  const threshold = 0.8;
+  // Lower threshold (0.6) to be more forgiving for glasses wearers
+  // Glasses can cause reflections/occlusions that lower eye-open probability
+  // Real blinks typically have probabilities < 0.3-0.4, so 0.6 still catches them
+  const threshold = 0.6;
 
   EyeState getState(double? prob) {
     if (prob == null) return EyeState.notDetected;

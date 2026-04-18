@@ -94,6 +94,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
           enabled: faceEnabled,
           onChanged: (value) => appSettings.lightingIntelligenceEnabled = value,
         ),
+        _buildIndentedToggle(
+          title: 'Eyes-Open Check',
+          subtitle: 'Warn when eyes look closed; manual and auto capture wait for open eyes',
+          value: appSettings.isEyesClosedDetectionSet,
+          enabled: faceEnabled,
+          onChanged: (value) => appSettings.eyesClosedDetectionEnabled = value,
+        ),
         const Divider(height: 16, indent: 32, endIndent: 16),
         _buildIndentedToggle(
           title: 'Auto-Exposure Lock',
@@ -101,6 +108,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
           value: appSettings.isAutoExposureLockSet,
           enabled: faceEnabled,
           onChanged: (value) => appSettings.autoExposureLockEnabled = value,
+        ),
+        _buildIndentedToggle(
+          title: 'Auto-Portrait Mode',
+          subtitle: 'Automatically enable portrait effects for single-person shots',
+          value: appSettings.autoPortraitEnabled,
+          enabled: faceEnabled,
+          onChanged: (value) => appSettings.autoPortraitEnabled = value,
+        ),
+        _buildIndentedToggle(
+          title: 'Portrait Debug Overlay',
+          subtitle: 'Show debug visualization for portrait detection',
+          value: appSettings.portraitDebugEnabled,
+          enabled: faceEnabled && appSettings.autoPortraitEnabled,
+          onChanged: (value) => appSettings.portraitDebugEnabled = value,
         ),
       ],
     );
@@ -152,6 +173,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
           enabled: faceEnabled,
           onChanged: (value) => appSettings.frontLightingIntelligenceEnabled = value,
         ),
+        _buildIndentedToggle(
+          title: 'Eyes-Open Check',
+          subtitle: 'Warn when eyes look closed; manual and auto capture wait for open eyes',
+          value: appSettings.isFrontEyesClosedDetectionSet,
+          enabled: faceEnabled,
+          onChanged: (value) => appSettings.frontEyesClosedDetectionEnabled = value,
+        ),
         const Divider(height: 16, indent: 32, endIndent: 16),
         _buildIndentedToggle(
           title: 'Auto-Exposure Lock',
@@ -159,6 +187,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
           value: appSettings.isFrontAutoExposureLockSet,
           enabled: faceEnabled,
           onChanged: (value) => appSettings.frontAutoExposureLockEnabled = value,
+        ),
+        _buildIndentedToggle(
+          title: 'Auto-Portrait Mode',
+          subtitle: 'Automatically enable portrait effects for single-person shots',
+          value: appSettings.autoPortraitEnabled,
+          enabled: faceEnabled,
+          onChanged: (value) => appSettings.autoPortraitEnabled = value,
+        ),
+        _buildIndentedToggle(
+          title: 'Portrait Debug Overlay',
+          subtitle: 'Show debug visualization for portrait detection',
+          value: appSettings.portraitDebugEnabled,
+          enabled: faceEnabled && appSettings.autoPortraitEnabled,
+          onChanged: (value) => appSettings.portraitDebugEnabled = value,
         ),
       ],
     );

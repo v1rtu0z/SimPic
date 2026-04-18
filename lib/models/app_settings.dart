@@ -10,8 +10,11 @@ class AppSettings extends ChangeNotifier {
   static const String _keyCompositionGrid = 'compositionGridEnabled';
   static const String _keyOrientationSuggestion = 'orientationSuggestionEnabled';
   static const String _keyLightingIntelligence = 'lightingIntelligenceEnabled';
+  static const String _keyEyesClosedDetection = 'eyesClosedDetectionEnabled';
   static const String _keyAutoExposureLock = 'autoExposureLockEnabled';
   static const String _keyFlashMode = 'flashMode';
+  static const String _keyAutoPortrait = 'autoPortraitEnabled';
+  static const String _keyPortraitDebug = 'portraitDebugEnabled';
 
   static const String _keyFrontFaceDetection = 'frontFaceDetectionEnabled';
   static const String _keyFrontAutoShutter = 'frontAutoShutterEnabled';
@@ -19,6 +22,7 @@ class AppSettings extends ChangeNotifier {
   static const String _keyFrontCompositionGrid = 'frontCompositionGridEnabled';
   static const String _keyFrontOrientationSuggestion = 'frontOrientationSuggestionEnabled';
   static const String _keyFrontLightingIntelligence = 'frontLightingIntelligenceEnabled';
+  static const String _keyFrontEyesClosedDetection = 'frontEyesClosedDetectionEnabled';
   static const String _keyFrontAutoExposureLock = 'frontAutoExposureLockEnabled';
   static const String _keyFrontFlashMode = 'frontFlashMode';
 
@@ -28,8 +32,11 @@ class AppSettings extends ChangeNotifier {
   bool _compositionGridEnabled = true;
   bool _orientationSuggestionEnabled = true;
   bool _lightingIntelligenceEnabled = true;
+  bool _eyesClosedDetectionEnabled = true;
   bool _autoExposureLockEnabled = true;
   FlashModeSetting _flashMode = FlashModeSetting.auto;
+  bool _autoPortraitEnabled = true;
+  bool _portraitDebugEnabled = false;
 
   bool _frontFaceDetectionEnabled = true;
   bool _frontAutoShutterEnabled = true; // Default to true for selfie
@@ -37,6 +44,7 @@ class AppSettings extends ChangeNotifier {
   bool _frontCompositionGridEnabled = true;
   bool _frontOrientationSuggestionEnabled = true;
   bool _frontLightingIntelligenceEnabled = true;
+  bool _frontEyesClosedDetectionEnabled = true;
   bool _frontAutoExposureLockEnabled = true;
   FlashModeSetting _frontFlashMode = FlashModeSetting.auto;
 
@@ -56,8 +64,11 @@ class AppSettings extends ChangeNotifier {
   bool get compositionGridEnabled => faceDetectionEnabled && (_isFrontCamera ? _frontCompositionGridEnabled : _compositionGridEnabled);
   bool get orientationSuggestionEnabled => faceDetectionEnabled && (_isFrontCamera ? _frontOrientationSuggestionEnabled : _orientationSuggestionEnabled);
   bool get lightingIntelligenceEnabled => faceDetectionEnabled && (_isFrontCamera ? _frontLightingIntelligenceEnabled : _lightingIntelligenceEnabled);
+  bool get eyesClosedDetectionEnabled => faceDetectionEnabled && (_isFrontCamera ? _frontEyesClosedDetectionEnabled : _eyesClosedDetectionEnabled);
   bool get autoExposureLockEnabled => faceDetectionEnabled && (_isFrontCamera ? _frontAutoExposureLockEnabled : _autoExposureLockEnabled);
   FlashModeSetting get flashMode => _isFrontCamera ? _frontFlashMode : _flashMode;
+  bool get autoPortraitEnabled => faceDetectionEnabled && _autoPortraitEnabled;
+  bool get portraitDebugEnabled => _portraitDebugEnabled;
 
   // Internal getters for actual state
   bool get isFaceDetectionSet => _faceDetectionEnabled;
@@ -66,6 +77,7 @@ class AppSettings extends ChangeNotifier {
   bool get isCompositionGridSet => _compositionGridEnabled;
   bool get isOrientationSuggestionSet => _orientationSuggestionEnabled;
   bool get isLightingIntelligenceSet => _lightingIntelligenceEnabled;
+  bool get isEyesClosedDetectionSet => _eyesClosedDetectionEnabled;
   bool get isAutoExposureLockSet => _autoExposureLockEnabled;
 
   bool get isFrontFaceDetectionSet => _frontFaceDetectionEnabled;
@@ -74,6 +86,7 @@ class AppSettings extends ChangeNotifier {
   bool get isFrontCompositionGridSet => _frontCompositionGridEnabled;
   bool get isFrontOrientationSuggestionSet => _frontOrientationSuggestionEnabled;
   bool get isFrontLightingIntelligenceSet => _frontLightingIntelligenceEnabled;
+  bool get isFrontEyesClosedDetectionSet => _frontEyesClosedDetectionEnabled;
   bool get isFrontAutoExposureLockSet => _frontAutoExposureLockEnabled;
 
   void setCameraLens(bool isFront) {
@@ -92,8 +105,11 @@ class AppSettings extends ChangeNotifier {
     _compositionGridEnabled = prefs.getBool(_keyCompositionGrid) ?? true;
     _orientationSuggestionEnabled = prefs.getBool(_keyOrientationSuggestion) ?? true;
     _lightingIntelligenceEnabled = prefs.getBool(_keyLightingIntelligence) ?? true;
+    _eyesClosedDetectionEnabled = prefs.getBool(_keyEyesClosedDetection) ?? true;
     _autoExposureLockEnabled = prefs.getBool(_keyAutoExposureLock) ?? true;
     _flashMode = FlashModeSetting.values[prefs.getInt(_keyFlashMode) ?? FlashModeSetting.auto.index];
+    _autoPortraitEnabled = prefs.getBool(_keyAutoPortrait) ?? true;
+    _portraitDebugEnabled = prefs.getBool(_keyPortraitDebug) ?? false;
 
     // Front camera
     _frontFaceDetectionEnabled = prefs.getBool(_keyFrontFaceDetection) ?? true;
@@ -102,6 +118,7 @@ class AppSettings extends ChangeNotifier {
     _frontCompositionGridEnabled = prefs.getBool(_keyFrontCompositionGrid) ?? true;
     _frontOrientationSuggestionEnabled = prefs.getBool(_keyFrontOrientationSuggestion) ?? true;
     _frontLightingIntelligenceEnabled = prefs.getBool(_keyFrontLightingIntelligence) ?? true;
+    _frontEyesClosedDetectionEnabled = prefs.getBool(_keyFrontEyesClosedDetection) ?? true;
     _frontAutoExposureLockEnabled = prefs.getBool(_keyFrontAutoExposureLock) ?? true;
     _frontFlashMode = FlashModeSetting.values[prefs.getInt(_keyFrontFlashMode) ?? FlashModeSetting.auto.index];
     
@@ -155,6 +172,13 @@ class AppSettings extends ChangeNotifier {
     notifyListeners();
   }
 
+  set eyesClosedDetectionEnabled(bool value) {
+    if (_eyesClosedDetectionEnabled == value) return;
+    _eyesClosedDetectionEnabled = value;
+    _save(_keyEyesClosedDetection, value);
+    notifyListeners();
+  }
+
   set autoExposureLockEnabled(bool value) {
     if (_autoExposureLockEnabled == value) return;
     _autoExposureLockEnabled = value;
@@ -172,6 +196,20 @@ class AppSettings extends ChangeNotifier {
       _flashMode = value;
       _saveInt(_keyFlashMode, value.index);
     }
+    notifyListeners();
+  }
+
+  set autoPortraitEnabled(bool value) {
+    if (_autoPortraitEnabled == value) return;
+    _autoPortraitEnabled = value;
+    _save(_keyAutoPortrait, value);
+    notifyListeners();
+  }
+
+  set portraitDebugEnabled(bool value) {
+    if (_portraitDebugEnabled == value) return;
+    _portraitDebugEnabled = value;
+    _save(_keyPortraitDebug, value);
     notifyListeners();
   }
 
@@ -224,6 +262,13 @@ class AppSettings extends ChangeNotifier {
     _frontLightingIntelligenceEnabled = value;
     _save(_keyFrontLightingIntelligence, value);
     _checkFrontAutoShutterDependencies();
+    notifyListeners();
+  }
+
+  set frontEyesClosedDetectionEnabled(bool value) {
+    if (_frontEyesClosedDetectionEnabled == value) return;
+    _frontEyesClosedDetectionEnabled = value;
+    _save(_keyFrontEyesClosedDetection, value);
     notifyListeners();
   }
 
