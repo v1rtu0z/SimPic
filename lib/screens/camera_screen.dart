@@ -378,7 +378,8 @@ class _CameraScreenState extends State<CameraScreen>
         cameraFlashMode = FlashMode.off;
         break;
       case FlashModeSetting.on:
-        cameraFlashMode = FlashMode.torch; // Use torch for "on" as well to assist preview
+        // Use capture flash so it triggers at shutter time.
+        cameraFlashMode = FlashMode.always;
         break;
       case FlashModeSetting.auto:
         // We handle this dynamically in _processCameraImage
@@ -698,6 +699,26 @@ class _CameraScreenState extends State<CameraScreen>
 
     String? pathForFaceCheck;
     try {
+      // Ensure flash mode is correct right before capture.
+      if (_controller != null && _controller!.value.isInitialized) {
+        FlashMode captureFlashMode = FlashMode.off;
+        switch (appSettings.flashMode) {
+          case FlashModeSetting.off:
+            captureFlashMode = FlashMode.off;
+            break;
+          case FlashModeSetting.on:
+            captureFlashMode = FlashMode.always;
+            break;
+          case FlashModeSetting.auto:
+            final exposure = _faceExposureResult?.status;
+            final needsFlash = exposure == ExposureStatus.underexposed ||
+                exposure == ExposureStatus.shadowed;
+            captureFlashMode = needsFlash ? FlashMode.always : FlashMode.off;
+            break;
+        }
+        await _controller!.setFlashMode(captureFlashMode);
+      }
+
       // Stop image stream before taking photo
       if (_controller!.value.isStreamingImages) {
         await _controller!.stopImageStream();
@@ -827,6 +848,9 @@ class _CameraScreenState extends State<CameraScreen>
           debugPrint('Error restarting image stream: $e');
         }
       }
+
+      // Restore preview flash behavior after capture.
+      _updateFlashMode();
       
       setState(() {
         _isCapturing = false;
@@ -1212,8 +1236,8 @@ class _CameraScreenState extends State<CameraScreen>
               
               // Only turn ON after threshold frames of "needs flash"
               if (_flashConsistencyCounter >= _flashConsistencyThreshold) {
-                if (currentFlashMode != FlashMode.torch) {
-                  _controller?.setFlashMode(FlashMode.torch).catchError((e) => debugPrint('AutoFlash (Torch) error: $e'));
+                if (currentFlashMode != FlashMode.always) {
+                  _controller?.setFlashMode(FlashMode.always).catchError((e) => debugPrint('AutoFlash (Always) error: $e'));
                 }
                 // Keep at threshold to avoid overflow and allow immediate decrement if signal changes
                 _flashConsistencyCounter = _flashConsistencyThreshold;
