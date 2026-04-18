@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "896017714789",
+    "project_id": "simpic-2eba6",
+    "storage_bucket": "simpic-2eba6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:896017714789:android:224999cd0272fc09a6808c",
+        "android_client_info": {
+          "package_name": "com.simpic.simpic"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDK9Rrg74rIxzyPKD_3F0wauA72olY2pks"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
