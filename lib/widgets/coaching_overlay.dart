@@ -85,6 +85,8 @@ class CoachingOverlay extends StatelessWidget {
           // Reserve space for the blink puck (top-left) so the coaching bar does not overlap it.
           final double blinkReserveLeft =
               blinkResult != null ? 56 : 0;
+          // Framing score sits centered below the settings row; keep coaching text below it.
+          final double topReserve = framingScore != null ? 172 : 80;
           children.add(Positioned(
             top: 0,
             left: 0,
@@ -93,10 +95,10 @@ class CoachingOverlay extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.fromLTRB(
                   blinkReserveLeft,
-                  80,
+                  topReserve,
                   0,
                   0,
-                ), // Push below settings/flash buttons
+                ), // Push below settings/flash and optional score
                 child: _buildOverlayContent(
                   coachingData.color,
                   coachingData.icon,
@@ -422,7 +424,7 @@ class CoachingOverlay extends StatelessWidget {
     if (isLandscape) {
       final quarterTurns = deviceOrientation == NativeDeviceOrientation.landscapeLeft ? 1 : 3;
       return Positioned(
-        bottom: 100,
+        top: 20,
         right: 20,
         child: SafeArea(
           child: RotatedBox(
@@ -432,11 +434,16 @@ class CoachingOverlay extends StatelessWidget {
         ),
       );
     } else {
+      // Below settings/flash row; centered to stay clear of corner buttons.
       return Positioned(
-        bottom: 140,
-        right: 20,
+        top: 76,
+        left: 0,
+        right: 0,
         child: SafeArea(
-          child: content,
+          bottom: false,
+          child: Center(
+            child: content,
+          ),
         ),
       );
     }
