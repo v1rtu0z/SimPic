@@ -50,7 +50,7 @@ class CoachingOverlay extends StatelessWidget {
 
     // 1.2 Framing Score Circular Indicator
     if (framingScore != null) {
-      children.add(_buildFramingScoreIndicator());
+      children.add(_buildFramingScoreIndicator(context));
     }
 
     // 2. Main Coaching Content
@@ -82,27 +82,22 @@ class CoachingOverlay extends StatelessWidget {
             ),
           ));
         } else {
-          // Reserve space for the blink puck (top-left) so the coaching bar does not overlap it.
-          final double blinkReserveLeft =
-              blinkResult != null ? 56 : 0;
-          // Framing score sits centered below the settings row; keep coaching text below it.
-          final double topReserve = framingScore != null ? 172 : 80;
+          // Keep coaching off the upper preview where faces usually sit; tuck above shutter row.
+          final double bottomClearance =
+              MediaQuery.viewPaddingOf(context).bottom + 118;
           children.add(Positioned(
-            top: 0,
             left: 0,
             right: 0,
+            bottom: 0,
             child: SafeArea(
               child: Padding(
-                padding: EdgeInsets.fromLTRB(
-                  blinkReserveLeft,
-                  topReserve,
-                  0,
-                  0,
-                ), // Push below settings/flash and optional score
-                child: _buildOverlayContent(
-                  coachingData.color,
-                  coachingData.icon,
-                  coachingData.message,
+                padding: EdgeInsets.fromLTRB(12, 0, 12, bottomClearance),
+                child: Center(
+                  child: _buildOverlayContent(
+                    coachingData.color,
+                    coachingData.icon,
+                    coachingData.message,
+                  ),
                 ),
               ),
             ),
@@ -363,7 +358,7 @@ class CoachingOverlay extends StatelessWidget {
     }
   }
 
-  Widget _buildFramingScoreIndicator() {
+  Widget _buildFramingScoreIndicator(BuildContext context) {
     final bool isLandscape = deviceOrientation == NativeDeviceOrientation.landscapeLeft ||
         deviceOrientation == NativeDeviceOrientation.landscapeRight;
     
@@ -397,7 +392,7 @@ class CoachingOverlay extends StatelessWidget {
                 Center(
                   child: Text(
                     '${score.toInt()}',
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -421,6 +416,62 @@ class CoachingOverlay extends StatelessWidget {
       ),
     );
 
+    /// Compact chip: stays in a corner so it does not sit over the subject's face.
+    Widget compactContent = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.45),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: color.withValues(alpha: 0.45), width: 1),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            width: 36,
+            height: 36,
+            child: Stack(
+              children: [
+                Center(
+                  child: CircularProgressIndicator(
+                    value: score / 100,
+                    strokeWidth: 4,
+                    backgroundColor: Colors.white24,
+                    valueColor: AlwaysStoppedAnimation<Color>(color),
+                  ),
+                ),
+                Center(
+                  child: Text(
+                    '${score.toInt()}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 6),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 72),
+            child: Text(
+              message,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: color,
+                fontSize: 10,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.2,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
     if (isLandscape) {
       final quarterTurns = deviceOrientation == NativeDeviceOrientation.landscapeLeft ? 1 : 3;
       return Positioned(
@@ -434,61 +485,58 @@ class CoachingOverlay extends StatelessWidget {
         ),
       );
     } else {
-      // Below settings/flash row; centered to stay clear of corner buttons.
+      // Top-right, below settings/flash row — avoids upper-center face area and corner buttons.
       return Positioned(
-        top: 76,
-        left: 0,
-        right: 0,
+        top: MediaQuery.paddingOf(context).top + 62,
+        right: 8,
         child: SafeArea(
           bottom: false,
-          child: Center(
-            child: content,
-          ),
+          child: compactContent,
         ),
       );
     }
   }
 
   Widget _buildOverlayContent(Color statusColor, IconData statusIcon, String message) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha: 0.4),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: statusColor.withValues(alpha: 0.4),
-          width: 2,
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 400),
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        decoration: BoxDecoration(
+          color: Colors.black.withValues(alpha: 0.55),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: statusColor.withValues(alpha: 0.35),
+            width: 1,
+          ),
         ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            statusIcon,
-            color: statusColor,
-            size: 28,
-          ),
-          const SizedBox(width: 12),
-          Flexible(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  message.toUpperCase(),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-              ],
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              statusIcon,
+              color: statusColor,
+              size: 22,
             ),
-          ),
-        ],
+            const SizedBox(width: 10),
+            Flexible(
+              child: Text(
+                message,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  height: 1.25,
+                  letterSpacing: 0.15,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
