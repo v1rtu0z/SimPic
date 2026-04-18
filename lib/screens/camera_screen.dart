@@ -13,7 +13,10 @@ import 'package:android_intent_plus/flag.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:open_file/open_file.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
+import 'package:google_mlkit_selfie_segmentation/google_mlkit_selfie_segmentation.dart';
 import 'package:native_device_orientation/native_device_orientation.dart';
+import 'package:image/image.dart' as img;
+import 'dart:typed_data';
 import '../models/distance_coaching_scenario.dart';
 import '../widgets/coaching_overlay.dart';
 import '../models/composition_guidance.dart';
@@ -23,6 +26,8 @@ import '../models/exposure_guidance.dart';
 import '../models/blink_detection.dart';
 import '../models/framing_score.dart';
 import '../models/app_settings.dart';
+import '../models/portrait_analysis.dart';
+import '../widgets/portrait_indicator.dart';
 import 'settings_screen.dart';
 
 class CameraScreen extends StatefulWidget {
@@ -58,6 +63,7 @@ class _CameraScreenState extends State<CameraScreen>
   
   // Face detection
   FaceDetector? _faceDetector;
+  SelfieSegmenter? _selfieSegmenter;
   List<Face> _detectedFaces = [];
   bool _isProcessing = false;
   int _frameCounter = 0;
@@ -89,6 +95,11 @@ class _CameraScreenState extends State<CameraScreen>
   
   // Framing score
   FramingScoreResult? _framingScoreResult;
+  
+  // Portrait detection
+  PortraitAnalysisResult? _portraitAnalysisResult;
+  PortraitDetectionState _portraitDetectionState = PortraitDetectionState();
+  bool _isHardwareExtensionAvailable = false; // TODO: Check CameraX extensions
   
   // Focus feedback
   Offset? _focusPoint;
@@ -200,6 +211,12 @@ class _CameraScreenState extends State<CameraScreen>
       ),
     );
     
+    // Initialize selfie segmenter for bokeh effects
+    _selfieSegmenter = SelfieSegmenter(
+      mode: SegmenterMode.stream,
+      enableRawSizeMask: false, // We'll use the processed mask
+    );
+    
     // Initialize focus animation
     _focusAnimationController = AnimationController(
       duration: const Duration(milliseconds: 300),
@@ -241,6 +258,7 @@ class _CameraScreenState extends State<CameraScreen>
     _shutterPulseController.dispose();
     _focusTimer?.cancel();
     _faceDetector?.close();
+    _selfieSegmenter?.close();
     super.dispose();
   }
 
@@ -252,12 +270,26 @@ class _CameraScreenState extends State<CameraScreen>
           _distanceCoachingResult = null;
           _compositionGuidanceResult = null;
           _significantFaceCount = 0;
+          _portraitAnalysisResult = null;
+          _portraitDetectionState.reset();
+          _blinkDetectionResult = null;
+          _blinkConsistencyCounter = 0;
+          _lastStableBlinkStatus = null;
         } else {
           if (!appSettings.distanceCoachingEnabled) {
             _distanceCoachingResult = null;
           }
           if (!appSettings.compositionGridEnabled) {
             _compositionGuidanceResult = null;
+          }
+          if (!appSettings.autoPortraitEnabled) {
+            _portraitAnalysisResult = null;
+            _portraitDetectionState.reset();
+          }
+          if (!appSettings.eyesClosedDetectionEnabled) {
+            _blinkDetectionResult = null;
+            _blinkConsistencyCounter = 0;
+            _lastStableBlinkStatus = null;
           }
         }
       });
@@ -491,13 +523,89 @@ class _CameraScreenState extends State<CameraScreen>
     }
   }
 
+  /// After capture, checks the JPEG on disk. Returns true if any face is found or checks are skipped.
+  Future<bool> _capturedFileContainsFace(String filePath) async {
+    if (_faceDetector == null || !appSettings.faceDetectionEnabled) {
+      return true;
+    }
+    try {
+      final inputImage = InputImage.fromFilePath(filePath);
+      final faces = await _faceDetector!.processImage(inputImage);
+      return faces.isNotEmpty;
+    } catch (e) {
+      debugPrint('[_capturedFileContainsFace] $e');
+      return true;
+    }
+  }
+
+  void _showNoPersonInPhotoDialog() {
+    final mq = MediaQuery.of(context);
+    showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      barrierColor: Colors.black45,
+      builder: (dialogContext) {
+        return Dialog(
+          alignment: Alignment.topCenter,
+          insetPadding: EdgeInsets.fromLTRB(
+            20,
+            mq.padding.top + 52,
+            20,
+            mq.size.height * 0.38,
+          ),
+          backgroundColor: const Color(0xFF2A2A2A),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 14, 8, 4),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.person_off_outlined, color: Colors.amber.shade200, size: 22),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        'No person detected',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  'This shot does not appear to include anyone. Your photo was still saved.',
+                  style: TextStyle(color: Colors.white70, fontSize: 13, height: 1.35),
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () => Navigator.of(dialogContext).pop(),
+                    child: const Text('OK'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> _takePicture() async {
     if (_controller == null || !_controller!.value.isInitialized || _isCapturing) {
       return;
     }
 
     // Blink detection: wait up to 500ms for eyes to open
-    if (_blinkDetectionResult != null && _blinkDetectionResult!.eitherEyeClosed) {
+    if (appSettings.eyesClosedDetectionEnabled &&
+        _blinkDetectionResult != null &&
+        _blinkDetectionResult!.eitherEyeClosed) {
       debugPrint('[_takePicture] Eyes closed detected, waiting up to 500ms...');
       final startTime = DateTime.now();
       while (DateTime.now().difference(startTime).inMilliseconds < 500) {
@@ -516,6 +624,7 @@ class _CameraScreenState extends State<CameraScreen>
       _isCapturing = true;
     });
 
+    String? pathForFaceCheck;
     try {
       // Stop image stream before taking photo
       if (_controller!.value.isStreamingImages) {
@@ -529,6 +638,23 @@ class _CameraScreenState extends State<CameraScreen>
 
       // Take the picture
       final XFile image = await _controller!.takePicture();
+      
+      // Apply bokeh effect if portrait mode is active
+      Uint8List finalImageBytes;
+      if (appSettings.autoPortraitEnabled && 
+          _portraitAnalysisResult != null && 
+          _portraitAnalysisResult!.isActive) {
+        debugPrint('[_takePicture] Portrait mode active, applying bokeh effect...');
+        try {
+          finalImageBytes = await _applyBokehEffect(image.path);
+          debugPrint('[_takePicture] Bokeh effect applied successfully');
+        } catch (e) {
+          debugPrint('[_takePicture] Error applying bokeh, using original image: $e');
+          finalImageBytes = await File(image.path).readAsBytes();
+        }
+      } else {
+        finalImageBytes = await File(image.path).readAsBytes();
+      }
 
       // Save to gallery and get the asset ID directly
       // This matches React Native's MediaLibrary.createAssetAsync() behavior
@@ -544,21 +670,18 @@ class _CameraScreenState extends State<CameraScreen>
           throw Exception('Photo permission not granted');
         }
         
-        // Read the image file as bytes
-        final File imageFile = File(image.path);
-        final Uint8List imageBytes = await imageFile.readAsBytes();
-        
         // Save using photo_manager editor - returns AssetEntity with ID directly
+        // (finalImageBytes already processed with bokeh if portrait mode was active)
         // On Android: Save to DCIM/Camera directory (standard camera photos location)
         // On iOS: relativePath is ignored, photos are saved to Camera Roll automatically
         final AssetEntity? savedAsset = Platform.isAndroid
             ? await PhotoManager.editor.saveImage(
-                imageBytes,
+                finalImageBytes,
                 filename: path.basename(image.path),
                 relativePath: 'DCIM/Camera',
               )
             : await PhotoManager.editor.saveImage(
-                imageBytes,
+                finalImageBytes,
                 filename: path.basename(image.path),
               );
         
@@ -605,7 +728,8 @@ class _CameraScreenState extends State<CameraScreen>
           _lastImageUri = savedImageUri; // This is the MediaStore ID for opening in gallery
           _minimizingImage = null;
         });
-        
+        pathForFaceCheck = previewFile.path;
+
         debugPrint('Photo saved to gallery successfully');
       } catch (e) {
         debugPrint('Error saving to gallery: $e');
@@ -614,6 +738,7 @@ class _CameraScreenState extends State<CameraScreen>
           _lastImagePath = image.path;
           _lastImageFile = File(image.path);
         });
+        pathForFaceCheck = image.path;
         debugPrint('Using temp file: ${image.path}');
       }
     } catch (e) {
@@ -633,6 +758,20 @@ class _CameraScreenState extends State<CameraScreen>
       setState(() {
         _isCapturing = false;
       });
+    }
+
+    if (mounted &&
+        pathForFaceCheck != null &&
+        appSettings.faceDetectionEnabled &&
+        _faceDetector != null) {
+      final hasFace = await _capturedFileContainsFace(pathForFaceCheck);
+      if (mounted && !hasFace) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            _showNoPersonInPhotoDialog();
+          }
+        });
+      }
     }
   }
 
@@ -813,10 +952,12 @@ class _CameraScreenState extends State<CameraScreen>
               }
 
               // Perform Blink Detection
-              blinkResult = evaluateBlink(
-                bestFace.leftEyeOpenProbability,
-                bestFace.rightEyeOpenProbability,
-              );
+              if (appSettings.eyesClosedDetectionEnabled) {
+                blinkResult = evaluateBlink(
+                  bestFace.leftEyeOpenProbability,
+                  bestFace.rightEyeOpenProbability,
+                );
+              }
 
               // Perform Auto-exposure Lock on Face
               if (appSettings.autoExposureLockEnabled) {
@@ -824,10 +965,51 @@ class _CameraScreenState extends State<CameraScreen>
               } else {
                 _lockedFace = null;
               }
-            }
+
+              // Perform Portrait Analysis (if enabled)
+              // Only analyze if we have exactly 1 significant face (portrait mode requirement)
+              if (appSettings.autoPortraitEnabled && significantFaceCount == 1 && displayImageSize != null) {
+                // Filter to only significant faces for portrait analysis
+                final significantFaces = faces.where((face) {
+                  final faceHeight = face.boundingBox.height;
+                  final minDimension = min(imageSize.width, imageSize.height);
+                  final significantPixelThreshold = minDimension * 0.07;
+                  return faceHeight >= significantPixelThreshold;
+                }).toList();
+                
+                _portraitAnalysisResult = analyzePortraitCandidate(
+                  faces: significantFaces,
+                  imageSize: imageSize,
+                  displayImageSize: displayImageSize,
+                  faceCenter: displayFaceCenter,
+                  state: _portraitDetectionState,
+                  isHardwareExtensionAvailable: _isHardwareExtensionAvailable,
+                  frameCounter: _frameCounter,
+                  isFrontCamera: _currentCamera?.lensDirection == CameraLensDirection.front,
+                  isWellComposed: compositionResult?.status == CompositionStatus.wellPositioned,
+                );
+              } else {
+                if (appSettings.autoPortraitEnabled && significantFaceCount != 1) {
+                  // Reset if not exactly 1 face
+                  _portraitDetectionState.reset();
+                }
+                _portraitAnalysisResult = null;
+              }
+            } // Close if (faceHeight > 0 && displayHeight > 0)
           } else {
             // No face detected or no best face, clear locked face
             _lockedFace = null;
+            // Reset portrait detection when no face
+            if (appSettings.autoPortraitEnabled) {
+              _portraitDetectionState.reset();
+              _portraitAnalysisResult = null;
+            }
+          }
+        } else {
+          // No faces detected - reset portrait detection
+          if (appSettings.autoPortraitEnabled) {
+            _portraitDetectionState.reset();
+            _portraitAnalysisResult = null;
           }
         }
 
@@ -909,7 +1091,7 @@ class _CameraScreenState extends State<CameraScreen>
             }
 
             // 4. Blink Detection Stability
-            if (blinkResult != null) {
+            if (appSettings.eyesClosedDetectionEnabled && blinkResult != null) {
               final isBlinking = blinkResult.eitherEyeClosed;
               if (isBlinking == _lastStableBlinkStatus) {
                 _blinkConsistencyCounter++;
@@ -931,7 +1113,9 @@ class _CameraScreenState extends State<CameraScreen>
               distanceResult: _distanceCoachingResult,
               compositionResult: _compositionGuidanceResult,
               exposureResult: _faceExposureResult,
-              blinkResult: _blinkDetectionResult,
+              blinkResult: appSettings.eyesClosedDetectionEnabled
+                  ? _blinkDetectionResult
+                  : null,
             );
 
             // Handle Flashlight Auto-toggle based on light detection
@@ -1070,7 +1254,9 @@ class _CameraScreenState extends State<CameraScreen>
     bool isLightingGood = !lightingEnabled || (exposure != null && exposure.status == ExposureStatus.good);
     
     // Blink detection requirement
-    bool isBlinkGood = blink == null || blink.canShoot;
+    bool isBlinkGood = !appSettings.eyesClosedDetectionEnabled ||
+        blink == null ||
+        blink.canShoot;
 
     // For orientation, we still use it if enabled
     bool isOrientationGood = true;
@@ -1241,6 +1427,92 @@ class _CameraScreenState extends State<CameraScreen>
     }
     
     return bestFace;
+  }
+
+  /// Scale face rect for debug overlay using same transformation as FaceDetectorPainter
+  Rect? _scaleFaceRectForDebug(
+    Rect faceRect,
+    Size imageSize,
+    Size widgetSize,
+    int rotationDegrees,
+    NativeDeviceOrientation deviceOrientation,
+    CameraLensDirection? cameraLensDirection,
+  ) {
+    if (imageSize.width == 0 || imageSize.height == 0) return null;
+    
+    // Use the same transformation logic as FaceDetectorPainter._scaleRect
+    // ML Kit returns coordinates in the rotated (upright) image space.
+    Size effectiveImageSize;
+    if (rotationDegrees == 90 || rotationDegrees == 270) {
+      effectiveImageSize = Size(imageSize.height, imageSize.width);
+    } else {
+      effectiveImageSize = Size(imageSize.width, imageSize.height);
+    }
+
+    // 1. Normalize coordinates (0 to 1)
+    double nx = faceRect.left / effectiveImageSize.width;
+    double ny = faceRect.top / effectiveImageSize.height;
+    double nw = faceRect.width / effectiveImageSize.width;
+    double nh = faceRect.height / effectiveImageSize.height;
+
+    // 2. Map from ML Kit's "upright" space to the "portrait" preview space
+    double finalNx, finalNy, finalNw, finalNh;
+
+    int degrees = 0;
+    switch (deviceOrientation) {
+      case NativeDeviceOrientation.landscapeRight:
+        degrees = 90;
+        break;
+      case NativeDeviceOrientation.portraitDown:
+        degrees = 180;
+        break;
+      case NativeDeviceOrientation.landscapeLeft:
+        degrees = 270;
+        break;
+      default:
+        degrees = 0;
+    }
+
+    // Apply rotation to normalized coordinates
+    if (degrees == 90) {
+      finalNx = ny;
+      finalNy = 1.0 - (nx + nw);
+      finalNw = nh;
+      finalNh = nw;
+    } else if (degrees == 180) {
+      finalNx = 1.0 - (nx + nw);
+      finalNy = 1.0 - (ny + nh);
+      finalNw = nw;
+      finalNh = nh;
+    } else if (degrees == 270) {
+      finalNx = 1.0 - (ny + nh);
+      finalNy = nx;
+      finalNw = nh;
+      finalNh = nw;
+    } else {
+      finalNx = nx;
+      finalNy = ny;
+      finalNw = nw;
+      finalNh = nh;
+    }
+
+    // 3. Handle mirroring for front camera
+    if (cameraLensDirection == CameraLensDirection.front) {
+      if (deviceOrientation == NativeDeviceOrientation.landscapeLeft ||
+          deviceOrientation == NativeDeviceOrientation.landscapeRight) {
+        finalNy = 1.0 - (finalNy + finalNh);
+      } else {
+        finalNx = 1.0 - (finalNx + finalNw);
+      }
+    }
+
+    // 4. Scale to widget size
+    return Rect.fromLTWH(
+      finalNx * widgetSize.width,
+      finalNy * widgetSize.height,
+      finalNw * widgetSize.width,
+      finalNh * widgetSize.height,
+    );
   }
 
   /// Handle tap to focus
@@ -1435,6 +1707,90 @@ class _CameraScreenState extends State<CameraScreen>
 
   int _getIconRotationQuarterTurns() {
     return _getPreviewRotationTurns();
+  }
+
+  /// Apply bokeh (background blur) effect to a captured image using selfie segmentation
+  Future<Uint8List> _applyBokehEffect(String imagePath) async {
+    if (_selfieSegmenter == null) {
+      throw Exception('Selfie segmenter not initialized');
+    }
+
+    // Read the image file
+    final imageBytes = await File(imagePath).readAsBytes();
+    final originalImage = img.decodeImage(imageBytes);
+    if (originalImage == null) {
+      throw Exception('Failed to decode image');
+    }
+
+    // Convert to InputImage for ML Kit
+    final inputImage = InputImage.fromFilePath(imagePath);
+    
+    // Process with selfie segmentation
+    final mask = await _selfieSegmenter!.processImage(inputImage);
+    if (mask == null) {
+      debugPrint('[_applyBokehEffect] No mask generated, returning original image');
+      return imageBytes;
+    }
+
+    // Get mask dimensions
+    final maskWidth = mask.width;
+    final maskHeight = mask.height;
+    
+    // In google_mlkit_selfie_segmentation 0.10.0, the mask is provided as a List<double> of confidences
+    final maskData = mask.confidences;
+
+    // Scale mask to match image dimensions
+    final imageWidth = originalImage.width;
+    final imageHeight = originalImage.height;
+    
+    // Create a blurred version of the image
+    final blurredImage = img.copyResize(
+      originalImage,
+      width: (imageWidth * 0.5).round(), // Downscale for faster blur
+      height: (imageHeight * 0.5).round(),
+    );
+    final blurredFull = img.gaussianBlur(img.copyResize(blurredImage, width: imageWidth, height: imageHeight), radius: 15);
+
+    // Apply mask: blend original (foreground) with blurred (background)
+    final result = img.Image(width: imageWidth, height: imageHeight);
+    
+    for (int y = 0; y < imageHeight; y++) {
+      for (int x = 0; x < imageWidth; x++) {
+        // Get mask value at this position (scale from mask size to image size)
+        final maskX = (x * maskWidth / imageWidth).round().clamp(0, maskWidth - 1);
+        final maskY = (y * maskHeight / imageHeight).round().clamp(0, maskHeight - 1);
+        final maskIndex = maskY * maskWidth + maskX;
+        // Mask value is already 0.0-1.0 (float), where 1.0 = foreground confidence
+        final maskValue = maskData[maskIndex].clamp(0.0, 1.0);
+        
+        // Get original and blurred pixel colors
+        final originalColor = originalImage.getPixel(x, y);
+        final blurredColor = blurredFull.getPixel(x, y);
+        
+        // Extract color channels - use Color class properties
+        final originalR = originalColor.r;
+        final originalG = originalColor.g;
+        final originalB = originalColor.b;
+        final originalA = originalColor.a;
+        
+        final blurredR = blurredColor.r;
+        final blurredG = blurredColor.g;
+        final blurredB = blurredColor.b;
+        
+        // Blend: use original for foreground (high mask value), blurred for background (low mask value)
+        // maskValue is already 0.0-1.0 where 1.0 = foreground
+        final blendFactor = maskValue;
+        final r = (originalR * blendFactor + blurredR * (1 - blendFactor)).round();
+        final g = (originalG * blendFactor + blurredG * (1 - blendFactor)).round();
+        final b = (originalB * blendFactor + blurredB * (1 - blendFactor)).round();
+        
+        result.setPixel(x, y, img.ColorRgba8(r, g, b, originalA.toInt()));
+      }
+    }
+
+    // Encode back to JPEG
+    final outputBytes = Uint8List.fromList(img.encodeJpg(result, quality: 95));
+    return outputBytes;
   }
 
   Widget _buildFlashButton() {
@@ -1675,6 +2031,22 @@ class _CameraScreenState extends State<CameraScreen>
                               cameraLensDirection: _currentCamera?.lensDirection,
                             ),
                           ),
+                        // Portrait debug overlay
+                        if (appSettings.portraitDebugEnabled && _portraitAnalysisResult != null && _detectedFaces.isNotEmpty && _imageSize != null)
+                          CustomPaint(
+                            painter: PortraitDebugOverlay(
+                              portraitResult: _portraitAnalysisResult,
+                              imageSize: _imageSize!,
+                              faceBoundingBox: _scaleFaceRectForDebug(
+                                _detectedFaces.first.boundingBox,
+                                _imageSize!,
+                                portraitPreviewSize,
+                                _detectedFacesRotation,
+                                _detectedFacesOrientation,
+                                _currentCamera?.lensDirection,
+                              ),
+                            ),
+                          ),
                         // Composition grid overlay (inside preview area)
                         if (appSettings.compositionGridEnabled)
                           CompositionGridOverlay(
@@ -1796,11 +2168,19 @@ class _CameraScreenState extends State<CameraScreen>
             coachingResult: _distanceCoachingResult,
             compositionResult: _compositionGuidanceResult,
             exposureResult: _faceExposureResult,
-            blinkResult: _blinkDetectionResult,
+            blinkResult: appSettings.eyesClosedDetectionEnabled
+                ? _blinkDetectionResult
+                : null,
             framingScore: _framingScoreResult,
             significantFaceCount: _significantFaceCount,
             deviceOrientation: _stableLayoutOrientation,
             isOrientationMismatch: isOrientationMismatch && appSettings.orientationSuggestionEnabled,
+          ),
+          
+          // Portrait mode indicator
+          PortraitIndicator(
+            portraitResult: _portraitAnalysisResult,
+            showDebugOverlay: appSettings.portraitDebugEnabled,
           ),
           
           // Bottom controls

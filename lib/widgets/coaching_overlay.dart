@@ -82,13 +82,21 @@ class CoachingOverlay extends StatelessWidget {
             ),
           ));
         } else {
+          // Reserve space for the blink puck (top-left) so the coaching bar does not overlap it.
+          final double blinkReserveLeft =
+              blinkResult != null ? 56 : 0;
           children.add(Positioned(
             top: 0,
             left: 0,
             right: 0,
             child: SafeArea(
               child: Padding(
-                padding: const EdgeInsets.only(top: 80), // Push below settings/flash buttons
+                padding: EdgeInsets.fromLTRB(
+                  blinkReserveLeft,
+                  80,
+                  0,
+                  0,
+                ), // Push below settings/flash buttons
                 child: _buildOverlayContent(
                   coachingData.color,
                   coachingData.icon,
@@ -328,9 +336,13 @@ class CoachingOverlay extends StatelessWidget {
 
     if (isLandscape) {
       final quarterTurns = deviceOrientation == NativeDeviceOrientation.landscapeLeft ? 1 : 3;
+      // Main coaching uses a ~120px strip on the left; keep the blink puck clear of it.
+      final bool coachingStripVisible =
+          !isOrientationMismatch && _getCoachingData() != null;
+      final double leftPos = coachingStripVisible ? 132 : 20;
       return Positioned(
         top: 20,
-        left: 20,
+        left: leftPos,
         child: SafeArea(
           child: RotatedBox(
             quarterTurns: quarterTurns,
