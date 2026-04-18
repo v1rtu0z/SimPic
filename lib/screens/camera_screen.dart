@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:async';
 import 'dart:math';
+import 'package:firebase_ai/firebase_ai.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
@@ -120,6 +121,9 @@ class _CameraScreenState extends State<CameraScreen>
   // Shutter button pulse animation
   late AnimationController _shutterPulseController;
   late Animation<double> _shutterPulseAnimation;
+
+  final model =
+      FirebaseAI.googleAI().generativeModel(model: 'gemini-2.5-flash-lite');
 
   @override
   void initState() {

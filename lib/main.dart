@@ -23,6 +23,8 @@ void main() async {
   ]);
   
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  final model =
+      FirebaseAI.googleAI().generativeModel(model: 'gemini-2.5-flash-lite');
   
   runApp(const SimPicApp());
 }
