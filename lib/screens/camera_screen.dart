@@ -154,6 +154,9 @@ class _CameraScreenState extends State<CameraScreen>
   static const int _autoShutterRequiredGoodFrames = 5; // Reduced from 10 for faster response
   static const Duration _autoShutterCooldown = Duration(seconds: 3);
 
+  // Prevent overlapping camera switch operations
+  bool _isSwitchingCamera = false;
+
   // Shutter button pulse animation
   late AnimationController _shutterPulseController;
   late Animation<double> _shutterPulseAnimation;
@@ -2091,7 +2094,8 @@ class _CameraScreenState extends State<CameraScreen>
   }
 
   Future<void> _switchCamera() async {
-    if (_cameras == null || _cameras!.length < 2 || _isProcessing || _isCapturing) return;
+    if (_cameras == null || _cameras!.length < 2 || _isCapturing || _isSwitchingCamera) return;
+    _isSwitchingCamera = true;
 
     final lensDirection = _currentCamera?.lensDirection == CameraLensDirection.back
         ? CameraLensDirection.front
@@ -2102,42 +2106,45 @@ class _CameraScreenState extends State<CameraScreen>
       orElse: () => _cameras!.first,
     );
 
-    if (newCamera == _currentCamera) return;
+    if (newCamera == _currentCamera) {
+      _isSwitchingCamera = false;
+      return;
+    }
 
     // Show a quick fade to black to hide the transition "blink"
     setState(() {
       _isInitialized = false;
     });
 
-    // Stop current stream before switching
-    if (_controller != null && _controller!.value.isStreamingImages) {
-      try {
-        await _controller!.stopImageStream();
-      } catch (e) {
-        debugPrint('Error stopping image stream: $e');
-      }
-    }
-
-    // Dispose old controller
-    final oldController = _controller;
-    _controller = null;
-    await oldController?.dispose();
-
-    _currentCamera = newCamera;
-    
-    // Update app settings with lens direction
-    appSettings.setCameraLens(_currentCamera!.lensDirection == CameraLensDirection.front);
-    
-    _controller = CameraController(
-      _currentCamera!,
-      ResolutionPreset.high,
-      enableAudio: false,
-      imageFormatGroup: Platform.isAndroid 
-          ? ImageFormatGroup.nv21 
-          : ImageFormatGroup.yuv420,
-    );
-
     try {
+      // Stop current stream before switching
+      if (_controller != null && _controller!.value.isStreamingImages) {
+        try {
+          await _controller!.stopImageStream();
+        } catch (e) {
+          debugPrint('Error stopping image stream: $e');
+        }
+      }
+
+      // Dispose old controller
+      final oldController = _controller;
+      _controller = null;
+      await oldController?.dispose();
+
+      _currentCamera = newCamera;
+      
+      // Update app settings with lens direction
+      appSettings.setCameraLens(_currentCamera!.lensDirection == CameraLensDirection.front);
+      
+      _controller = CameraController(
+        _currentCamera!,
+        ResolutionPreset.high,
+        enableAudio: false,
+        imageFormatGroup: Platform.isAndroid 
+            ? ImageFormatGroup.nv21 
+            : ImageFormatGroup.yuv420,
+      );
+
       await _controller!.initialize();
       await _controller!.setFocusMode(FocusMode.auto);
       
@@ -2160,6 +2167,8 @@ class _CameraScreenState extends State<CameraScreen>
           _isInitialized = true;
         });
       }
+    } finally {
+      _isSwitchingCamera = false;
     }
   }
 
